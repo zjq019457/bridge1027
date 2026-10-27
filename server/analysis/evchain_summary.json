@@ -1,0 +1,77 @@
+{
+  "llama_bp": {
+    "answer_bearing": 0.5133333333333333,
+    "answer_bearing_by_task": {
+      "hotpotqa": 0.635,
+      "2wikimqa": 0.57,
+      "musique": 0.335
+    },
+    "supporting_fact": 0.6566666666666666,
+    "supporting_fact_by_task": {
+      "hotpotqa": 0.77375,
+      "2wikimqa": 0.78375,
+      "musique": 0.4125
+    },
+    "complete_chain": 0.42333333333333334,
+    "complete_chain_by_task": {
+      "hotpotqa": 0.585,
+      "2wikimqa": 0.56,
+      "musique": 0.125
+    },
+    "n": {
+      "hotpotqa": 200,
+      "2wikimqa": 200,
+      "musique": 200
+    }
+  },
+  "llama_lingua": {
+    "answer_bearing": 0.43333333333333335,
+    "answer_bearing_by_task": {
+      "hotpotqa": 0.505,
+      "2wikimqa": 0.55,
+      "musique": 0.245
+    },
+    "supporting_fact": 0.5276388888888889,
+    "supporting_fact_by_task": {
+      "hotpotqa": 0.5629166666666666,
+      "2wikimqa": 0.6825,
+      "musique": 0.3375
+    },
+    "complete_chain": 0.2783333333333333,
+    "complete_chain_by_task": {
+      "hotpotqa": 0.33,
+      "2wikimqa": 0.415,
+      "musique": 0.09
+    },
+    "n": {
+      "hotpotqa": 200,
+      "2wikimqa": 200,
+      "musique": 200
+    }
+  },
+  "llama_noneighbor": {
+    "answer_bearing": 0.49499999999999994,
+    "answer_bearing_by_task": {
+      "hotpotqa": 0.595,
+      "2wikimqa": 0.54,
+      "musique": 0.35
+    },
+    "supporting_fact": 0.6348611111111112,
+    "supporting_fact_by_task": {
+      "hotpotqa": 0.73875,
+      "2wikimqa": 0.75875,
+      "musique": 0.40708333333333335
+    },
+    "complete_chain": 0.4000000000000001,
+    "complete_chain_by_task": {
+      "hotpotqa": 0.515,
+      "2wikimqa": 0.55,
+      "musique": 0.135
+    },
+    "n": {
+      "hotpotqa": 200,
+      "2wikimqa": 200,
+      "musique": 200
+    }
+  }
+}

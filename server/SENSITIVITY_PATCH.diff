@@ -1,0 +1,116 @@
+diff -ru -x __pycache__ /diskE/jiaqizhang/BRIDGEPACK_PORTABLE_REPRO_V1_20260928/unpacked/BRIDGEPACK_PORTABLE_REPRO_V1/source/SlimInfer_snapshot/bridgekv/bridgepack_cpu_extensions.py /diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/bridgekv/bridgepack_cpu_extensions.py
+--- /diskE/jiaqizhang/BRIDGEPACK_PORTABLE_REPRO_V1_20260928/unpacked/BRIDGEPACK_PORTABLE_REPRO_V1/source/SlimInfer_snapshot/bridgekv/bridgepack_cpu_extensions.py	2026-07-28 18:47:22.000000000 -0700
++++ /diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/bridgekv/bridgepack_cpu_extensions.py	2026-10-25 17:22:33.134347228 -0700
+@@ -15,6 +15,7 @@
+ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+ 
+ from bridgekv import evidence_text_packing as etp
++from bridgekv.sensitivity_params import SP as _SP
+ from bridgekv.evidence_text_packing import (
+     CandidateSpan,
+     PackedEvidence,
+@@ -449,11 +450,11 @@
+     candidates, page_map = build_candidate_spans(sample_id, task, query, context)
+     lexical_candidates = lexical_scored_candidates(query, candidates)
+     ordered, path_audit = etp._select_bridge_paths(
+-        query, lexical_candidates, page_map, budget, use_tags=False, neighbor_size=32
++        query, lexical_candidates, page_map, budget, use_tags=False, neighbor_size=_SP.neighbor
+     )
+     packed, audit = _pack_ordered(
+         sample_id, task, query, "lexical_bridgepack_path_order", budget, ordered, page_map,
+-        neighbor_size=32, ordering="lexical_bridge_path_order", used_bridge_path=True,
++        neighbor_size=_SP.neighbor, ordering="lexical_bridge_path_order", used_bridge_path=True,
+         tokenizer=tokenizer,
+     )
+     span_ids = list(packed.selected_span_ids)
+@@ -527,7 +528,7 @@
+                 er = rec
+                 break
+         if er is None:
+-            piece, er = etp._expanded_piece(span, page_map, 32, role=role, use_tags=False)
++            piece, er = etp._expanded_piece(span, page_map, _SP.neighbor, role=role, use_tags=False)
+         else:
+             piece = str(er.get("text", ""))
+         if _can_add_budget(prefix, pieces, piece, budget, tokenizer=tokenizer):
+@@ -550,7 +551,7 @@
+         source_token_count=frozen["packed"].source_token_count,
+         compression_ratio=_count_for_budget(packed_text, tokenizer) / max(1, frozen["packed"].source_token_count),
+         ordering=order_mode,
+-        neighbor_size=32,
++        neighbor_size=_SP.neighbor,
+         used_bridge_path=True,
+         used_tags=False,
+         truncated=False,
+diff -ru -x __pycache__ /diskE/jiaqizhang/BRIDGEPACK_PORTABLE_REPRO_V1_20260928/unpacked/BRIDGEPACK_PORTABLE_REPRO_V1/source/SlimInfer_snapshot/bridgekv/evidence_text_packing.py /diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/bridgekv/evidence_text_packing.py
+--- /diskE/jiaqizhang/BRIDGEPACK_PORTABLE_REPRO_V1_20260928/unpacked/BRIDGEPACK_PORTABLE_REPRO_V1/source/SlimInfer_snapshot/bridgekv/evidence_text_packing.py	2026-06-19 18:05:40.000000000 -0700
++++ /diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/bridgekv/evidence_text_packing.py	2026-10-25 17:22:33.132347286 -0700
+@@ -11,6 +11,8 @@
+ import random
+ import re
+ from collections import Counter, defaultdict
++
++from bridgekv.sensitivity_params import SP as _SP
+ from dataclasses import asdict, dataclass
+ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Tuple
+ 
+@@ -234,8 +236,10 @@
+         return 0.0
+     overlap = toks_i & toks_j
+     shared = len(overlap) / math.sqrt(max(1, len(toks_i) * len(toks_j)))
+-    too_similar_penalty = 0.35 * jaccard(toks_i, toks_j)
+-    novelty_bonus = 0.10 * (1.0 - jaccard(toks_i, toks_j))
++    if _SP.bridge_zero:
++        return 0.0
++    too_similar_penalty = _SP.c_jac * jaccard(toks_i, toks_j)
++    novelty_bonus = _SP.c_div * (1.0 - jaccard(toks_i, toks_j))
+     return shared + novelty_bonus - too_similar_penalty
+ 
+ 
+@@ -456,7 +460,7 @@
+     tfidf_norm = normalize_scores([tfidf.get(span.span_id, 0.0) for span in candidates])
+     scores: Dict[str, float] = {}
+     for idx, span in enumerate(candidates):
+-        scores[span.span_id] = 0.5 * bm25_norm[idx] + 0.5 * tfidf_norm[idx]
++        scores[span.span_id] = _SP.alpha * bm25_norm[idx] + (1.0 - _SP.alpha) * tfidf_norm[idx]
+     return scores
+ 
+ 
+@@ -762,7 +766,7 @@
+                 continue
+             bridge = bridge_link_score(left, right)
+             query_link = query_link_score(query, left.text)
+-            score = query_link + bridge + 0.5 * right.final_score
++            score = query_link + bridge + _SP.c_sup * right.final_score
+             paths.append(EvidencePath(left, right, query_link, bridge, score))
+     return sorted(paths, key=lambda p: (-p.path_score, p.span_i.source_order_index, p.span_j.source_order_index))
+ 
+@@ -791,7 +795,7 @@
+         for path in remaining:
+             pair_terms = path_terms.get(id(path), set())
+             redundancy = jaccard(pair_terms, selected_terms) if selected_terms else 0.0
+-            adjusted = path.path_score - 0.55 * redundancy
++            adjusted = path.path_score - _SP.lam * redundancy
+             if best is None or adjusted > best[0]:
+                 best = (adjusted, path)
+         if best is None:
+Only in /diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/bridgekv: sensitivity_params.py
+diff -ru -x __pycache__ /diskE/jiaqizhang/BRIDGEPACK_PORTABLE_REPRO_V1_20260928/unpacked/BRIDGEPACK_PORTABLE_REPRO_V1/source/SlimInfer_snapshot/tools/bridgepack_g1/run_g1.py /diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/tools/bridgepack_g1/run_g1.py
+--- /diskE/jiaqizhang/BRIDGEPACK_PORTABLE_REPRO_V1_20260928/unpacked/BRIDGEPACK_PORTABLE_REPRO_V1/source/SlimInfer_snapshot/tools/bridgepack_g1/run_g1.py	2026-07-28 18:47:22.000000000 -0700
++++ /diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/tools/bridgepack_g1/run_g1.py	2026-10-25 17:22:33.134347228 -0700
+@@ -2,6 +2,7 @@
+ """BridgePack G1 orchestrator: gated GPU matched-mechanism experiments."""
+ from __future__ import annotations
+ 
++from bridgekv.sensitivity_params import SP as _SP
+ import argparse
+ import hashlib
+ import json
+@@ -474,7 +475,7 @@
+                     # rebuild order from packed selected ids to ensure HF exact
+                     [(next(c for c in frozen["candidates"] if c.span_id == i), "support") for i in packed_obj.selected_span_ids],
+                     frozen["page_map"],
+-                    32,
++                    _SP.neighbor,
+                     True,
+                     order_mode,
+                     audit_extra={

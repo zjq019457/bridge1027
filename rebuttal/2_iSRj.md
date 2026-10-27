@@ -1,0 +1,7 @@
+**Q1 (tight budgets).** At 256 tokens the budget falls below BridgePack's operating unit. A repaired region spans up to 128 tokens, a pair about 256: at 256 tokens the median pack keeps one span and 62% of instances fit at most one pair, so joint selection has nothing to trade off. This is a design boundary, not a failure of evidence selection; independent rankers instead fill the space with many short fragments, which helps only when one salient clue suffices. Once several pairs fit, the design takes effect: from 256 to 1,024 BridgePack gains +15.25 on Qwen, more than BM25, TF-IDF or BGE (Fig. 2). We target budgets tight vs. the source (1,024 ≈ 13%) yet able to fit several pairs.
+
+**Q2 (bridge).** The mechanism is joint pairing, not one coefficient. The single-score rows vary terms inside an intact pairing selector, so they cannot test it. The direct test removes pairing, all else fixed: +3.445 vs. independent (Holm p=0.0017), +2.961 vs. MMR (p=0.0059).
+
+**Q3 (novelty).** MMR ranks spans one by one. BridgePack selects query/support pairs: a pair is scored by the seed's direct relevance plus a half-weighted support utility of its partner, and coverage is updated after each pair. A second-hop fact with weaker direct relevance can thus enter beside a strong seed, where per-span ranking would drop it.
+
+**Q4.** On Llama multi-hop, encoder-free Lexical-BP matches dense BGE (33.20 vs. 33.16; +3.4 on 2Wiki) and beats BM25 by ~4 points; BGE Recall+BP is best (33.65).

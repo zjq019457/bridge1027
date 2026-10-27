@@ -1,0 +1,33 @@
+/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Traceback (most recent call last):
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner.py", line 136, in <module>
+    if __name__=="__main__": raise SystemExit(main())
+                                              ~~~~^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner.py", line 132, in main
+    if not rows: rows=generate(run_dir,ids,traces,gold_by,Path(args.model_path).resolve())
+                      ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner.py", line 97, in generate
+    model, tokenizer=load_qwen_fp16(str(model_path), torch)
+                     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/tools/bridgepack_g1/generate.py", line 77, in load_qwen_fp16
+    model = AutoModelForCausalLM.from_pretrained(model_name_or_path, **load_kwargs)
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/site-packages/transformers/models/auto/auto_factory.py", line 406, in from_pretrained
+    return model_class.from_pretrained(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        pretrained_model_name_or_path, *model_args, config=config, **hub_kwargs, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/site-packages/transformers/modeling_utils.py", line 4327, in from_pretrained
+    loading_info, disk_offload_index = cls._load_pretrained_model(model, state_dict, checkpoint_files, load_config)
+                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/site-packages/transformers/modeling_utils.py", line 4408, in _load_pretrained_model
+    caching_allocator_warmup(model, expanded_device_map, load_config.hf_quantizer)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/site-packages/transformers/modeling_utils.py", line 5095, in caching_allocator_warmup
+    _ = torch.empty(int(byte_count // 2), dtype=torch.float16, device=device, requires_grad=False)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 14.19 GiB. GPU 0 has a total capacity of 79.25 GiB of which 10.60 GiB is free. Process 526411 has 19.59 GiB memory in use. Process 599519 has 17.74 GiB memory in use. Process 611124 has 30.89 GiB memory in use. Including non-PyTorch memory, this process has 416.00 MiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

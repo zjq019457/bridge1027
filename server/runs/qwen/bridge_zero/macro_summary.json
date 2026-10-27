@@ -1,0 +1,13 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 41.54,
+    "multifieldqa_en": 50.53,
+    "hotpotqa": 53.77,
+    "2wikimqa": 46.64,
+    "musique": 27.16,
+    "narrativeqa": 17.45
+  },
+  "macro": 39.515,
+  "golden_macro": 39.35166666666667
+}

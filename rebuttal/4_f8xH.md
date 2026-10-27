@@ -1,0 +1,7 @@
+**Q1.** Coefficients were frozen on an independent source-dev split and used unchanged across models, tasks and budgets. New paired runs (Qwen, n=1,150) varying fusion, support and redundancy weights move macro F1 by at most 0.43, with no setting beating the default; on Llama-3 changes stay within 0.72, none significant.
+
+**Q2.** We now ran official LongLLMLingua (Llama-2-7B compressor) under the same exact 1,024 Qwen-token budget, wrapper and scorer: BridgePack wins by +6.81 [4.65, 9.04] on Qwen (39.45 vs. 32.64, all six tasks) and +6.31 [4.12, 8.59] on Llama-3. RECOMP trains abstractive compressors for retrieved documents, unlike our training-free extraction.
+
+**Q3.** On Llama the full selector is +1.886 vs. independent and +0.837 vs. MMR: same direction as Qwen, not significant after Holm. Reasons: (i) Llama's tokenizer covers more source text per token (13.80% vs. 13.25%), so baselines already keep more evidence; (ii) Llama is a weaker multi-hop reader (lower MuSiQue F1 for all methods), so retained chains convert less into answers and it leans on direct answer cues. New Llama runs support this: repair is significant there too (+2.36 [0.72, 3.97]), and Llama keeps as many complete chains as Qwen (0.423 vs. 0.408) yet scores lower on multi-hop F1.
+
+**Q4.** Prefix truncation of a selected range occurs in only 0.1% of instances, and packed prompts average 920 of 1,024 tokens. We will report full admission statistics in the final version.

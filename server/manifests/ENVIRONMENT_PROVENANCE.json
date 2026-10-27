@@ -1,0 +1,7 @@
+{
+  "actual_environment": "base",
+  "actual_python": "/home/yu-bai/miniconda3/bin/python",
+  "note": "The requested silm name was absent; the actual successful runtime is frozen without renaming its provenance.",
+  "runtime_identity": "environment/RUNTIME_IDENTITY.json",
+  "silm_environment_present": false
+}

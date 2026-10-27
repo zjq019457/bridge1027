@@ -1,0 +1,18 @@
+[2026-10-26T10:34:26-07:00] start qwen_samp_bp_s1 gpu=2
+[2026-10-26T10:49:31-07:00] end qwen_samp_bp_s1 rc=0
+[2026-10-26T10:49:31-07:00] start qwen_samp_bp_s2 gpu=2
+[2026-10-26T11:06:22-07:00] end qwen_samp_bp_s2 rc=0
+[2026-10-26T11:06:24-07:00] start llama_c_sup0 gpu=2
+[2026-10-26T11:31:05-07:00] end llama_c_sup0 rc=0
+[2026-10-26T11:31:06-07:00] start babilong_qwen_bridgepack gpu=2
+[2026-10-26T11:39:31-07:00] end babilong_qwen_bridgepack rc=0
+[2026-10-26T11:39:32-07:00] start llama_neighbor0 gpu=2
+[2026-10-26T12:03:52-07:00] end llama_neighbor0 rc=0
+[2026-10-26T12:03:54-07:00] start llama_csup025 gpu=2
+[2026-10-26T12:11:51-07:00] end llama_csup025 rc=1
+requeued llama_csup025
+[2026-10-26T12:16:40-07:00] start llama_csup100 gpu=2
+[2026-10-26T12:44:43-07:00] end llama_csup100 rc=0
+[2026-10-26T12:44:46-07:00] start llama_default gpu=2
+[2026-10-26T13:11:17-07:00] end llama_default rc=0
+[2026-10-26T13:11:17-07:00] WORKER_DONE gpu=2

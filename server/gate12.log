@@ -1,0 +1,20 @@
+/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/339 [00:00<?, ?it/s]Loading weights:   0%|          | 1/339 [00:00<00:53,  6.33it/s]Loading weights:   5%|▌         | 18/339 [00:00<00:03, 83.91it/s]Loading weights:  12%|█▏        | 40/339 [00:00<00:02, 108.59it/s]Loading weights:  16%|█▌        | 53/339 [00:00<00:02, 112.92it/s]Loading weights:  22%|██▏       | 76/339 [00:00<00:02, 130.21it/s]Loading weights:  27%|██▋       | 90/339 [00:00<00:01, 132.17it/s]Loading weights:  31%|███       | 104/339 [00:00<00:01, 130.11it/s]Loading weights:  36%|███▋      | 123/339 [00:00<00:01, 145.68it/s]Loading weights:  41%|████      | 138/339 [00:01<00:01, 122.10it/s]Loading weights:  47%|████▋     | 159/339 [00:01<00:01, 144.22it/s]Loading weights:  52%|█████▏    | 175/339 [00:01<00:01, 122.10it/s]Loading weights:  57%|█████▋    | 194/339 [00:01<00:01, 137.55it/s]Loading weights:  62%|██████▏   | 209/339 [00:01<00:01, 118.42it/s]Loading weights:  68%|██████▊   | 232/339 [00:01<00:00, 131.94it/s]Loading weights:  73%|███████▎  | 247/339 [00:02<00:00, 122.76it/s]Loading weights:  79%|███████▉  | 268/339 [00:02<00:00, 118.07it/s]Loading weights:  86%|████████▌ | 292/339 [00:02<00:00, 129.94it/s]Loading weights:  90%|█████████ | 306/339 [00:02<00:00, 126.36it/s]Loading weights:  96%|█████████▋| 327/339 [00:02<00:00, 144.34it/s]Loading weights: 100%|██████████| 339/339 [00:02<00:00, 127.24it/s]
+{
+  "rows": 12,
+  "expected_rows": 12,
+  "golden_rows": 1150,
+  "counts": {
+    "packed_ids_exact": 12,
+    "input_ids_exact": 12,
+    "output_ids_exact": 12,
+    "decoded_exact": 12
+  },
+  "first_divergence_stage": "NONE",
+  "all_token_exact": true,
+  "status": "PORTABLE_TOKEN_EXACT_PASS"
+}

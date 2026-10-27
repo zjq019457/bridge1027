@@ -1,0 +1,16 @@
+{
+  "created_at": "2026-10-26T02:44:16Z",
+  "sample_count": 1150,
+  "task_counts": {
+    "qasper": 200,
+    "multifieldqa_en": 150,
+    "hotpotqa": 200,
+    "2wikimqa": 200,
+    "musique": 200,
+    "narrativeqa": 200
+  },
+  "variant": "same_spans_source_order",
+  "budget": 1024,
+  "model_path": "/diskF/jiaqizhang/stepkv/models/Qwen2.5-7B-Instruct",
+  "portable_golden": "golden/GOLDEN_REFERENCE_V1.jsonl.gz"
+}

@@ -1,0 +1,42 @@
+{
+  "attention_backend": "sdpa",
+  "batch_size": 1,
+  "bos_token_id": null,
+  "budget_scope": "packed context only; B=1024",
+  "chat_template_usage": "tokenizer.apply_chat_template(add_generation_prompt=True)",
+  "do_sample": false,
+  "dtype": "float16",
+  "eos_token_id": 151645,
+  "max_new_tokens_per_task": {
+    "2wikimqa": 32,
+    "hotpotqa": 32,
+    "multifieldqa_en": 64,
+    "musique": 32,
+    "narrativeqa": 128,
+    "qasper": 128
+  },
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "num_beams": 1,
+  "pad_token_id": 151643,
+  "prompt_wrapper": "configs/dataset2prompt.json",
+  "question_binding": "historical fresh G1 behavior retained: packed context contains Question: q and LongBench wrapper also inserts q",
+  "runtime_identity": {
+    "accelerate": "1.14.0",
+    "executable": "/home/yu-bai/miniconda3/bin/python",
+    "flash_attn": "MISSING:ModuleNotFoundError",
+    "numpy": "2.4.4",
+    "platform": "Linux-7.0.0-28-generic-x86_64-with-glibc2.39",
+    "python": "3.13.12 | packaged by Anaconda, Inc. | (main, Feb 24 2026, 16:13:31) [GCC 14.3.0]",
+    "scipy": "MISSING:ModuleNotFoundError",
+    "sklearn": "MISSING:ModuleNotFoundError",
+    "tokenizers": "0.22.2",
+    "torch": "2.12.1+cu130",
+    "torch_cuda_available": true,
+    "torch_cuda_version": "13.0",
+    "transformers": "5.12.1"
+  },
+  "snapshot_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "temperature": null,
+  "top_p": null,
+  "use_cache": true
+}

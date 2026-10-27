@@ -1,0 +1,8 @@
+task,sample_count,score
+qasper,200,41.87
+multifieldqa_en,150,49.84
+hotpotqa,200,53.91
+2wikimqa,200,45.83
+musique,200,27.88
+narrativeqa,200,16.78
+UNWEIGHTED_MACRO,1150,39.35166666666667

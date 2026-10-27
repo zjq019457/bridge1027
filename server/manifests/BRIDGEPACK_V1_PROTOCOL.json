@@ -1,0 +1,20 @@
+{
+  "name": "BridgePack Portable Reproduction V1",
+  "source_to_output": "(q,C)->C_hat->LongBench_wrapper(C_hat,q)->greedy prediction",
+  "method": "same_spans_source_order / recovered fresh G1 implementation",
+  "budget": 1024,
+  "budget_scope": "packed context only",
+  "question_binding": "historical fresh G1 behavior retained for Golden comparison; packed context and outer wrapper both contain question text",
+  "model": "Qwen2.5-7B-Instruct",
+  "dtype": "float16",
+  "batch_size": 1,
+  "do_sample": false,
+  "num_beams": 1,
+  "token_ids_saved": [
+    "packed_context",
+    "final_input",
+    "generated_output"
+  ],
+  "golden_macro": 39.35166666666667,
+  "historical_token_ids_available": false
+}

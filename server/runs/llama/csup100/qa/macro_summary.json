@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 39.64,
+    "multifieldqa_en": 49.63,
+    "hotpotqa": 46.32,
+    "2wikimqa": 39.73,
+    "musique": 20.28,
+    "narrativeqa": 18.89
+  },
+  "macro": 35.748333333333335,
+  "model": "/diskD/jiaqizhang/models/Meta-Llama-3-8B-Instruct",
+  "trace": "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runs/llama/csup100/packing_trace.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}

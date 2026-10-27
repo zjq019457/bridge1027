@@ -1,0 +1,31 @@
+{
+  "current_head": "2fdc9815dc0cd9467bfbbc855c7805101dc15706",
+  "excluded": [
+    ".git",
+    "model weights",
+    "HF cache",
+    "results",
+    "temporary caches",
+    "logs"
+  ],
+  "important_hashes": {
+    "packing": {
+      "bridgekv/evidence_text_packing.py": "4969e29f9b9c452c36ffaab5045ca92f4684d8152e415604003a9fc320c57d2d",
+      "tools/bridgepack_g1/run_g1.py": "c1e55493b08077d36e86480eb337b9f9f0fe97252564e91f9ab2820d90a00688",
+      "tools/run_bridgepack_exact_budget_repack.py": "165df2ccca725d8ff71eb881a8f5819525f332eabf7533e4ae50c132bd6c48c9"
+    },
+    "prompt": {
+      "configs/dataset2prompt.json": "3c06dba9f4308375d8751a7dbf6d0f4167b4d64afc27655e6577cc4bb51f1b91"
+    },
+    "runner": {
+      "tools/bridgepack_g1/run_decoded_repro_1150.py": "62631230adb9ac0a2a2f32c0394fb31301253ed4ebdbe92ebff5110bd16b037b"
+    },
+    "scorer": {
+      "longbench_eval.py": "a71ef393206539961e976bf83f90349008f01208e16944f2a9c935ea4108b243"
+    }
+  },
+  "repo": "/home/yu-bai/Desktop/jiaqizhang/SlimInfer",
+  "source_file_count": 275,
+  "source_snapshot": "source/SlimInfer_snapshot",
+  "source_tree_hash": "1b433334bddbb785e490d8ed8577d851bd04795720fd40b362e7e7f1b18d2d8f"
+}

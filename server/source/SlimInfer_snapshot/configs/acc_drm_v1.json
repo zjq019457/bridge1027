@@ -1,0 +1,22 @@
+{
+  "acc_drm_version": "acc_drm_v1",
+  "notes": [
+    "Frozen from Phase-1A unlabeled topology on musique/2wikimqa/triviaqa (24/task, prune 9/18/26).",
+    "ONLY spike joint thresholds differ from Phase-1A/v0. Multi-Locus / Safe Sacrifice / Cap / DRM strength unchanged.",
+    "tau_spike chosen from isolated_spike_ratio ~p95 (0.2805 → 0.28). Global; never task-specific.",
+    "Joint condition: isolated_spike_ratio>=tau_spike AND topk_margin>=tau_margin AND neighbor_score_ratio<=tau_spike_nei_max."
+  ],
+  "tau_spike": 0.28,
+  "tau_margin": 0.20,
+  "tau_spike_nei_max": 0.18,
+  "tau_nei": 0.18,
+  "tau_second": 0.30,
+  "tau_gap": 0.08,
+  "cluster_share_cap": 0.35,
+  "rescue_ratio": 0.05,
+  "v0_reference": {
+    "tau_spike": 0.45,
+    "tau_spike_nei_max": 1.0,
+    "source": "results/acc_drm_v0_audit / results/acc_drm_audit_20260714_083153"
+  }
+}

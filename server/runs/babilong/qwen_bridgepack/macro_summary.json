@@ -1,0 +1,18 @@
+{
+  "sample_count": 1200,
+  "task_scores": {
+    "babilong_qa1_16k": 84.5,
+    "babilong_qa1_32k": 84.5,
+    "babilong_qa2_16k": 4.5,
+    "babilong_qa2_32k": 1.5,
+    "babilong_qa3_16k": 13.0,
+    "babilong_qa3_32k": 5.0
+  },
+  "macro": 32.166666666666664,
+  "model": "/diskF/jiaqizhang/baselines/RepairKV/models/Qwen2.5-7B-Instruct",
+  "trace": "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/traces/babilong_qwen/bridgepack.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}

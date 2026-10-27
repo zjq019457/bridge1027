@@ -1,0 +1,15 @@
+[2026-10-25T17:23:29-07:00] start default {}
+[2026-10-25T17:35:34-07:00] end default rc=0
+[2026-10-25T17:35:34-07:00] start c_div0 {"c_div": 0.0}
+[2026-10-25T17:54:34-07:00] end c_div0 rc=0
+[2026-10-25T17:54:34-07:00] start c_jac0 {"c_jac": 0.0}
+[2026-10-25T18:14:36-07:00] end c_jac0 rc=0
+[2026-10-25T18:14:36-07:00] start bridge_zero {"bridge_zero": true}
+[2026-10-25T18:45:32-07:00] end bridge_zero rc=0
+[2026-10-25T18:45:32-07:00] start c_sup0 {"c_sup": 0.0}
+[2026-10-25T19:14:59-07:00] end c_sup0 rc=0
+[2026-10-25T19:14:59-07:00] start lam0 {"lam": 0.0}
+[2026-10-25T19:44:16-07:00] end lam0 rc=0
+[2026-10-25T19:44:16-07:00] start neighbor0 {"neighbor": 0}
+[2026-10-25T20:13:22-07:00] end neighbor0 rc=0
+ALL_DONE

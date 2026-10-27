@@ -1,0 +1,10 @@
+{
+  "dataset": true,
+  "environment": true,
+  "golden": true,
+  "golden_macro": 39.35166666666667,
+  "golden_rows": 1150,
+  "historical_token_ids_used": false,
+  "model": true,
+  "source": true
+}

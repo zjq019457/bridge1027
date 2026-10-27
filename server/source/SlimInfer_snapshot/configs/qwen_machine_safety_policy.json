@@ -1,0 +1,108 @@
+{
+  "created_at": "2026-07-20T21:23:36-07:00",
+  "derivation": {
+    "disk": "maximum of 100 GiB and 10% of detected filesystem",
+    "gpu_free": "90% of detected total VRAM",
+    "host_ram": "maximum of 8 GiB and 20% of detected RAM",
+    "not_hardcoded_for_other_machine": true,
+    "temperature": "minimum of detected target, max-operating minus 5C, slowdown minus 10C"
+  },
+  "detected_baseline": {
+    "captured_at": "2026-07-20T21:23:36-07:00",
+    "disk": {
+      "free_bytes": 1319582695424,
+      "path": "/home/yu-bai/Desktop/jiaqizhang/SlimInfer",
+      "total_bytes": 1966736678912,
+      "used_bytes": 547173732352
+    },
+    "experiment_processes": [],
+    "gpu": {
+      "available": true,
+      "driver_version": "580.159.03",
+      "index": 0,
+      "memory_free_mib": 23324,
+      "memory_total_mib": 24564,
+      "memory_used_mib": 780,
+      "name": "NVIDIA GeForce RTX 3090 Ti",
+      "power_draw_w": 18.69,
+      "power_limit_w": 450.0,
+      "pstate": "P8",
+      "temperature_gpu_c": 34,
+      "utilization_gpu_percent": 35,
+      "uuid": "GPU-d9b64e56-9314-b1d2-28eb-21955999eb98"
+    },
+    "gpu_compute_processes": [
+      {
+        "desktop_allowlisted": true,
+        "pid": 3010,
+        "process_name": "/usr/libexec/gnome-remote-desktop-daemon",
+        "used_memory_mib": 266
+      }
+    ],
+    "gpu_temperature_limits": {
+      "max_operating_c": 92,
+      "shutdown_c": 97,
+      "slowdown_c": 94,
+      "target_c": 83
+    },
+    "host_memory": {
+      "ram_available_bytes": 24882974720,
+      "ram_total_bytes": 32713023488,
+      "swap_free_bytes": 6153519104,
+      "swap_total_bytes": 8589930496,
+      "swap_used_bytes": 2436411392
+    },
+    "recent_driver_errors": {
+      "matches": [],
+      "query_ok": true
+    }
+  },
+  "environment": {
+    "MAX_JOBS": "2",
+    "MKL_NUM_THREADS": "4",
+    "OMP_NUM_THREADS": "4",
+    "TOKENIZERS_PARALLELISM": "false",
+    "batch_size": 1,
+    "dataloader_num_workers": 0
+  },
+  "machine_role": "qwen_experiment_machine",
+  "rules": {
+    "allowed_background_gpu_processes": [
+      "/usr/bin/gnome-shell",
+      "/usr/lib/xorg/Xorg",
+      "/usr/libexec/gnome-remote-desktop-daemon"
+    ],
+    "driver_cuda_kernel_changes_forbidden": true,
+    "external_baseline_env_isolation_required": true,
+    "oom_fill_only_after_raw_stages": true,
+    "raw_cpu_offload_forbidden": true,
+    "runtime_swap_sustained_growth_required": true,
+    "runtime_system_swap_auxiliary_only": true,
+    "runtime_worker_cgroup_swap_primary": true,
+    "sequential_methods": true,
+    "single_gpu": true,
+    "single_model": true,
+    "sudo_forbidden": true,
+    "system_restart_forbidden": true,
+    "unrelated_process_kill_forbidden": true
+  },
+  "schema_version": 2,
+  "thresholds": {
+    "max_consecutive_sample_oom": 2,
+    "max_gpu_memory_drift_mib_during_gate": 737,
+    "max_gpu_temperature_c": 83,
+    "max_idle_gpu_utilization_percent": 47,
+    "max_pipeline_output_bytes": 263916539084,
+    "max_swap_growth_bytes_during_gate": 858993049,
+    "min_disk_free_bytes": 196673667892,
+    "min_gpu_free_mib_before_model": 22107,
+    "min_host_available_bytes": 8589934592,
+    "post_worker_cooldown_seconds": 30,
+    "resource_gate_duration_seconds": 30,
+    "resource_gate_interval_seconds": 5,
+    "runtime_post_load_stable_delta_bytes": 67108864,
+    "runtime_post_load_stable_observations": 2,
+    "runtime_swap_growth_epsilon_bytes": 1048576,
+    "runtime_swap_sustained_observations": 2
+  }
+}

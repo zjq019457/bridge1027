@@ -1,0 +1,47 @@
+{
+  "256": {
+    "n": 1150,
+    "selector_spans_mean": 9.56,
+    "kept_spans_mean": 1.1095652173913044,
+    "pairs_mean": 1.3547826086956523,
+    "share_with_at_most_one_pair": 0.6269565217391304,
+    "samples_with_any_drop": 0.8982608695652174,
+    "dropped_spans_share": 0.8839366927414953,
+    "truncated_rate": 0.0017391304347826088,
+    "len_mean": 174.16,
+    "len_p50": 169,
+    "len_p95": 246,
+    "len_max": 256,
+    "over_budget": 0
+  },
+  "512": {
+    "n": 1150,
+    "selector_spans_mean": 11.081739130434782,
+    "kept_spans_mean": 2.9721739130434783,
+    "pairs_mean": 2.8547826086956523,
+    "share_with_at_most_one_pair": 0.028695652173913042,
+    "samples_with_any_drop": 0.8834782608695653,
+    "dropped_spans_share": 0.7317953546767106,
+    "truncated_rate": 0.0,
+    "len_mean": 438.4991304347826,
+    "len_p50": 440,
+    "len_p95": 504,
+    "len_max": 512,
+    "over_budget": 0
+  },
+  "1024": {
+    "n": 1150,
+    "selector_spans_mean": 14.76695652173913,
+    "kept_spans_mean": 6.374782608695652,
+    "pairs_mean": 6.533913043478261,
+    "share_with_at_most_one_pair": 0.028695652173913042,
+    "samples_with_any_drop": 0.8052173913043478,
+    "dropped_spans_share": 0.5683076198327641,
+    "truncated_rate": 0.0,
+    "len_mean": 919.8756521739131,
+    "len_p50": 947,
+    "len_p95": 1016,
+    "len_max": 1024,
+    "over_budget": 0
+  }
+}

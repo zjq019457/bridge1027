@@ -1,0 +1,16 @@
+{
+  "tau_nei": 0.35,
+  "tau_spike": 0.45,
+  "tau_cont": 0.15,
+  "tau_str": 0.25,
+  "tau_second": 0.35,
+  "tau_gap": 0.08,
+  "tau_margin": 0.20,
+  "coverage_buckets": 8,
+  "coverage_rho": 0.5,
+  "diversify_top_g": 2,
+  "entropy_high": 0.85,
+  "ctx_len_ref_blocks": 512,
+  "softmax_tau": 1.0,
+  "notes": "Default cc_gate_v0 thresholds from CC_TOPOLOGY_POLICY_DESIGN.md; offline-tunable, gold-free at runtime."
+}

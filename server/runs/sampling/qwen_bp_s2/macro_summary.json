@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 41.3,
+    "multifieldqa_en": 48.93,
+    "hotpotqa": 54.68,
+    "2wikimqa": 47.17,
+    "musique": 26.51,
+    "narrativeqa": 16.65
+  },
+  "macro": 39.20666666666667,
+  "model": "/diskF/jiaqizhang/baselines/RepairKV/models/Qwen2.5-7B-Instruct",
+  "trace": "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runs/qwen/default/packing_trace.jsonl",
+  "sample": true,
+  "seed": 2,
+  "temperature": 0.7,
+  "top_p": 0.9
+}

@@ -1,0 +1,16 @@
+{
+  "tau_nei": 0.18,
+  "tau_spike": 0.45,
+  "tau_cont": 0.10,
+  "tau_str": 0.15,
+  "tau_second": 0.30,
+  "tau_gap": 0.08,
+  "tau_margin": 0.20,
+  "coverage_buckets": 8,
+  "coverage_rho": 0.5,
+  "diversify_top_g": 2,
+  "entropy_high": 0.90,
+  "ctx_len_ref_blocks": 512,
+  "softmax_tau": 1.0,
+  "notes": "Tuned after 17-task + v0 topology audit: relax neighbor OR-signal gate; router spike->original, multi_locus->diversify, cluster->cc."
+}

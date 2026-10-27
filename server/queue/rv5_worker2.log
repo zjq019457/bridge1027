@@ -1,0 +1,7 @@
+[2026-10-27T13:05:29-07:00] start rv5_qwen_head gpu=2
+[2026-10-27T13:19:52-07:00] end rv5_qwen_head rc=0
+[2026-10-27T13:19:53-07:00] start rv5_qwen_bm25 gpu=2
+[2026-10-27T13:36:53-07:00] end rv5_qwen_bm25 rc=0
+[2026-10-27T13:36:54-07:00] start rv5_llama_middle gpu=2
+[2026-10-27T13:54:57-07:00] end rv5_llama_middle rc=0
+[2026-10-27T13:54:58-07:00] start rv5_llama_full gpu=2

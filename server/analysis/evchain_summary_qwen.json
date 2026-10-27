@@ -1,0 +1,102 @@
+{
+  "qwen_bp": {
+    "answer_bearing": 0.51,
+    "answer_bearing_by_task": {
+      "hotpotqa": 0.63,
+      "2wikimqa": 0.57,
+      "musique": 0.33
+    },
+    "supporting_fact": 0.648888888888889,
+    "supporting_fact_by_task": {
+      "hotpotqa": 0.7620833333333333,
+      "2wikimqa": 0.77625,
+      "musique": 0.4083333333333334
+    },
+    "complete_chain": 0.4083333333333334,
+    "complete_chain_by_task": {
+      "hotpotqa": 0.56,
+      "2wikimqa": 0.545,
+      "musique": 0.12
+    },
+    "n": {
+      "hotpotqa": 200,
+      "2wikimqa": 200,
+      "musique": 200
+    }
+  },
+  "qwen_bm25": {
+    "answer_bearing": 0.505,
+    "answer_bearing_by_task": {
+      "hotpotqa": 0.625,
+      "2wikimqa": 0.55,
+      "musique": 0.34
+    },
+    "supporting_fact": 0.5959722222222222,
+    "supporting_fact_by_task": {
+      "hotpotqa": 0.73,
+      "2wikimqa": 0.6825,
+      "musique": 0.3754166666666666
+    },
+    "complete_chain": 0.3383333333333334,
+    "complete_chain_by_task": {
+      "hotpotqa": 0.52,
+      "2wikimqa": 0.405,
+      "musique": 0.09
+    },
+    "n": {
+      "hotpotqa": 200,
+      "2wikimqa": 200,
+      "musique": 200
+    }
+  },
+  "qwen_noneighbor": {
+    "answer_bearing": 0.4916666666666667,
+    "answer_bearing_by_task": {
+      "hotpotqa": 0.595,
+      "2wikimqa": 0.54,
+      "musique": 0.34
+    },
+    "supporting_fact": 0.6336111111111111,
+    "supporting_fact_by_task": {
+      "hotpotqa": 0.73875,
+      "2wikimqa": 0.7575,
+      "musique": 0.40458333333333335
+    },
+    "complete_chain": 0.3983333333333334,
+    "complete_chain_by_task": {
+      "hotpotqa": 0.515,
+      "2wikimqa": 0.55,
+      "musique": 0.13
+    },
+    "n": {
+      "hotpotqa": 200,
+      "2wikimqa": 200,
+      "musique": 200
+    }
+  },
+  "qwen_lingua": {
+    "answer_bearing": 0.43333333333333335,
+    "answer_bearing_by_task": {
+      "hotpotqa": 0.505,
+      "2wikimqa": 0.55,
+      "musique": 0.245
+    },
+    "supporting_fact": 0.5276388888888889,
+    "supporting_fact_by_task": {
+      "hotpotqa": 0.5629166666666666,
+      "2wikimqa": 0.6825,
+      "musique": 0.3375
+    },
+    "complete_chain": 0.2783333333333333,
+    "complete_chain_by_task": {
+      "hotpotqa": 0.33,
+      "2wikimqa": 0.415,
+      "musique": 0.09
+    },
+    "n": {
+      "hotpotqa": 200,
+      "2wikimqa": 200,
+      "musique": 200
+    }
+  }
+}

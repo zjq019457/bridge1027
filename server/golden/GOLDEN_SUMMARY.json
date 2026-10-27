@@ -1,0 +1,24 @@
+{
+  "all_decoded_exact": false,
+  "decoded_exact_count": 1141,
+  "golden_reference": "Portable Golden V1",
+  "historical_macro": 39.385,
+  "historical_token_ids_comparable": false,
+  "historical_token_ids_reconstructed": false,
+  "input_ids_saved": true,
+  "macro": 39.35166666666667,
+  "macro_exact": false,
+  "output_ids_saved": true,
+  "packed_token_ids_saved": true,
+  "rows": 1150,
+  "sample_count": 1150,
+  "status": "G1_END_TO_END_DECODED_PREDICTION_REPRO_FAIL",
+  "task_scores": {
+    "2wikimqa": 45.83,
+    "hotpotqa": 53.91,
+    "multifieldqa_en": 49.84,
+    "musique": 27.88,
+    "narrativeqa": 16.78,
+    "qasper": 41.87
+  }
+}

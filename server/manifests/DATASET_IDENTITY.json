@@ -1,0 +1,21 @@
+{
+  "counts": {
+    "2wikimqa": 200,
+    "hotpotqa": 200,
+    "multifieldqa_en": 150,
+    "musique": 200,
+    "narrativeqa": 200,
+    "qasper": 200
+  },
+  "portable_root": "assets/longbench_g1_data",
+  "source_root_at_freeze": "/home/yu-bai/Desktop/jiaqizhang/HeadKV/data/LongBench",
+  "tasks": [
+    "qasper",
+    "multifieldqa_en",
+    "hotpotqa",
+    "2wikimqa",
+    "musique",
+    "narrativeqa"
+  ],
+  "total": 1150
+}

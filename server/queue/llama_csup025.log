@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner.py", line 136, in <module>
+    if __name__=="__main__": raise SystemExit(main())
+                                              ~~~~^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner.py", line 128, in main
+    if not traces: traces=load_or_pack(run_dir,ids,samples,tokenizer,args.resume)
+                          ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner.py", line 87, in load_or_pack
+    from tools.bridgepack_g1 import run_g1 as g1
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/tools/bridgepack_g1/run_g1.py", line 5, in <module>
+    from bridgekv.sensitivity_params import SP as _SP
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/source/SlimInfer_snapshot/bridgekv/sensitivity_params.py", line 19, in <module>
+    _over = json.loads(os.environ.get("BP_SENS_JSON", "{}") or "{}")
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/runtime/silm/lib/python3.13/json/decoder.py", line 361, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ~~~~~~~~~~~~~~^^^^^^^^
+json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
