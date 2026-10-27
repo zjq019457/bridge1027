@@ -35,7 +35,19 @@ class LocalSC(scm.SelectiveContext):
         self.tokenizer = GPT2Tokenizer.from_pretrained(GPT2)
         self.model = GPT2LMHeadModel.from_pretrained(GPT2).to(self.device).eval()
         self.max_token_length = self.model.config.n_positions
-        self.get_self_information = self._get_self_info_via_gpt2
+        self.get_self_information = self._windowed_self_info
+
+    def _windowed_self_info(self, text):
+        # GPT-2 has 1,024 positions: score over-long sentences in consecutive windows
+        ids = self.tokenizer(text, add_special_tokens=False).input_ids
+        if len(ids) <= 1000:
+            return self._get_self_info_via_gpt2(text)
+        toks, info = [], []
+        for i in range(0, len(ids), 1000):
+            t, s = self._get_self_info_via_gpt2(self.tokenizer.decode(ids[i:i + 1000]))
+            toks += t
+            info += s
+        return toks, info
 
 
 templates = json.loads((W / "source" / "SlimInfer_snapshot" / "configs" / "dataset2prompt.json").read_text())

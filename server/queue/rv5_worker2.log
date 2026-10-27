@@ -5,3 +5,5 @@
 [2026-10-27T13:36:54-07:00] start rv5_llama_middle gpu=2
 [2026-10-27T13:54:57-07:00] end rv5_llama_middle rc=0
 [2026-10-27T13:54:58-07:00] start rv5_llama_full gpu=2
+[2026-10-27T14:52:02-07:00] end rv5_llama_full rc=0
+[2026-10-27T14:52:02-07:00] WORKER_DONE gpu=2

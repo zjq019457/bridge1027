@@ -54,7 +54,7 @@ ids, samples, _ = pr.load_selection_inputs(W / "assets" / "longbench_g1_data", W
 flat = [s for t in pr.TASKS for s in samples[t]]
 mine = [s for i, s in enumerate(flat) if i % NSHARD == SHARD]
 toks = {k: AutoTokenizer.from_pretrained(v, local_files_only=True, use_fast=True) for k, v in TOKS.items()}
-comp = PromptCompressor(model_name=str(W / "models_llmlingua2"), use_llmlingua2=True, device_map="cuda")
+comp = PromptCompressor(model_name=str(W / "llmlingua-2-xlm-roberta-large-meetingbank"), use_llmlingua2=True, device_map="cuda")
 
 files = {k: (OUT / f"{k}_shard{SHARD}.jsonl") for k in TOKS}
 done = set()

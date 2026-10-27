@@ -1,1 +1,2 @@
 Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 6654.60it/s]
+BGE_PACK_DONE runs/rv5/llama_bge.jsonl

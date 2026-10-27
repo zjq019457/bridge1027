@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner_v.py", line 136, in <module>
+    if __name__=="__main__": raise SystemExit(main())
+                                              ~~~~^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner_v.py", line 128, in main
+    if not traces: traces=load_or_pack(run_dir,ids,samples,tokenizer,args.resume)
+                          ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner_v.py", line 90, in load_or_pack
+    return trace_rows(run_dir, ids, tokenizer)
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner_v.py", line 77, in trace_rows
+    for x in read_traces(run_dir, ids):
+             ~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner_v.py", line 72, in read_traces
+    rows.extend(got[sid] for sid in ids[task])
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025/scripts/portable_runner_v.py", line 72, in <genexpr>
+    rows.extend(got[sid] for sid in ids[task])
+                ~~~^^^^^
+KeyError: '3ac3eef636db11635a21a61804cb28e92c546a5686dd1e12'
