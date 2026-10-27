@@ -1,2 +1,6 @@
 [2026-10-27T14:31:43-07:00] enqueued qwen_bge
 [2026-10-27T14:31:43-07:00] enqueued llama_bge
+[2026-10-27T15:25:43-07:00] enqueued qwen_sc
+[2026-10-27T15:25:43-07:00] enqueued llama_sc
+[2026-10-27T15:39:44-07:00] enqueued qwen_lingua2
+[2026-10-27T15:39:44-07:00] enqueued llama_lingua2

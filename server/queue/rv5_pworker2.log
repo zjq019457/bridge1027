@@ -1,2 +1,5 @@
 [2026-10-27T14:52:07-07:00] start rv5_qwen_bge gpu=2
 [2026-10-27T15:20:56-07:00] end rv5_qwen_bge rc=0
+[2026-10-27T15:25:57-07:00] start rv5_qwen_sc gpu=2
+[2026-10-27T15:42:52-07:00] end rv5_qwen_sc rc=0
+[2026-10-27T15:42:53-07:00] start rv5_llama_sc gpu=2

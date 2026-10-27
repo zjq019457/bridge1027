@@ -1145,3 +1145,6 @@
 {"task": "narrativeqa", "sample_id": "d4bc46084679d5f1301df1a824097be4c5c47203e0ca2682", "prediction": "near the lake", "score": 0.0, "answers": ["outside town"], "input_token_count": 23222}
 {"task": "narrativeqa", "sample_id": "52c910fb919a865d201b4d6a723f624290e2c663d282315a", "prediction": "Mortimer Tregennis", "score": 50.0, "answers": ["Brenda Tregennis"], "input_token_count": 13531}
 {"task": "narrativeqa", "sample_id": "c22368c99a8cf7d7a3a2bc96d1faeffd21403576f605519b", "prediction": "Ashes.", "score": 0.0, "answers": ["The remains of afire in the fireplace."], "input_token_count": 13533}
+{"task": "narrativeqa", "sample_id": "230ec746dd2dce443e9338acc52ffc45c3b79b6708ae7c0e", "prediction": "American Radioactive Gas Corporation", "score": 66.67, "answers": ["Radioactive gas"], "input_token_count": 31529}
+{"task": "narrativeqa", "sample_id": "a3bfcf39ca219cf1af8a91c3f3e30bdcf3f16f7f8f0f1adb", "prediction": "JOF", "score": 40.0, "answers": ["Everyone except for Jof"], "input_token_count": 31147}
+{"task": "narrativeqa", "sample_id": "a813ddeac39b98eaa48da96b448ec147298ac8b1f370f212", "prediction": "When she looks at Ryujis copy of the tape.", "score": 11.11, "answers": ["She received a call from Ryuji during his last minutes alive."], "input_token_count": 31529}
