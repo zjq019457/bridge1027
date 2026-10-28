@@ -15,3 +15,7 @@
 [2026-10-28T02:10:32-07:00] start qwen_lexical_bridgepack_source_order_1024 gpu=1
 [2026-10-28T02:26:38-07:00] end qwen_lexical_bridgepack_source_order_1024 rc=0
 [2026-10-28T02:26:38-07:00] start qwen_tfidf_chunk_source_order_512 gpu=1
+[2026-10-28T02:40:46-07:00] end qwen_tfidf_chunk_source_order_512 rc=0
+[2026-10-28T02:40:46-07:00] start llama_tfidf_chunk_source_order_512 gpu=1
+[2026-10-28T02:52:25-07:00] end llama_tfidf_chunk_source_order_512 rc=0
+[2026-10-28T02:52:25-07:00] start qwen_bridge_neighbor32_path_order_512 gpu=1
