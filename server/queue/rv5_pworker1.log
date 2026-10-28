@@ -47,3 +47,5 @@
 [2026-10-28T05:48:16-07:00] start qwen_lexical_bridgepack_path_order_2048 gpu=1
 [2026-10-28T06:07:07-07:00] end qwen_lexical_bridgepack_path_order_2048 rc=0
 [2026-10-28T06:07:07-07:00] start llama_bridge_neighbor32_path_order_2048 gpu=1
+[2026-10-28T06:24:40-07:00] end llama_bridge_neighbor32_path_order_2048 rc=0
+[2026-10-28T06:24:40-07:00] start llama_bge_2048 gpu=1
