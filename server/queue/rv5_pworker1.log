@@ -4,3 +4,4 @@
 [2026-10-27T16:06:11-07:00] end rv5_qwen_lingua2 rc=0
 [2026-10-28T00:10:16-07:00] start llama_bm25 gpu=1
 [2026-10-28T00:25:45-07:00] end llama_bm25 rc=0
+[2026-10-28T01:14:45-07:00] start llama_span_only_source_order_1024 gpu=1

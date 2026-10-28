@@ -1,6 +1,6 @@
 """BGE chunk packing (bge-small-en-v1.5, CLS pooling + L2 norm) via the repo's _dense_pack,
 on the same candidate spans, neighbor window and exact-budget admission as the other baselines.
-usage: bge_pack.py TOKENIZER OUT
+usage: bge_pack.py TOKENIZER OUT [BUDGET]
 """
 import json
 import sys
@@ -8,6 +8,7 @@ from pathlib import Path
 
 W = Path("/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025")
 TOKP, OUT = sys.argv[1], Path(sys.argv[2])
+BUDGET = int(sys.argv[3]) if len(sys.argv) > 3 else 1024
 sys.path.insert(0, str(W / "source" / "SlimInfer_snapshot"))
 sys.path.insert(0, str(W / "scripts"))
 import portable_runner as pr  # noqa: E402
@@ -50,7 +51,7 @@ with OUT.open("w") as f:
     for t in pr.TASKS:
         for s in samples[t]:
             emb._next_is_query = True
-            r = _dense_pack(emb, tok, s, 1024, 32, 64, BGE)
+            r = _dense_pack(emb, tok, s, BUDGET, 32, 64, BGE)
             r["variant"] = "bge_chunk_packing"
             r["model_token_count"] = len(tok(r["packed_text"], add_special_tokens=False).input_ids)
             f.write(json.dumps(r) + "\n")

@@ -1,0 +1,18 @@
+./a100_pack_one.sh: line 9: runs/a100/qwen_span_only_source_order_1024.jsonl: No such file or directory
+./a100_pack_one.sh: line 9: runs/a100/qwen_bridge_neighbor32_path_order_1024.jsonl: No such file or directory
+./a100_pack_one.sh: line 9: runs/a100/qwen_lexical_bridgepack_path_order_1024.jsonl: No such file or directory
+./a100_pack_one.sh: line 9: runs/a100/llama_span_only_source_order_1024.jsonl: No such file or directory
+./a100_pack_one.sh: line 9: runs/a100/llama_bridge_neighbor32_path_order_1024.jsonl: No such file or directory
+./a100_pack_one.sh: line 9: runs/a100/llama_lexical_bridgepack_path_order_1024.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_span_only_source_order_1024.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_bridge_neighbor32_path_order_tags_1024.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/llama_span_only_source_order_1024.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_bridge_same_spans_source_order_1024.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_lexical_bridgepack_path_order_1024.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_lexical_bridgepack_source_order_1024.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/llama_lexical_bridgepack_path_order_1024.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_span_only_source_order_512.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/llama_bridge_neighbor32_path_order_1024.jsonl
+LEX_PACK_DONE runs/a100/qwen_bridge_neighbor32_path_order_1024.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_tfidf_chunk_source_order_512.jsonl: No such file or directory
+./a100_pack_one.sh: line 9: runs/a100/qwen_bm25_chunk_source_order_512.jsonl: No such file or directory
