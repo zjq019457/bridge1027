@@ -41,3 +41,7 @@
 [2026-10-28T04:16:44-07:00] start qwen_bge_256 gpu=2
 [2026-10-28T04:30:14-07:00] end qwen_bge_256 rc=0
 [2026-10-28T04:30:14-07:00] start qwen_tfidf_chunk_source_order_2048 gpu=2
+[2026-10-28T04:51:46-07:00] end qwen_tfidf_chunk_source_order_2048 rc=0
+[2026-10-28T04:51:47-07:00] start llama_lexical_bridgepack_path_order_256 gpu=2
+[2026-10-28T05:00:48-07:00] end llama_lexical_bridgepack_path_order_256 rc=0
+[2026-10-28T05:00:48-07:00] start qwen_bm25_chunk_source_order_2048 gpu=2
