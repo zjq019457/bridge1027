@@ -63,3 +63,7 @@
 [2026-10-28T15:58:37-07:00] start llama_sel_bridge_path_1024 gpu=1
 [2026-10-28T16:16:33-07:00] end llama_sel_bridge_path_1024 rc=0
 [2026-10-28T16:16:34-07:00] start llama_bp_no_neighbor_1024 gpu=1
+[2026-10-28T16:32:44-07:00] end llama_bp_no_neighbor_1024 rc=0
+[2026-10-28T16:32:44-07:00] start qwen_bge_recall_bp_512 gpu=1
+[2026-10-28T16:49:44-07:00] end qwen_bge_recall_bp_512 rc=0
+[2026-10-28T16:49:44-07:00] start qwen_bge_union_bp_512 gpu=1

@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 37.18,
+    "multifieldqa_en": 49.14,
+    "hotpotqa": 45.44,
+    "2wikimqa": 36.3,
+    "musique": 22.8,
+    "narrativeqa": 15.32
+  },
+  "macro": 34.36333333333334,
+  "model": "/diskD/jiaqizhang/models/Meta-Llama-3-8B-Instruct",
+  "trace": "runs/a100/llama_sel_mmr_relevance_redundancy_1024.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}
