@@ -1,0 +1,33 @@
+./a100_ctrl_one.sh: line 9: runs/a100/qwen_lbp_no_neighbor_1024.jsonl: No such file or directory
+./a100_ctrl_one.sh: line 9: runs/a100/qwen_bp_no_neighbor_1024.jsonl: No such file or directory
+./a100_ctrl_one.sh: line 9: runs/a100/qwen_sel_bridge_path_1024.jsonl: No such file or directory
+./a100_ctrl_one.sh: line 9: runs/a100/qwen_sel_independent_lexical_top_1024.jsonl: No such file or directory
+./a100_ctrl_one.sh: line 9: runs/a100/qwen_sel_mmr_relevance_redundancy_1024.jsonl: No such file or directory
+./a100_ctrl_one.sh: line 9: runs/a100/llama_bp_no_neighbor_1024.jsonl: No such file or directory
+./a100_ctrl_one.sh: line 9: runs/a100/llama_sel_bridge_path_1024.jsonl: No such file or directory
+./a100_ctrl_one.sh: line 9: runs/a100/llama_lbp_no_neighbor_1024.jsonl: No such file or directory
+CTRL_PACK_DONE runs/a100/qwen_sel_independent_lexical_top_1024.jsonl
+./a100_ctrl_one.sh: line 9: runs/a100/llama_sel_independent_lexical_top_1024.jsonl: No such file or directory
+CTRL_PACK_DONE runs/a100/llama_sel_independent_lexical_top_1024.jsonl
+./a100_ctrl_one.sh: line 9: runs/a100/llama_sel_mmr_relevance_redundancy_1024.jsonl: No such file or directory
+CTRL_PACK_DONE runs/a100/qwen_sel_mmr_relevance_redundancy_1024.jsonl
+./a100_ctrl_one.sh: line 9: runs/a100/qwen_bge_recall_bp_512.jsonl: No such file or directory
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 7084.67it/s]
+CTRL_PACK_DONE runs/a100/qwen_sel_bridge_path_1024.jsonl
+./a100_ctrl_one.sh: line 9: runs/a100/qwen_bge_union_bp_512.jsonl: No such file or directory
+CTRL_PACK_DONE runs/a100/llama_sel_bridge_path_1024.jsonl
+./a100_ctrl_one.sh: line 9: runs/a100/qwen_bge_rerank_bp_512.jsonl: No such file or directory
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 7115.72it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 7628.38it/s]
+CTRL_PACK_DONE runs/a100/qwen_lbp_no_neighbor_1024.jsonl
+./a100_ctrl_one.sh: line 9: runs/a100/llama_bge_recall_bp_512.jsonl: No such file or directory
+CTRL_PACK_DONE runs/a100/qwen_bp_no_neighbor_1024.jsonl
+./a100_ctrl_one.sh: line 9: runs/a100/llama_bge_union_bp_512.jsonl: No such file or directory
+CTRL_PACK_DONE runs/a100/llama_lbp_no_neighbor_1024.jsonl
+./a100_ctrl_one.sh: line 9: runs/a100/llama_bge_rerank_bp_512.jsonl: No such file or directory
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 7843.28it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 7978.31it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 8231.91it/s]
+CTRL_PACK_DONE runs/a100/llama_bp_no_neighbor_1024.jsonl
+CTRL_PACK_DONE runs/a100/llama_sel_mmr_relevance_redundancy_1024.jsonl
+DENSE_BP_PACK_DONE runs/a100/qwen_bge_recall_bp_512.jsonl

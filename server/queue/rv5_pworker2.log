@@ -58,3 +58,4 @@
 [2026-10-28T11:23:05-07:00] end qwen_bge_rerank_bp_1024 rc=0
 [2026-10-28T12:39:31-07:00] start llama_bge_union_bp_1024 gpu=2
 [2026-10-28T12:55:17-07:00] end llama_bge_union_bp_1024 rc=0
+[2026-10-28T14:27:19-07:00] start llama_sel_independent_lexical_top_1024 gpu=2
