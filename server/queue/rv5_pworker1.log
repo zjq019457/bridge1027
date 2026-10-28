@@ -7,3 +7,7 @@
 [2026-10-28T01:14:45-07:00] start llama_span_only_source_order_1024 gpu=1
 [2026-10-28T01:24:05-07:00] end llama_span_only_source_order_1024 rc=0
 [2026-10-28T01:24:05-07:00] start qwen_lexical_bridgepack_path_order_1024 gpu=1
+[2026-10-28T01:37:46-07:00] end qwen_lexical_bridgepack_path_order_1024 rc=0
+[2026-10-28T01:37:46-07:00] start qwen_bridge_neighbor32_path_order_1024 gpu=1
+[2026-10-28T01:53:52-07:00] end qwen_bridge_neighbor32_path_order_1024 rc=0
+[2026-10-28T01:53:52-07:00] start qwen_bridge_neighbor32_path_order_tags_1024 gpu=1
