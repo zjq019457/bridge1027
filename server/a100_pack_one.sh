@@ -3,6 +3,7 @@
 # usage: a100_pack_one.sh MODEL VARIANT BUDGET
 cd /diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025
 M=$1; V=$2; B=$3
+[ $B = 256 ] && exit 0  # 256 dropped from the rerun
 case $M in qwen) T=/diskF/jiaqizhang/baselines/RepairKV/models/Qwen2.5-7B-Instruct;; llama) T=/diskD/jiaqizhang/models/Meta-Llama-3-8B-Instruct;; esac
 N=${M}_${V}_${B}; OUT=runs/a100/$N.jsonl
 [ -f runs/a100/${N}_qa/macro_summary.json ] && exit 0
