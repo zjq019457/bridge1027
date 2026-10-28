@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 35.9,
+    "multifieldqa_en": 49.19,
+    "hotpotqa": 43.72,
+    "2wikimqa": 34.45,
+    "musique": 21.97,
+    "narrativeqa": 16.44
+  },
+  "macro": 33.611666666666665,
+  "model": "/diskD/jiaqizhang/models/Meta-Llama-3-8B-Instruct",
+  "trace": "runs/a100/llama_sel_independent_lexical_top_1024.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}

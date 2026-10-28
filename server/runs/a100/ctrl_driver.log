@@ -31,3 +31,8 @@ CTRL_PACK_DONE runs/a100/llama_lbp_no_neighbor_1024.jsonl
 CTRL_PACK_DONE runs/a100/llama_bp_no_neighbor_1024.jsonl
 CTRL_PACK_DONE runs/a100/llama_sel_mmr_relevance_redundancy_1024.jsonl
 DENSE_BP_PACK_DONE runs/a100/qwen_bge_recall_bp_512.jsonl
+DENSE_BP_PACK_DONE runs/a100/qwen_bge_rerank_bp_512.jsonl
+DENSE_BP_PACK_DONE runs/a100/qwen_bge_union_bp_512.jsonl
+DENSE_BP_PACK_DONE runs/a100/llama_bge_recall_bp_512.jsonl
+DENSE_BP_PACK_DONE runs/a100/llama_bge_rerank_bp_512.jsonl
+DENSE_BP_PACK_DONE runs/a100/llama_bge_union_bp_512.jsonl

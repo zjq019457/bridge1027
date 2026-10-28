@@ -59,3 +59,7 @@
 [2026-10-28T12:39:31-07:00] start llama_bge_union_bp_1024 gpu=2
 [2026-10-28T12:55:17-07:00] end llama_bge_union_bp_1024 rc=0
 [2026-10-28T14:27:19-07:00] start llama_sel_independent_lexical_top_1024 gpu=2
+[2026-10-28T14:48:08-07:00] end llama_sel_independent_lexical_top_1024 rc=0
+[2026-10-28T14:48:08-07:00] start qwen_sel_mmr_relevance_redundancy_1024 gpu=2
+[2026-10-28T15:06:21-07:00] end qwen_sel_mmr_relevance_redundancy_1024 rc=0
+[2026-10-28T15:06:22-07:00] start qwen_sel_bridge_path_1024 gpu=2

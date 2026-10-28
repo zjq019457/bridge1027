@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 35.68,
+    "multifieldqa_en": 49.8,
+    "hotpotqa": 50.33,
+    "2wikimqa": 40.84,
+    "musique": 26.55,
+    "narrativeqa": 16.04
+  },
+  "macro": 36.54,
+  "model": "/diskF/jiaqizhang/baselines/RepairKV/models/Qwen2.5-7B-Instruct",
+  "trace": "runs/a100/qwen_sel_mmr_relevance_redundancy_1024.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}
