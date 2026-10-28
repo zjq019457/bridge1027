@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 39.29,
+    "multifieldqa_en": 49.62,
+    "hotpotqa": 52.75,
+    "2wikimqa": 47.0,
+    "musique": 27.12,
+    "narrativeqa": 18.64
+  },
+  "macro": 39.07,
+  "model": "/diskF/jiaqizhang/baselines/RepairKV/models/Qwen2.5-7B-Instruct",
+  "trace": "runs/a100/qwen_bge_union_bp_1024.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}
