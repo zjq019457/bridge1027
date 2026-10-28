@@ -16,3 +16,38 @@ LEX_PACK_DONE runs/a100/llama_bridge_neighbor32_path_order_1024.jsonl
 LEX_PACK_DONE runs/a100/qwen_bridge_neighbor32_path_order_1024.jsonl
 ./a100_pack_one.sh: line 9: runs/a100/qwen_tfidf_chunk_source_order_512.jsonl: No such file or directory
 ./a100_pack_one.sh: line 9: runs/a100/qwen_bm25_chunk_source_order_512.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_span_only_source_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_bge_512.jsonl: No such file or directory
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  74%|███████▍  | 147/199 [00:00<00:00, 1468.18it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1556.56it/s]
+LEX_PACK_DONE runs/a100/qwen_bridge_neighbor32_path_order_tags_1024.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_bridge_neighbor32_path_order_512.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_bridge_same_spans_source_order_1024.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_lexical_bridgepack_path_order_512.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_lexical_bridgepack_source_order_1024.jsonl
+./a100_pack_one.sh: line 9: runs/a100/llama_span_only_source_order_512.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_bm25_chunk_source_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/llama_tfidf_chunk_source_order_512.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_tfidf_chunk_source_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/llama_bm25_chunk_source_order_512.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/llama_span_only_source_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/llama_bge_512.jsonl: No such file or directory
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 8175.71it/s]
+LEX_PACK_DONE runs/a100/llama_tfidf_chunk_source_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/llama_bridge_neighbor32_path_order_512.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/llama_bm25_chunk_source_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/llama_lexical_bridgepack_path_order_512.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_bridge_neighbor32_path_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_span_only_source_order_256.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_lexical_bridgepack_path_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_tfidf_chunk_source_order_256.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_span_only_source_order_256.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_bm25_chunk_source_order_256.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/qwen_tfidf_chunk_source_order_256.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_bge_256.jsonl: No such file or directory
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 7515.93it/s]
+LEX_PACK_DONE runs/a100/llama_bridge_neighbor32_path_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_bridge_neighbor32_path_order_256.jsonl: No such file or directory
+BGE_PACK_DONE runs/a100/qwen_bge_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/qwen_lexical_bridgepack_path_order_256.jsonl: No such file or directory
+LEX_PACK_DONE runs/a100/llama_lexical_bridgepack_path_order_512.jsonl
+./a100_pack_one.sh: line 9: runs/a100/llama_span_only_source_order_256.jsonl: No such file or directory
