@@ -1,0 +1,2 @@
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 8689.37it/s]
+DENSE_BP_PACK_DONE runs/a100/llama_bge_union_bp_1024.jsonl

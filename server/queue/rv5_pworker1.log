@@ -54,3 +54,7 @@
 [2026-10-28T11:22:48-07:00] end qwen_bge_recall_bp_1024 rc=0
 [2026-10-28T11:22:48-07:00] start qwen_bge_union_bp_1024 gpu=1
 [2026-10-28T11:38:55-07:00] end qwen_bge_union_bp_1024 rc=0
+[2026-10-28T12:04:27-07:00] start llama_bge_recall_bp_1024 gpu=1
+[2026-10-28T12:22:52-07:00] end llama_bge_recall_bp_1024 rc=0
+[2026-10-28T12:22:52-07:00] start llama_bge_rerank_bp_1024 gpu=1
+[2026-10-28T12:40:54-07:00] end llama_bge_rerank_bp_1024 rc=0
