@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 40.0,
+    "multifieldqa_en": 50.17,
+    "hotpotqa": 43.97,
+    "2wikimqa": 35.12,
+    "musique": 17.61,
+    "narrativeqa": 17.3
+  },
+  "macro": 34.02833333333333,
+  "model": "/diskD/jiaqizhang/models/Meta-Llama-3-8B-Instruct",
+  "trace": "runs/a100/llama_sel_bridge_path_1024.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}

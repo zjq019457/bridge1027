@@ -67,3 +67,5 @@
 [2026-10-28T15:26:36-07:00] start qwen_lbp_no_neighbor_1024 gpu=2
 [2026-10-28T15:46:45-07:00] end qwen_lbp_no_neighbor_1024 rc=0
 [2026-10-28T15:46:46-07:00] start qwen_bp_no_neighbor_1024 gpu=2
+[2026-10-28T16:06:43-07:00] end qwen_bp_no_neighbor_1024 rc=0
+[2026-10-28T16:06:43-07:00] start llama_lbp_no_neighbor_1024 gpu=2
