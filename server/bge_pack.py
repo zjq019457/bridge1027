@@ -7,8 +7,8 @@ import sys
 from pathlib import Path
 
 W = Path("/diskE/jiaqizhang/BRIDGEPACK_SENSITIVITY_V1_20261025")
-TOKP, OUT = sys.argv[1], Path(sys.argv[2])
-BUDGET = int(sys.argv[3]) if len(sys.argv) > 3 else 1024
+TOKP, OUT = (sys.argv[1], Path(sys.argv[2])) if __name__ == "__main__" else (None, None)
+BUDGET = int(sys.argv[3]) if __name__ == "__main__" and len(sys.argv) > 3 else 1024
 sys.path.insert(0, str(W / "source" / "SlimInfer_snapshot"))
 sys.path.insert(0, str(W / "scripts"))
 import portable_runner as pr  # noqa: E402
@@ -44,15 +44,16 @@ class QueryAware(BGE_Embedder):
         return super().encode(texts, **kw)
 
 
-ids, samples, _ = pr.load_selection_inputs(W / "assets" / "longbench_g1_data", W / "golden", None)
-tok = AutoTokenizer.from_pretrained(TOKP, local_files_only=True, use_fast=True)
-emb = QueryAware()
-with OUT.open("w") as f:
-    for t in pr.TASKS:
-        for s in samples[t]:
-            emb._next_is_query = True
-            r = _dense_pack(emb, tok, s, BUDGET, 32, 64, BGE)
-            r["variant"] = "bge_chunk_packing"
-            r["model_token_count"] = len(tok(r["packed_text"], add_special_tokens=False).input_ids)
-            f.write(json.dumps(r) + "\n")
-print("BGE_PACK_DONE", OUT)
+if __name__ == "__main__":
+    ids, samples, _ = pr.load_selection_inputs(W / "assets" / "longbench_g1_data", W / "golden", None)
+    tok = AutoTokenizer.from_pretrained(TOKP, local_files_only=True, use_fast=True)
+    emb = QueryAware()
+    with OUT.open("w") as f:
+        for t in pr.TASKS:
+            for s in samples[t]:
+                emb._next_is_query = True
+                r = _dense_pack(emb, tok, s, BUDGET, 32, 64, BGE)
+                r["variant"] = "bge_chunk_packing"
+                r["model_token_count"] = len(tok(r["packed_text"], add_special_tokens=False).input_ids)
+                f.write(json.dumps(r) + "\n")
+    print("BGE_PACK_DONE", OUT)
