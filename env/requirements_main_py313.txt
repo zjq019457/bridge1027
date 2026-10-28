@@ -1,0 +1,18 @@
+# packing, generation, scoring, significance (Python 3.13, CUDA 13.0 build of torch; any CUDA build >= 12.1 works)
+torch==2.12.1
+transformers==5.12.1
+tokenizers==0.22.2
+accelerate==1.14.0
+safetensors==0.8.0
+huggingface_hub==1.20.1
+sentencepiece==0.2.1
+tiktoken==0.13.0
+numpy==2.4.4
+pandas==3.0.5
+regex==2026.5.9
+tqdm
+# LongBench scoring (longbench_eval.py)
+jieba==0.42.1
+fuzzywuzzy==0.18.0
+rouge==1.0.1
+nltk==3.9.4
