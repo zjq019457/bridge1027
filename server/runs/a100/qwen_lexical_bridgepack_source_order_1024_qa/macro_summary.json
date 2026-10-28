@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 38.05,
+    "multifieldqa_en": 48.26,
+    "hotpotqa": 50.3,
+    "2wikimqa": 41.21,
+    "musique": 30.45,
+    "narrativeqa": 16.37
+  },
+  "macro": 37.44,
+  "model": "/diskF/jiaqizhang/baselines/RepairKV/models/Qwen2.5-7B-Instruct",
+  "trace": "runs/a100/qwen_lexical_bridgepack_source_order_1024.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}

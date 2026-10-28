@@ -17,3 +17,7 @@
 [2026-10-28T01:36:45-07:00] start llama_bridge_neighbor32_path_order_1024 gpu=2
 [2026-10-28T01:51:03-07:00] end llama_bridge_neighbor32_path_order_1024 rc=0
 [2026-10-28T01:51:03-07:00] start qwen_span_only_source_order_512 gpu=2
+[2026-10-28T02:05:42-07:00] end qwen_span_only_source_order_512 rc=0
+[2026-10-28T02:05:42-07:00] start qwen_bridge_same_spans_source_order_1024 gpu=2
+[2026-10-28T02:21:48-07:00] end qwen_bridge_same_spans_source_order_1024 rc=0
+[2026-10-28T02:21:48-07:00] start qwen_bm25_chunk_source_order_512 gpu=2
