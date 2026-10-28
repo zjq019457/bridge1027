@@ -47,3 +47,7 @@
 [2026-10-28T05:00:48-07:00] start qwen_bm25_chunk_source_order_2048 gpu=2
 [2026-10-28T05:22:09-07:00] end qwen_bm25_chunk_source_order_2048 rc=0
 [2026-10-28T05:22:09-07:00] start llama_tfidf_chunk_source_order_2048 gpu=2
+[2026-10-28T05:43:31-07:00] end llama_tfidf_chunk_source_order_2048 rc=0
+[2026-10-28T05:43:31-07:00] start qwen_bridge_neighbor32_path_order_2048 gpu=2
+[2026-10-28T06:01:57-07:00] end qwen_bridge_neighbor32_path_order_2048 rc=0
+[2026-10-28T06:01:57-07:00] start qwen_bge_2048 gpu=2

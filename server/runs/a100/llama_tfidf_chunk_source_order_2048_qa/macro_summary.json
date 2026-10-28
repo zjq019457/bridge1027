@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 39.37,
+    "multifieldqa_en": 48.67,
+    "hotpotqa": 50.65,
+    "2wikimqa": 33.72,
+    "musique": 23.98,
+    "narrativeqa": 17.98
+  },
+  "macro": 35.72833333333333,
+  "model": "/diskD/jiaqizhang/models/Meta-Llama-3-8B-Instruct",
+  "trace": "runs/a100/llama_tfidf_chunk_source_order_2048.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}
