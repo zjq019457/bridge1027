@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 22.45,
+    "multifieldqa_en": 30.38,
+    "hotpotqa": 36.72,
+    "2wikimqa": 29.43,
+    "musique": 13.03,
+    "narrativeqa": 8.04
+  },
+  "macro": 23.341666666666665,
+  "model": "/diskF/jiaqizhang/baselines/RepairKV/models/Qwen2.5-7B-Instruct",
+  "trace": "runs/a100/qwen_bridge_neighbor32_path_order_256.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}
