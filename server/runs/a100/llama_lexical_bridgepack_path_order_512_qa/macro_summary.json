@@ -1,0 +1,18 @@
+{
+  "sample_count": 1150,
+  "task_scores": {
+    "qasper": 36.5,
+    "multifieldqa_en": 46.75,
+    "hotpotqa": 43.47,
+    "2wikimqa": 33.61,
+    "musique": 18.7,
+    "narrativeqa": 17.61
+  },
+  "macro": 32.77333333333333,
+  "model": "/diskD/jiaqizhang/models/Meta-Llama-3-8B-Instruct",
+  "trace": "runs/a100/llama_lexical_bridgepack_path_order_512.jsonl",
+  "sample": false,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.9
+}
