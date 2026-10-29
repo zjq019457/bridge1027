@@ -36,6 +36,9 @@ packing 变体 `same_spans_source_order`（portable repro 默认配置）。
 - Llama TF-IDF：34.94，BP +1.25 [−0.37, 2.81]，不显著。
 - BP 参照是 `same_spans_source_order`，不是论文主表的 `bridge_neighbor32_path_order` /
   `lexical_bridgepack_path_order`；两者的 A100 重跑已在 `runs/a100/` 排队（尚未完成）。
+- iSRj Q2 按作者决定保留原环境数字（配对 vs 独立 +3.445，vs MMR +2.961）。A100 用同一
+  `selection_only_control` 重跑未复现：Qwen +0.78 / +0.28，Llama +0.42 / −0.34，均不显著
+  （`runs/a100/*_sel_*_1024_qa`）。这两个数字不属于 A100 统一结果，转投稿若声明"全部 A100"需另行处理。
 - 论文中三个 BGE 增强变体（BGE Recall / Union / Reranked + BridgePack）在代码快照里没有实现。
 
 ## 4. 复现脚本（均在 `server/` 下）
