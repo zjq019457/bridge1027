@@ -73,3 +73,7 @@
 [2026-10-28T16:25:31-07:00] start llama_sel_mmr_relevance_redundancy_1024 gpu=2
 [2026-10-28T16:45:20-07:00] end llama_sel_mmr_relevance_redundancy_1024 rc=0
 [2026-10-28T16:45:20-07:00] start qwen_bge_rerank_bp_512 gpu=2
+[2026-10-28T17:04:20-07:00] end qwen_bge_rerank_bp_512 rc=0
+[2026-10-28T17:04:21-07:00] start llama_bge_recall_bp_512 gpu=2
+[2026-10-28T17:20:34-07:00] end llama_bge_recall_bp_512 rc=0
+[2026-10-28T17:20:34-07:00] start llama_bge_union_bp_512 gpu=2
