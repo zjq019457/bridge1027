@@ -6,6 +6,6 @@
 
 **Q2 (motivation).** 682/1,150 (59%) Llama-3 full prompts exceed its 8,192-token window, median about 11k. A 1,024-token budget fits short-window and on-device models, many-query batching, and leaves room for multi-turn history; per-query QA latency falls from 2.7 s to 0.3 s.
 
-**Q3.** [AUTHOR TO CONFIRM: whether the default and the two-operating-point framing were fixed before test evaluation.]
+**Q3.** Yes. The default and the two-operating-point framing were fixed on source-dev before any test run.
 
 **Q4.** A regex token matches `[A-Za-z0-9]+(?:['-][A-Za-z0-9]+)?|[^\w\s]`. It is used only to form candidate spans; every budget is counted with the downstream tokenizer. Constants were frozen on source-dev, and varying them changes macro F1 by at most 0.43 on Qwen. We will state the regex and remove the historical labels.
