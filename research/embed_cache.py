@@ -20,17 +20,18 @@ OUT = Path("cache"); OUT.mkdir(exist_ok=True)
 
 torch.set_num_threads(8)
 tok = AutoTokenizer.from_pretrained(BGE)
-model = AutoModel.from_pretrained(BGE).eval()
+DEV = "cuda" if torch.cuda.is_available() else "cpu"
+model = AutoModel.from_pretrained(BGE).to(DEV).eval()
 
 
 @torch.no_grad()
 def enc(texts):
     out = []
     for i in range(0, len(texts), 64):
-        b = tok(texts[i:i + 64], padding=True, truncation=True, max_length=512, return_tensors="pt")
+        b = tok(texts[i:i + 64], padding=True, truncation=True, max_length=512, return_tensors="pt").to(DEV)
         e = model(**b).last_hidden_state[:, 0]
         out.append(torch.nn.functional.normalize(e, dim=-1))
-    return torch.cat(out).numpy()
+    return torch.cat(out).float().cpu().numpy()
 
 
 which = sys.argv[1]
