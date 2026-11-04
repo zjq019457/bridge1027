@@ -1,0 +1,358 @@
+## per-task / macro / MH
+span         qwen  n=1150 macro=22.31 MH=25.15 qasper=16.86 multif=32.57 hotpot=28.53 2wikim=29.50 musiqu=17.41 narrat=8.97 in_tok_mean=1104 max=1224
+span         llama n=1150 macro=20.52 MH=20.76 qasper=19.34 multif=30.49 hotpot=27.66 2wikim=23.07 musiqu=11.54 narrat=11.04 in_tok_mean=1085 max=1201
+tfidf        qwen  n=1150 macro=36.86 MH=39.72 qasper=36.99 multif=49.08 hotpot=52.38 2wikim=40.21 musiqu=26.59 narrat=15.95 in_tok_mean=1105 max=1225
+tfidf        llama n=1150 macro=34.94 MH=34.16 qasper=39.40 multif=49.63 hotpot=47.04 2wikim=34.36 musiqu=21.09 narrat=18.09 in_tok_mean=1086 max=1211
+bm25         qwen  n=1150 macro=36.95 MH=39.85 qasper=38.10 multif=49.33 hotpot=52.41 2wikim=41.00 musiqu=26.13 narrat=14.69 in_tok_mean=1105 max=1226
+bm25         llama n=1150 macro=34.44 MH=33.94 qasper=38.10 multif=49.47 hotpot=49.48 2wikim=32.76 musiqu=19.58 narrat=17.24 in_tok_mean=1085 max=1211
+bge          qwen  n=1150 macro=39.65 MH=44.04 qasper=40.10 multif=47.80 hotpot=52.52 2wikim=48.10 musiqu=31.50 narrat=17.88 in_tok_mean=1104 max=1231
+bge          llama n=1150 macro=36.74 MH=37.36 qasper=40.84 multif=47.52 hotpot=46.08 2wikim=39.08 musiqu=26.92 narrat=20.03 in_tok_mean=1086 max=1212
+bp           qwen  n=1150 macro=37.29 MH=39.91 qasper=38.87 multif=48.43 hotpot=52.07 2wikim=41.98 musiqu=25.67 narrat=16.70 in_tok_mean=1048 max=1228
+bp           llama n=1150 macro=35.28 MH=34.95 qasper=39.98 multif=48.34 hotpot=45.19 2wikim=36.55 musiqu=23.11 narrat=18.53 in_tok_mean=1025 max=1201
+lbp          qwen  n=1150 macro=38.33 MH=41.61 qasper=37.47 multif=49.26 hotpot=54.03 2wikim=44.71 musiqu=26.08 narrat=18.42 in_tok_mean=1039 max=1221
+lbp          llama n=1150 macro=35.79 MH=35.07 qasper=39.86 multif=49.06 hotpot=45.16 2wikim=36.68 musiqu=23.38 narrat=20.60 in_tok_mean=1019 max=1200
+bge_recall   qwen  n=1150 macro=39.89 MH=44.09 qasper=41.23 multif=48.64 hotpot=55.00 2wikim=49.90 musiqu=27.36 narrat=17.19 in_tok_mean=1067 max=1228
+bge_recall   llama n=1150 macro=37.19 MH=37.64 qasper=42.22 multif=50.29 hotpot=49.89 2wikim=38.33 musiqu=24.68 narrat=17.73 in_tok_mean=1048 max=1202
+bge_union    qwen  n=1150 macro=39.07 MH=42.29 qasper=39.29 multif=49.62 hotpot=52.75 2wikim=47.00 musiqu=27.12 narrat=18.64 in_tok_mean=1055 max=1221
+bge_union    llama n=1150 macro=36.77 MH=36.10 qasper=41.58 multif=49.60 hotpot=46.26 2wikim=37.42 musiqu=24.63 narrat=21.16 in_tok_mean=1035 max=1199
+bge_rerank   qwen  n=1150 macro=38.97 MH=41.84 qasper=40.31 multif=49.51 hotpot=53.38 2wikim=44.74 musiqu=27.39 narrat=18.48 in_tok_mean=1051 max=1222
+bge_rerank   llama n=1150 macro=36.75 MH=37.10 qasper=40.40 multif=49.33 hotpot=48.39 2wikim=37.44 musiqu=25.49 narrat=19.45 in_tok_mean=1031 max=1199
+head         qwen  n=1150 macro=25.48 MH=27.05 qasper=24.77 multif=38.39 hotpot=32.83 2wikim=31.59 musiqu=16.74 narrat=8.53 in_tok_mean=1143 max=1236
+head         llama n=1150 macro=23.92 MH=22.90 qasper=26.95 multif=36.85 hotpot=33.07 2wikim=22.86 musiqu=12.77 narrat=11.01 in_tok_mean=1124 max=1218
+middle       qwen  n=1150 macro=24.69 MH=26.06 qasper=22.56 multif=35.46 hotpot=34.18 2wikim=28.93 musiqu=15.07 narrat=11.95 in_tok_mean=1143 max=1236
+middle       llama n=1150 macro=23.77 MH=24.02 qasper=24.14 multif=33.55 hotpot=32.49 2wikim=26.10 musiqu=13.48 narrat=12.85 in_tok_mean=1124 max=1217
+sc           qwen  n=1150 macro=20.14 MH=22.02 qasper=24.07 multif=22.77 hotpot=27.66 2wikim=28.26 musiqu=10.14 narrat=7.97 in_tok_mean=906 max=1237
+sc           llama n=1150 macro=19.13 MH=20.67 qasper=23.95 multif=19.58 hotpot=28.36 2wikim=23.17 musiqu=10.48 narrat=9.23 in_tok_mean=864 max=1218
+lingua2      qwen  n=1150 macro=26.82 MH=30.57 qasper=28.01 multif=30.31 hotpot=37.34 2wikim=36.54 musiqu=17.84 narrat=10.89 in_tok_mean=1082 max=1233
+lingua2      llama n=1150 macro=26.31 MH=28.86 qasper=31.87 multif=26.00 hotpot=37.02 2wikim=31.31 musiqu=18.25 narrat=13.40 in_tok_mean=1030 max=1213
+full         qwen  n=1150 macro=43.30 MH=44.91 qasper=43.61 multif=52.60 hotpot=57.68 2wikim=47.19 musiqu=29.85 narrat=28.89 in_tok_mean=12507 max=31529
+full         llama n=1150 macro=36.73 MH=36.13 qasper=42.98 multif=48.06 hotpot=46.99 2wikim=39.10 musiqu=22.29 narrat=20.95 in_tok_mean=6489 max=7511
+lbp_nn       qwen  n=1150 macro=35.66 MH=40.52 qasper=34.03 multif=43.12 hotpot=51.37 2wikim=43.93 musiqu=26.25 narrat=15.26 in_tok_mean=919 max=1219
+lbp_nn       llama n=1150 macro=33.66 MH=34.34 qasper=37.24 multif=45.90 hotpot=47.49 2wikim=32.43 musiqu=23.11 narrat=15.75 in_tok_mean=886 max=1199
+bp_nn        qwen  n=1150 macro=34.50 MH=38.04 qasper=32.48 multif=44.96 hotpot=49.06 2wikim=39.93 musiqu=25.15 narrat=15.40 in_tok_mean=892 max=1229
+bp_nn        llama n=1150 macro=33.15 MH=32.62 qasper=35.40 multif=47.84 hotpot=44.07 2wikim=31.66 musiqu=22.14 narrat=17.81 in_tok_mean=857 max=1193
+lsrc         qwen  n=1150 macro=37.44 MH=40.65 qasper=38.05 multif=48.26 hotpot=50.30 2wikim=41.21 musiqu=30.45 narrat=16.37 in_tok_mean=1073 max=1223
+bsrc         qwen  n=1150 macro=37.04 MH=39.35 qasper=42.09 multif=48.13 hotpot=48.79 2wikim=41.85 musiqu=27.43 narrat=13.98 in_tok_mean=1046 max=1230
+tags         qwen  n=1150 macro=34.35 MH=35.42 qasper=35.43 multif=47.23 hotpot=44.57 2wikim=40.18 musiqu=21.52 narrat=17.20 in_tok_mean=1044 max=1221
+span@512     qwen  n=1150 macro=19.19 MH=21.90 qasper=13.22 multif=28.31 hotpot=26.96 2wikim=22.29 musiqu=16.46 narrat=7.90 in_tok_mean=592 max=711
+span@512     llama n=1150 macro=17.34 MH=19.02 qasper=12.73 multif=20.91 hotpot=29.51 2wikim=18.24 musiqu=9.32 narrat=13.31 in_tok_mean=574 max=698
+tfidf@512    qwen  n=1150 macro=33.88 MH=35.13 qasper=34.26 multif=48.87 hotpot=45.79 2wikim=37.86 musiqu=21.76 narrat=14.75 in_tok_mean=593 max=716
+tfidf@512    llama n=1150 macro=31.34 MH=29.23 qasper=34.32 multif=49.18 hotpot=41.73 2wikim=28.51 musiqu=17.46 narrat=16.85 in_tok_mean=576 max=693
+bm25@512     qwen  n=1150 macro=34.15 MH=35.67 qasper=33.72 multif=48.30 hotpot=46.42 2wikim=37.30 musiqu=23.30 narrat=15.85 in_tok_mean=593 max=714
+bm25@512     llama n=1150 macro=31.84 MH=31.31 qasper=32.29 multif=48.00 hotpot=45.00 2wikim=29.77 musiqu=19.15 narrat=16.82 in_tok_mean=574 max=695
+bge@512      qwen  n=1150 macro=33.49 MH=35.05 qasper=35.30 multif=45.81 hotpot=44.50 2wikim=39.74 musiqu=20.90 narrat=14.68 in_tok_mean=592 max=717
+bge@512      llama n=1150 macro=31.71 MH=30.65 qasper=37.83 multif=44.66 hotpot=44.19 2wikim=28.43 musiqu=19.32 narrat=15.85 in_tok_mean=569 max=695
+bp@512       qwen  n=1150 macro=32.81 MH=33.48 qasper=32.96 multif=48.13 hotpot=44.42 2wikim=36.45 musiqu=19.58 narrat=15.33 in_tok_mean=559 max=704
+bp@512       llama n=1150 macro=31.53 MH=29.79 qasper=38.40 multif=46.51 hotpot=40.67 2wikim=31.20 musiqu=17.50 narrat=14.90 in_tok_mean=540 max=691
+lbp@512      qwen  n=1150 macro=33.96 MH=35.82 qasper=33.45 multif=46.91 hotpot=47.86 2wikim=37.33 musiqu=22.26 narrat=15.94 in_tok_mean=558 max=706
+lbp@512      llama n=1150 macro=32.78 MH=31.93 qasper=36.50 multif=46.75 hotpot=43.47 2wikim=33.61 musiqu=18.70 narrat=17.61 in_tok_mean=538 max=692
+bge_recall@512 qwen  n=1150 macro=34.10 MH=36.78 qasper=35.51 multif=45.08 hotpot=46.37 2wikim=40.31 musiqu=23.65 narrat=13.71 in_tok_mean=559 max=707
+bge_recall@512 llama n=1150 macro=31.53 MH=29.40 qasper=37.90 multif=45.27 hotpot=44.24 2wikim=25.59 musiqu=18.37 narrat=17.83 in_tok_mean=540 max=688
+bge_union@512 qwen  n=1150 macro=34.01 MH=35.90 qasper=32.69 multif=47.21 hotpot=48.52 2wikim=37.62 musiqu=21.56 narrat=16.48 in_tok_mean=560 max=712
+bge_union@512 llama n=1150 macro=32.40 MH=31.28 qasper=35.86 multif=46.23 hotpot=43.22 2wikim=32.61 musiqu=18.01 narrat=18.47 in_tok_mean=540 max=692
+bge_rerank@512 qwen  n=1150 macro=34.98 MH=35.95 qasper=35.37 multif=48.35 hotpot=47.70 2wikim=37.34 musiqu=22.82 narrat=18.31 in_tok_mean=559 max=708
+bge_rerank@512 llama n=1150 macro=32.22 MH=30.65 qasper=37.35 multif=45.58 hotpot=42.17 2wikim=30.80 musiqu=18.96 narrat=18.43 in_tok_mean=540 max=692
+span@2048    qwen  n=1150 macro=26.64 MH=28.50 qasper=24.66 multif=39.49 hotpot=33.61 2wikim=34.68 musiqu=17.19 narrat=10.19 in_tok_mean=2128 max=2246
+span@2048    llama n=1150 macro=23.67 MH=22.23 qasper=27.12 multif=36.44 hotpot=30.78 2wikim=23.43 musiqu=12.49 narrat=11.78 in_tok_mean=2110 max=2225
+tfidf@2048   qwen  n=1150 macro=38.86 MH=42.42 qasper=39.39 multif=49.57 hotpot=53.22 2wikim=43.42 musiqu=30.61 narrat=16.92 in_tok_mean=2127 max=2250
+tfidf@2048   llama n=1150 macro=35.73 MH=36.12 qasper=39.37 multif=48.67 hotpot=50.65 2wikim=33.72 musiqu=23.98 narrat=17.98 in_tok_mean=2110 max=2228
+bm25@2048    qwen  n=1150 macro=39.10 MH=42.96 qasper=40.04 multif=49.21 hotpot=53.44 2wikim=45.52 musiqu=29.93 narrat=16.48 in_tok_mean=2127 max=2250
+bm25@2048    llama n=1150 macro=34.82 MH=33.71 qasper=39.44 multif=49.37 hotpot=47.14 2wikim=32.14 musiqu=21.86 narrat=18.98 in_tok_mean=2109 max=2239
+bge@2048     qwen  n=1150 macro=41.55 MH=46.52 qasper=41.11 multif=47.61 hotpot=54.63 2wikim=52.19 musiqu=32.73 narrat=21.00 in_tok_mean=2130 max=2252
+bge@2048     llama n=1150 macro=39.28 MH=41.70 qasper=42.30 multif=48.61 hotpot=52.19 2wikim=44.56 musiqu=28.36 narrat=19.69 in_tok_mean=2110 max=2233
+bp@2048      qwen  n=1150 macro=39.19 MH=43.18 qasper=38.92 multif=49.34 hotpot=53.81 2wikim=47.31 musiqu=28.42 narrat=17.34 in_tok_mean=1563 max=2238
+bp@2048      llama n=1150 macro=36.50 MH=36.53 qasper=40.15 multif=49.20 hotpot=46.23 2wikim=40.34 musiqu=23.01 narrat=20.03 in_tok_mean=1507 max=2224
+lbp@2048     qwen  n=1150 macro=39.53 MH=43.98 qasper=39.17 multif=48.19 hotpot=56.04 2wikim=46.48 musiqu=29.41 narrat=17.92 in_tok_mean=1622 max=2219
+lbp@2048     llama n=1150 macro=37.04 MH=37.66 qasper=41.63 multif=48.59 hotpot=46.83 2wikim=38.67 musiqu=27.47 narrat=19.05 in_tok_mean=1570 max=2207
+longlingua   qwen  n=1150 macro=32.64 MH=36.95 qasper=31.20 multif=39.84 hotpot=48.12 2wikim=39.88 musiqu=22.85 narrat=13.95 in_tok_mean=1021 max=1224
+longlingua   llama n=1150 macro=29.87 MH=31.42 qasper=31.04 multif=38.96 hotpot=42.27 2wikim=31.39 musiqu=20.59 narrat=14.97 in_tok_mean=972 max=1195
+
+## paired A-B (per model and two-model)
+lbp          - span         qwen  all +16.02 [+13.66, +18.35] p=0.0000 *
+lbp          - span         qwen  MH  +16.46 [+12.80, +20.12] p=0.0000 *
+lbp          - span         llama all +15.27 [+12.91, +17.57] p=0.0000 *
+lbp          - span         llama MH  +14.31 [+10.83, +17.74] p=0.0000 *
+lbp          - span         2M    all +15.64 [+13.99, +17.29] p=0.0000 *
+lbp          - span         2M    MH  +15.39 [+12.77, +17.91] p=0.0000 *
+lbp          - bm25         qwen  all +1.38 [-0.34, +3.16] p=0.1172 
+lbp          - bm25         qwen  MH  +1.76 [-1.13, +4.74] p=0.2346 
+lbp          - bm25         llama all +1.35 [-0.32, +3.04] p=0.1106 
+lbp          - bm25         llama MH  +1.13 [-1.71, +3.79] p=0.4182 
+lbp          - bm25         2M    all +1.37 [+0.16, +2.56] p=0.0246 *
+lbp          - bm25         2M    MH  +1.44 [-0.57, +3.43] p=0.1536 
+lbp          - tfidf        qwen  all +1.47 [-0.31, +3.26] p=0.1118 
+lbp          - tfidf        qwen  MH  +1.88 [-1.04, +4.93] p=0.2126 
+lbp          - tfidf        llama all +0.85 [-0.83, +2.54] p=0.3230 
+lbp          - tfidf        llama MH  +0.91 [-1.87, +3.66] p=0.5274 
+lbp          - tfidf        2M    all +1.16 [-0.04, +2.39] p=0.0590 
+lbp          - tfidf        2M    MH  +1.40 [-0.63, +3.40] p=0.1788 
+lbp          - bge          qwen  all -1.32 [-3.32, +0.68] p=0.1992 
+lbp          - bge          qwen  MH  -2.43 [-5.73, +0.76] p=0.1416 
+lbp          - bge          llama all -0.95 [-2.93, +1.01] p=0.3456 
+lbp          - bge          llama MH  -2.28 [-5.47, +1.00] p=0.1634 
+lbp          - bge          2M    all -1.14 [-2.55, +0.28] p=0.1188 
+lbp          - bge          2M    MH  -2.36 [-4.68, -0.03] p=0.0478 
+lbp          - bp           qwen  all +1.04 [-0.10, +2.21] p=0.0740 
+lbp          - bp           qwen  MH  +1.70 [-0.02, +3.52] p=0.0542 
+lbp          - bp           llama all +0.51 [-0.78, +1.81] p=0.4366 
+lbp          - bp           llama MH  +0.12 [-2.04, +2.34] p=0.9144 
+lbp          - bp           2M    all +0.77 [-0.09, +1.64] p=0.0798 
+lbp          - bp           2M    MH  +0.91 [-0.50, +2.30] p=0.1942 
+lbp          - head         qwen  all +12.85 [+10.38, +15.24] p=0.0000 *
+lbp          - head         qwen  MH  +14.55 [+10.77, +18.30] p=0.0000 *
+lbp          - head         llama all +11.87 [+9.45, +14.21] p=0.0000 *
+lbp          - head         llama MH  +12.17 [+8.51, +15.94] p=0.0000 *
+lbp          - head         2M    all +12.36 [+10.66, +14.06] p=0.0000 *
+lbp          - head         2M    MH  +13.36 [+10.69, +16.03] p=0.0000 *
+lbp          - middle       qwen  all +13.64 [+11.33, +15.99] p=0.0000 *
+lbp          - middle       qwen  MH  +15.55 [+11.82, +19.26] p=0.0000 *
+lbp          - middle       llama all +12.02 [+9.71, +14.35] p=0.0000 *
+lbp          - middle       llama MH  +11.05 [+7.70, +14.49] p=0.0000 *
+lbp          - middle       2M    all +12.83 [+11.21, +14.46] p=0.0000 *
+lbp          - middle       2M    MH  +13.30 [+10.77, +15.79] p=0.0000 *
+lbp          - sc           qwen  all +18.18 [+15.93, +20.51] p=0.0000 *
+lbp          - sc           qwen  MH  +19.59 [+15.84, +23.24] p=0.0000 *
+lbp          - sc           llama all +16.66 [+14.24, +19.14] p=0.0000 *
+lbp          - sc           llama MH  +14.40 [+10.47, +18.21] p=0.0000 *
+lbp          - sc           2M    all +17.42 [+15.78, +19.14] p=0.0000 *
+lbp          - sc           2M    MH  +16.99 [+14.26, +19.69] p=0.0000 *
+lbp          - lingua2      qwen  all +11.51 [+9.16, +13.88] p=0.0000 *
+lbp          - lingua2      qwen  MH  +11.03 [+7.36, +14.73] p=0.0000 *
+lbp          - lingua2      llama all +9.48 [+7.05, +11.91] p=0.0000 *
+lbp          - lingua2      llama MH  +6.21 [+2.37, +9.97] p=0.0008 *
+lbp          - lingua2      2M    all +10.49 [+8.85, +12.18] p=0.0000 *
+lbp          - lingua2      2M    MH  +8.62 [+5.94, +11.32] p=0.0000 *
+lbp          - longlingua   qwen  all +5.69 [+3.50, +7.93] p=0.0000 *
+lbp          - longlingua   qwen  MH  +4.66 [+1.09, +8.18] p=0.0118 *
+lbp          - longlingua   llama all +5.92 [+3.70, +8.22] p=0.0000 *
+lbp          - longlingua   llama MH  +3.65 [+0.14, +7.24] p=0.0416 *
+lbp          - longlingua   2M    all +5.80 [+4.26, +7.39] p=0.0000 *
+lbp          - longlingua   2M    MH  +4.16 [+1.63, +6.69] p=0.0006 *
+lbp          - full         qwen  all -4.97 [-7.11, -2.87] p=0.0000 
+lbp          - full         qwen  MH  -3.30 [-6.82, +0.23] p=0.0678 
+lbp          - full         llama all -0.94 [-3.18, +1.34] p=0.4222 
+lbp          - full         llama MH  -1.05 [-4.66, +2.59] p=0.5706 
+lbp          - full         2M    all -2.96 [-4.50, -1.40] p=0.0000 
+lbp          - full         2M    MH  -2.18 [-4.68, +0.33] p=0.0896 
+bp           - span         qwen  all +14.98 [+12.63, +17.28] p=0.0000 *
+bp           - span         qwen  MH  +14.76 [+11.11, +18.39] p=0.0000 *
+bp           - span         llama all +14.76 [+12.29, +17.19] p=0.0000 *
+bp           - span         llama MH  +14.19 [+10.43, +17.92] p=0.0000 *
+bp           - span         2M    all +14.87 [+13.18, +16.57] p=0.0000 *
+bp           - span         2M    MH  +14.48 [+11.84, +17.12] p=0.0000 *
+bp           - bm25         qwen  all +0.34 [-1.45, +2.13] p=0.7090 
+bp           - bm25         qwen  MH  +0.06 [-2.85, +3.01] p=0.9704 
+bp           - bm25         llama all +0.85 [-0.97, +2.65] p=0.3676 
+bp           - bm25         llama MH  +1.01 [-2.00, +3.92] p=0.5000 
+bp           - bm25         2M    all +0.59 [-0.65, +1.84] p=0.3562 
+bp           - bm25         2M    MH  +0.53 [-1.52, +2.61] p=0.6142 
+bp           - tfidf        qwen  all +0.42 [-1.40, +2.24] p=0.6494 
+bp           - tfidf        qwen  MH  +0.18 [-2.81, +3.28] p=0.8914 
+bp           - tfidf        llama all +0.35 [-1.53, +2.20] p=0.7212 
+bp           - tfidf        llama MH  +0.79 [-2.27, +3.87] p=0.6230 
+bp           - tfidf        2M    all +0.39 [-0.87, +1.66] p=0.5520 
+bp           - tfidf        2M    MH  +0.49 [-1.66, +2.66] p=0.6526 
+bge_recall   - lbp          qwen  all +1.56 [-0.13, +3.31] p=0.0742 
+bge_recall   - lbp          qwen  MH  +2.48 [-0.34, +5.31] p=0.0858 
+bge_recall   - lbp          llama all +1.40 [-0.25, +3.05] p=0.0942 
+bge_recall   - lbp          llama MH  +2.56 [-0.15, +5.32] p=0.0652 
+bge_recall   - lbp          2M    all +1.48 [+0.30, +2.68] p=0.0132 *
+bge_recall   - lbp          2M    MH  +2.52 [+0.55, +4.49] p=0.0126 *
+bge_recall   - bge          qwen  all +0.24 [-1.40, +1.90] p=0.7722 
+bge_recall   - bge          qwen  MH  +0.05 [-2.70, +2.83] p=0.9738 
+bge_recall   - bge          llama all +0.45 [-1.24, +2.12] p=0.6122 
+bge_recall   - bge          llama MH  +0.28 [-2.54, +3.12] p=0.8352 
+bge_recall   - bge          2M    all +0.34 [-0.86, +1.56] p=0.5746 
+bge_recall   - bge          2M    MH  +0.16 [-1.82, +2.20] p=0.8802 
+bge_recall   - bm25         qwen  all +2.94 [+1.04, +4.80] p=0.0026 *
+bge_recall   - bm25         qwen  MH  +4.24 [+1.17, +7.39] p=0.0062 *
+bge_recall   - bm25         llama all +2.75 [+0.87, +4.60] p=0.0036 *
+bge_recall   - bm25         llama MH  +3.69 [+0.59, +6.82] p=0.0188 *
+bge_recall   - bm25         2M    all +2.85 [+1.58, +4.14] p=0.0000 *
+bge_recall   - bm25         2M    MH  +3.97 [+1.76, +6.10] p=0.0002 *
+bge_recall   - tfidf        qwen  all +3.02 [+1.14, +4.87] p=0.0010 *
+bge_recall   - tfidf        qwen  MH  +4.36 [+1.34, +7.50] p=0.0050 *
+bge_recall   - tfidf        llama all +2.26 [+0.37, +4.21] p=0.0192 *
+bge_recall   - tfidf        llama MH  +3.47 [+0.19, +6.74] p=0.0380 *
+bge_recall   - tfidf        2M    all +2.64 [+1.32, +3.98] p=0.0002 *
+bge_recall   - tfidf        2M    MH  +3.92 [+1.64, +6.14] p=0.0006 *
+bge_recall   - span         qwen  all +17.58 [+15.14, +19.99] p=0.0000 *
+bge_recall   - span         qwen  MH  +18.94 [+15.11, +22.73] p=0.0000 *
+bge_recall   - span         llama all +16.67 [+14.29, +19.04] p=0.0000 *
+bge_recall   - span         llama MH  +16.88 [+13.14, +20.75] p=0.0000 *
+bge_recall   - span         2M    all +17.12 [+15.40, +18.83] p=0.0000 *
+bge_recall   - span         2M    MH  +17.91 [+15.17, +20.63] p=0.0000 *
+bge_union    - lbp          qwen  all +0.74 [-0.04, +1.52] p=0.0644 
+bge_union    - lbp          qwen  MH  +0.68 [-0.49, +1.91] p=0.2704 
+bge_union    - lbp          llama all +0.98 [+0.24, +1.76] p=0.0100 *
+bge_union    - lbp          llama MH  +1.03 [-0.18, +2.31] p=0.0930 
+bge_union    - lbp          2M    all +0.86 [+0.33, +1.41] p=0.0014 *
+bge_union    - lbp          2M    MH  +0.86 [-0.02, +1.73] p=0.0544 
+bge_union    - bge          qwen  all -0.58 [-2.50, +1.40] p=0.5560 
+bge_union    - bge          qwen  MH  -1.75 [-5.07, +1.47] p=0.2898 
+bge_union    - bge          llama all +0.03 [-1.92, +1.98] p=0.9874 
+bge_union    - bge          llama MH  -1.25 [-4.45, +1.99] p=0.4486 
+bge_union    - bge          2M    all -0.27 [-1.67, +1.13] p=0.6970 
+bge_union    - bge          2M    MH  -1.50 [-3.79, +0.85] p=0.1980 
+bge_union    - bm25         qwen  all +2.13 [+0.40, +3.90] p=0.0160 *
+bge_union    - bm25         qwen  MH  +2.44 [-0.50, +5.43] p=0.1032 
+bge_union    - bm25         llama all +2.34 [+0.60, +4.08] p=0.0090 *
+bge_union    - bm25         llama MH  +2.16 [-0.76, +5.03] p=0.1438 
+bge_union    - bm25         2M    all +2.23 [+0.99, +3.45] p=0.0006 *
+bge_union    - bm25         2M    MH  +2.30 [+0.25, +4.34] p=0.0274 *
+bge_union    - tfidf        qwen  all +2.21 [+0.44, +4.05] p=0.0162 *
+bge_union    - tfidf        qwen  MH  +2.57 [-0.43, +5.66] p=0.0980 
+bge_union    - tfidf        llama all +1.84 [+0.14, +3.57] p=0.0370 *
+bge_union    - tfidf        llama MH  +1.94 [-0.85, +4.71] p=0.1782 
+bge_union    - tfidf        2M    all +2.02 [+0.80, +3.26] p=0.0014 *
+bge_union    - tfidf        2M    MH  +2.25 [+0.20, +4.31] p=0.0320 *
+bge_union    - span         qwen  all +16.76 [+14.37, +19.13] p=0.0000 *
+bge_union    - span         qwen  MH  +17.14 [+13.35, +20.88] p=0.0000 *
+bge_union    - span         llama all +16.25 [+13.82, +18.62] p=0.0000 *
+bge_union    - span         llama MH  +15.34 [+11.74, +18.94] p=0.0000 *
+bge_union    - span         2M    all +16.51 [+14.80, +18.20] p=0.0000 *
+bge_union    - span         2M    MH  +16.24 [+13.62, +18.90] p=0.0000 *
+bge_rerank   - lbp          qwen  all +0.64 [-0.57, +1.88] p=0.2928 
+bge_rerank   - lbp          qwen  MH  +0.23 [-1.71, +2.17] p=0.8280 
+bge_rerank   - lbp          llama all +0.96 [-0.22, +2.16] p=0.1038 
+bge_rerank   - lbp          llama MH  +2.03 [+0.11, +4.02] p=0.0392 *
+bge_rerank   - lbp          2M    all +0.80 [-0.03, +1.66] p=0.0624 
+bge_rerank   - lbp          2M    MH  +1.13 [-0.30, +2.49] p=0.1234 
+bge_rerank   - bge          qwen  all -0.68 [-2.61, +1.29] p=0.4942 
+bge_rerank   - bge          qwen  MH  -2.20 [-5.43, +0.97] p=0.1764 
+bge_rerank   - bge          llama all +0.00 [-1.90, +1.89] p=0.9984 
+bge_rerank   - bge          llama MH  -0.25 [-3.38, +2.86] p=0.8720 
+bge_rerank   - bge          2M    all -0.34 [-1.71, +1.06] p=0.6320 
+bge_rerank   - bge          2M    MH  -1.23 [-3.46, +1.06] p=0.2830 
+bge_rerank   - bm25         qwen  all +2.02 [+0.35, +3.71] p=0.0152 *
+bge_rerank   - bm25         qwen  MH  +1.99 [-0.68, +4.67] p=0.1440 
+bge_rerank   - bm25         llama all +2.31 [+0.62, +4.01] p=0.0082 *
+bge_rerank   - bm25         llama MH  +3.16 [+0.30, +5.97] p=0.0318 *
+bge_rerank   - bm25         2M    all +2.17 [+0.97, +3.34] p=0.0004 *
+bge_rerank   - bm25         2M    MH  +2.57 [+0.64, +4.52] p=0.0090 *
+bge_rerank   - tfidf        qwen  all +2.10 [+0.38, +3.83] p=0.0152 *
+bge_rerank   - tfidf        qwen  MH  +2.11 [-0.61, +4.98] p=0.1336 
+bge_rerank   - tfidf        llama all +1.81 [+0.02, +3.63] p=0.0462 *
+bge_rerank   - tfidf        llama MH  +2.94 [-0.05, +5.99] p=0.0542 
+bge_rerank   - tfidf        2M    all +1.96 [+0.76, +3.20] p=0.0020 *
+bge_rerank   - tfidf        2M    MH  +2.53 [+0.47, +4.59] p=0.0168 *
+bge_rerank   - span         qwen  all +16.66 [+14.35, +19.04] p=0.0000 *
+bge_rerank   - span         qwen  MH  +16.69 [+13.09, +20.27] p=0.0000 *
+bge_rerank   - span         llama all +16.23 [+13.79, +18.65] p=0.0000 *
+bge_rerank   - span         llama MH  +16.35 [+12.70, +20.03] p=0.0000 *
+bge_rerank   - span         2M    all +16.44 [+14.77, +18.11] p=0.0000 *
+bge_rerank   - span         2M    MH  +16.52 [+13.97, +19.13] p=0.0000 *
+lbp          - lbp_nn       qwen  all +2.67 [+1.02, +4.30] p=0.0014 *
+lbp          - lbp_nn       qwen  MH  +1.09 [-1.55, +3.80] p=0.4104 
+lbp          - lbp_nn       llama all +2.13 [+0.55, +3.76] p=0.0102 *
+lbp          - lbp_nn       llama MH  +0.73 [-1.84, +3.34] p=0.5868 
+lbp          - lbp_nn       2M    all +2.40 [+1.25, +3.55] p=0.0000 *
+lbp          - lbp_nn       2M    MH  +0.91 [-0.92, +2.75] p=0.3334 
+bp           - bp_nn        qwen  all +2.79 [+1.09, +4.43] p=0.0012 *
+bp           - bp_nn        qwen  MH  +1.86 [-0.85, +4.55] p=0.1760 
+bp           - bp_nn        llama all +2.13 [+0.42, +3.88] p=0.0140 *
+bp           - bp_nn        llama MH  +2.33 [-0.46, +5.06] p=0.0978 
+bp           - bp_nn        2M    all +2.46 [+1.27, +3.66] p=0.0002 *
+bp           - bp_nn        2M    MH  +2.10 [+0.18, +4.02] p=0.0314 *
+lbp          - lsrc         qwen  all +0.89 [-0.85, +2.65] p=0.3258 
+lbp          - lsrc         qwen  MH  +0.95 [-1.96, +3.88] p=0.5162 
+bp           - bsrc         qwen  all +0.24 [-1.34, +1.81] p=0.7682 
+bp           - bsrc         qwen  MH  +0.55 [-1.93, +3.02] p=0.6708 
+bp           - tags         qwen  all +2.93 [+1.47, +4.38] p=0.0000 *
+bp           - tags         qwen  MH  +4.49 [+2.08, +6.97] p=0.0004 *
+lbp@512      - bm25@512     qwen  all -0.19 [-2.07, +1.62] p=0.8288 
+lbp@512      - bm25@512     qwen  MH  +0.14 [-2.84, +3.08] p=0.9316 
+lbp@512      - bm25@512     llama all +0.94 [-0.83, +2.69] p=0.3108 
+lbp@512      - bm25@512     llama MH  +0.62 [-2.25, +3.55] p=0.6786 
+lbp@512      - bm25@512     2M    all +0.37 [-0.91, +1.64] p=0.5814 
+lbp@512      - bm25@512     2M    MH  +0.38 [-1.72, +2.51] p=0.7266 
+lbp@512      - tfidf@512    qwen  all +0.08 [-1.81, +1.95] p=0.9568 
+lbp@512      - tfidf@512    qwen  MH  +0.68 [-2.39, +3.69] p=0.6660 
+lbp@512      - tfidf@512    llama all +1.43 [-0.35, +3.18] p=0.1152 
+lbp@512      - tfidf@512    llama MH  +2.69 [-0.16, +5.52] p=0.0644 
+lbp@512      - tfidf@512    2M    all +0.76 [-0.54, +2.04] p=0.2650 
+lbp@512      - tfidf@512    2M    MH  +1.69 [-0.45, +3.78] p=0.1196 
+lbp@512      - bge@512      qwen  all +0.47 [-1.61, +2.49] p=0.6602 
+lbp@512      - bge@512      qwen  MH  +0.77 [-2.66, +4.12] p=0.6716 
+lbp@512      - bge@512      llama all +1.06 [-0.98, +3.08] p=0.2994 
+lbp@512      - bge@512      llama MH  +1.28 [-2.11, +4.62] p=0.4614 
+lbp@512      - bge@512      2M    all +0.77 [-0.73, +2.23] p=0.3026 
+lbp@512      - bge@512      2M    MH  +1.03 [-1.36, +3.36] p=0.4138 
+lbp@512      - span@512     qwen  all +14.77 [+12.43, +17.09] p=0.0000 *
+lbp@512      - span@512     qwen  MH  +13.91 [+10.34, +17.40] p=0.0000 *
+lbp@512      - span@512     llama all +15.44 [+13.01, +17.82] p=0.0000 *
+lbp@512      - span@512     llama MH  +12.90 [+9.30, +16.57] p=0.0000 *
+lbp@512      - span@512     2M    all +15.10 [+13.46, +16.75] p=0.0000 *
+lbp@512      - span@512     2M    MH  +13.41 [+10.80, +15.95] p=0.0000 *
+bge_rerank@512 - bm25@512     qwen  all +0.83 [-1.00, +2.60] p=0.3766 
+bge_rerank@512 - bm25@512     qwen  MH  +0.28 [-2.70, +3.27] p=0.8594 
+bge_rerank@512 - bm25@512     llama all +0.38 [-1.42, +2.15] p=0.6736 
+bge_rerank@512 - bm25@512     llama MH  -0.66 [-3.44, +2.19] p=0.6562 
+bge_rerank@512 - bm25@512     2M    all +0.60 [-0.68, +1.85] p=0.3466 
+bge_rerank@512 - bm25@512     2M    MH  -0.19 [-2.24, +1.85] p=0.8602 
+bge_rerank@512 - tfidf@512    qwen  all +1.10 [-0.77, +2.94] p=0.2672 
+bge_rerank@512 - tfidf@512    qwen  MH  +0.82 [-2.32, +3.88] p=0.6132 
+bge_rerank@512 - tfidf@512    llama all +0.87 [-0.94, +2.64] p=0.3494 
+bge_rerank@512 - tfidf@512    llama MH  +1.41 [-1.49, +4.23] p=0.3258 
+bge_rerank@512 - tfidf@512    2M    all +0.99 [-0.31, +2.26] p=0.1380 
+bge_rerank@512 - tfidf@512    2M    MH  +1.12 [-0.99, +3.21] p=0.2928 
+bge_rerank@512 - bge@512      qwen  all +1.49 [-0.47, +3.43] p=0.1372 
+bge_rerank@512 - bge@512      qwen  MH  +0.91 [-2.34, +4.12] p=0.6030 
+bge_rerank@512 - bge@512      llama all +0.50 [-1.44, +2.48] p=0.6208 
+bge_rerank@512 - bge@512      llama MH  +0.00 [-3.30, +3.30] p=0.9996 
+bge_rerank@512 - bge@512      2M    all +1.00 [-0.40, +2.38] p=0.1650 
+bge_rerank@512 - bge@512      2M    MH  +0.45 [-1.87, +2.68] p=0.6958 
+bge_rerank@512 - span@512     qwen  all +15.79 [+13.29, +18.23] p=0.0000 *
+bge_rerank@512 - span@512     qwen  MH  +14.05 [+10.40, +17.67] p=0.0000 *
+bge_rerank@512 - span@512     llama all +14.88 [+12.41, +17.34] p=0.0000 *
+bge_rerank@512 - span@512     llama MH  +11.62 [+7.99, +15.31] p=0.0000 *
+bge_rerank@512 - span@512     2M    all +15.33 [+13.64, +17.10] p=0.0000 *
+bge_rerank@512 - span@512     2M    MH  +12.84 [+10.25, +15.47] p=0.0000 *
+bge_union@512 - bm25@512     qwen  all -0.13 [-2.02, +1.68] p=0.8854 
+bge_union@512 - bm25@512     qwen  MH  +0.23 [-2.76, +3.29] p=0.8858 
+bge_union@512 - bm25@512     llama all +0.56 [-1.24, +2.40] p=0.5592 
+bge_union@512 - bm25@512     llama MH  -0.03 [-2.95, +2.98] p=0.9812 
+bge_union@512 - bm25@512     2M    all +0.21 [-1.08, +1.51] p=0.7482 
+bge_union@512 - bm25@512     2M    MH  +0.10 [-2.00, +2.22] p=0.9344 
+bge_union@512 - tfidf@512    qwen  all +0.13 [-1.75, +2.00] p=0.9026 
+bge_union@512 - tfidf@512    qwen  MH  +0.77 [-2.26, +3.77] p=0.6250 
+bge_union@512 - tfidf@512    llama all +1.06 [-0.74, +2.81] p=0.2576 
+bge_union@512 - tfidf@512    llama MH  +2.05 [-0.83, +4.86] p=0.1612 
+bge_union@512 - tfidf@512    2M    all +0.60 [-0.68, +1.88] p=0.3718 
+bge_union@512 - tfidf@512    2M    MH  +1.41 [-0.69, +3.49] p=0.1844 
+bge_union@512 - bge@512      qwen  all +0.53 [-1.50, +2.52] p=0.6142 
+bge_union@512 - bge@512      qwen  MH  +0.86 [-2.48, +4.17] p=0.6238 
+bge_union@512 - bge@512      llama all +0.69 [-1.29, +2.70] p=0.4956 
+bge_union@512 - bge@512      llama MH  +0.63 [-2.65, +3.95] p=0.7148 
+bge_union@512 - bge@512      2M    all +0.61 [-0.85, +2.02] p=0.4036 
+bge_union@512 - bge@512      2M    MH  +0.74 [-1.59, +3.07] p=0.5352 
+bge_union@512 - span@512     qwen  all +14.82 [+12.43, +17.20] p=0.0000 *
+bge_union@512 - span@512     qwen  MH  +14.00 [+10.47, +17.54] p=0.0000 *
+bge_union@512 - span@512     llama all +15.06 [+12.58, +17.50] p=0.0000 *
+bge_union@512 - span@512     llama MH  +12.26 [+8.60, +16.00] p=0.0000 *
+bge_union@512 - span@512     2M    all +14.94 [+13.28, +16.65] p=0.0000 *
+bge_union@512 - span@512     2M    MH  +13.13 [+10.53, +15.69] p=0.0000 *
+bge_recall@512 - bm25@512     qwen  all -0.04 [-1.94, +1.84] p=0.9622 
+bge_recall@512 - bm25@512     qwen  MH  +1.10 [-2.00, +4.20] p=0.4804 
+bge_recall@512 - bm25@512     llama all -0.31 [-2.24, +1.63] p=0.7574 
+bge_recall@512 - bm25@512     llama MH  -1.91 [-4.97, +1.26] p=0.2466 
+bge_recall@512 - bm25@512     2M    all -0.18 [-1.57, +1.16] p=0.8158 
+bge_recall@512 - bm25@512     2M    MH  -0.40 [-2.60, +1.82] p=0.7388 
+bge_recall@512 - tfidf@512    qwen  all +0.22 [-1.67, +2.12] p=0.8282 
+bge_recall@512 - tfidf@512    qwen  MH  +1.64 [-1.48, +4.83] p=0.3124 
+bge_recall@512 - tfidf@512    llama all +0.19 [-1.69, +2.05] p=0.8424 
+bge_recall@512 - tfidf@512    llama MH  +0.17 [-2.90, +3.33] p=0.9132 
+bge_recall@512 - tfidf@512    2M    all +0.21 [-1.17, +1.55] p=0.7834 
+bge_recall@512 - tfidf@512    2M    MH  +0.91 [-1.31, +3.15] p=0.4130 
+bge_recall@512 - bge@512      qwen  all +0.62 [-1.02, +2.33] p=0.4848 
+bge_recall@512 - bge@512      qwen  MH  +1.73 [-1.17, +4.57] p=0.2366 
+bge_recall@512 - bge@512      llama all -0.18 [-1.86, +1.50] p=0.8352 
+bge_recall@512 - bge@512      llama MH  -1.25 [-4.04, +1.58] p=0.3820 
+bge_recall@512 - bge@512      2M    all +0.22 [-0.98, +1.38] p=0.7204 
+bge_recall@512 - bge@512      2M    MH  +0.24 [-1.77, +2.25] p=0.8074 
+bge_recall@512 - span@512     qwen  all +14.91 [+12.54, +17.32] p=0.0000 *
+bge_recall@512 - span@512     qwen  MH  +14.87 [+11.19, +18.57] p=0.0000 *
+bge_recall@512 - span@512     llama all +14.20 [+11.81, +16.57] p=0.0000 *
+bge_recall@512 - span@512     llama MH  +10.38 [+6.89, +14.01] p=0.0000 *
+bge_recall@512 - span@512     2M    all +14.55 [+12.89, +16.26] p=0.0000 *
+bge_recall@512 - span@512     2M    MH  +12.62 [+10.01, +15.23] p=0.0000 *
