@@ -48,4 +48,26 @@ about 1.5 points; radius 16 raises coverage but not F1 (below).
 | bridge_hop + sentence repair + hop2_share 0.67 | 54.16 | 41.95 | **48.06** |
 | bridge_hop, radius 16 | 53.03 | 40.80 | 46.91 |
 
-Round 2 (running): BGE chunks, hybrid/BGE seeds with hop-2, and their no-hop-2 controls.
+Round 2:
+| config | HotpotQA-E | 2Wiki-E | macro |
+|---|---|---|---|
+| BGE chunks | 50.09 | 41.77 | 45.93 |
+| lexical, no hop-2, sentence repair | 53.89 | 41.92 | 47.90 |
+| BGE seeds + hop-2 + sentence repair | 52.25 | 45.94 | 49.10 |
+| hybrid seeds + hop-2 + sentence repair | 55.32 | 45.17 | 50.25 |
+| **hybrid seeds, no hop-2, sentence repair** | **58.26** | **44.12** | **51.19** |
+
+Paired bootstrap (dev, task-stratified, 10k, seed 20260701):
+- hybrid + sentence repair (no hop-2) - BGE chunks: +5.26 [2.34, 8.23], p=0.0004
+- hybrid + sentence repair (no hop-2) - old BridgePack: +6.16 [3.27, 9.01], p<0.0001
+- hybrid + hop-2 - BGE chunks: +4.31 [1.09, 7.52], p=0.008
+- sentence repair - fixed repair (lexical, no hop-2): +2.54 [0.27, 4.89], p=0.027
+- lexical + sentence repair - old BridgePack: +2.88 [0.27, 5.54], p=0.030
+- hop-2 effect: lexical +0.15 [-2.44, 2.81]; hybrid -0.94 [-3.86, 1.91] (not significant)
+- lexical + sentence repair - BGE chunks: +1.97 [-1.33, 5.23] (not significant)
+
+Conclusion so far: the F1 gain comes from sentence-boundary repair with merged, backfilled exact
+admission, and from hybrid lexical+dense seeds. The bridge-entity second hop raises answer coverage
+but not F1 (it helps 2Wiki, hurts HotpotQA) and is dropped from the main method.
+
+Round 3 (running): BGE seeds + sentence repair, hybrid/BGE seeds + fixed repair; BGE cache for test.
