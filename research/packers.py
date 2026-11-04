@@ -191,9 +191,9 @@ def bridge_hop(s, tok, budget=1024, k1=6, radius=32, beta=0.3, hop2_share=0.5, m
     return _admit(tok, s, priority, page_map, budget, radius, sent)
 
 
-def lex_rep(s, tok, budget=1024, radius=32, seed_mode=0):
+def lex_rep(s, tok, budget=1024, radius=32, seed_mode=0, sent=0):
     """Control: hop-1 ranking only (lexical / dense / hybrid seeds), same repair/merge/admission."""
-    return bridge_hop(s, tok, budget, radius=radius, hop2_share=0.0, seed_mode=seed_mode)
+    return bridge_hop(s, tok, budget, radius=radius, hop2_share=0.0, seed_mode=seed_mode, sent=sent)
 
 
 def bge_chunk(s, tok, budget=1024, neighbor=32, top_k=64):
