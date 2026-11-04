@@ -70,4 +70,14 @@ Conclusion so far: the F1 gain comes from sentence-boundary repair with merged, 
 admission, and from hybrid lexical+dense seeds. The bridge-entity second hop raises answer coverage
 but not F1 (it helps 2Wiki, hurts HotpotQA) and is dropped from the main method.
 
-Round 3 (running): BGE seeds + sentence repair, hybrid/BGE seeds + fixed repair; BGE cache for test.
+Round 3 (seed x repair, all with merged/backfilled exact admission and document-order emission,
+no hop-2), dev macro F1:
+| seeds | fixed +-32 repair | sentence-boundary repair |
+|---|---|---|
+| lexical | 45.37 | 47.90 |
+| BGE | 48.88 | 50.12 |
+| hybrid | 48.17 | **51.19** |
+Reference: BGE chunks (repo baseline, fixed +-32, similarity-order emission) 45.93; old BridgePack 45.03.
+Sentence repair helps with every seed (+2.5 / +1.2 / +3.0). BGE cache for the test set computed on Colab.
+
+Round 4 (running): 512 / 2048 budgets for BGE chunks, hybrid + sentence repair, old BridgePack.
