@@ -51,13 +51,34 @@ def _ekey(e):
     return " ".join(etp._content_tokens(e))
 
 
-def _merge_pieces(selected, page_map, radius):
-    """Repair each span by +-radius within its page and merge overlapping repaired ranges,
-    so that overlapping spans do not spend budget twice. Returns [(page_id, start, end)]."""
+_SENT_END = {".", "?", "!"}
+
+
+def _sentence_range(toks, ps, a, b, radius):
+    """Smallest extension of [a, b) to sentence boundaries, at most `radius` tokens per side."""
+    lo = max(ps, a - radius)
+    left = a
+    while left > lo and toks[left - 1 - ps] not in _SENT_END:
+        left -= 1
+    hi = min(ps + len(toks), b + radius)
+    right = b
+    while right < hi and toks[right - 1 - ps] not in _SENT_END:
+        right += 1
+    return left, right
+
+
+def _merge_pieces(selected, page_map, radius, sent=0):
+    """Repair each span by +-radius within its page (or, with sent=1, only up to the nearest
+    sentence boundaries within that radius) and merge overlapping repaired ranges, so that
+    overlapping spans do not spend budget twice. Returns [(page_id, start, end)]."""
     rng = []
     for c in selected:
         page = page_map[c.page_id]
         ps, toks = int(page["start_token"]), page["tokens"]
+        if sent:
+            a, b = _sentence_range(toks, ps, c.start_token, c.end_token, radius)
+            rng.append((c.page_id, a, b))
+            continue
         rng.append((c.page_id, max(ps, c.start_token - radius), min(ps + len(toks), c.end_token + radius)))
     rng.sort()
     merged = []
@@ -75,19 +96,19 @@ def _range_text(page_map, p, a, b):
     return etp._detokenize(page["tokens"][a - ps:b - ps])
 
 
-def _admit(tok, s, priority, page_map, budget, radius):
+def _admit(tok, s, priority, page_map, budget, radius, sent=0):
     """Add spans in priority order while the merged, repaired, document-ordered context fits the
     exact budget (spans that do not fit are skipped, later ones may still fit)."""
     prefix = etp._prefix(s["question"], False)
     chosen = []
     for c in priority:
         trial = chosen + [c]
-        text = "\n\n".join([prefix] + [_range_text(page_map, *r) for r in _merge_pieces(trial, page_map, radius)])
+        text = "\n\n".join([prefix] + [_range_text(page_map, *r) for r in _merge_pieces(trial, page_map, radius, sent)])
         if len(tok(text).input_ids) <= budget:
             chosen = trial
         elif len(tok(text).input_ids) > budget + 400:
             continue
-    text = "\n\n".join([prefix] + [_range_text(page_map, *r) for r in _merge_pieces(chosen, page_map, radius)])
+    text = "\n\n".join([prefix] + [_range_text(page_map, *r) for r in _merge_pieces(chosen, page_map, radius, sent)])
     return _emit(tok, s["question"], [text[len(prefix):].strip()], budget) if chosen else _emit(tok, s["question"], [], budget)
 
 
@@ -124,7 +145,7 @@ def _seed(s, cands, mode):
     return {i: lex[i] + dense[i] for i in ids}
 
 
-def bridge_hop(s, tok, budget=1024, k1=6, radius=32, beta=0.3, hop2_share=0.5, max_ents=12, seed_mode=0):
+def bridge_hop(s, tok, budget=1024, k1=6, radius=32, beta=0.3, hop2_share=0.5, max_ents=12, seed_mode=0, sent=0):
     q = s["question"]
     cands, page_map = etp.build_candidate_spans(s["sample_id"], s["task"], q, s["context"])
     if not cands:
@@ -167,7 +188,7 @@ def bridge_hop(s, tok, budget=1024, k1=6, radius=32, beta=0.3, hop2_share=0.5, m
             priority.append(c)
         if len(priority) >= 60:
             break
-    return _admit(tok, s, priority, page_map, budget, radius)
+    return _admit(tok, s, priority, page_map, budget, radius, sent)
 
 
 def lex_rep(s, tok, budget=1024, radius=32, seed_mode=0):
