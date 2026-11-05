@@ -101,3 +101,4 @@ Qwen2.5-14B (same Qwen traces): BGE chunks 36.27/42.34/45.29, old BridgePack 36.
 ours hybrid 40.44/44.32/47.50, ours BGE seeds 39.21/45.18/48.10, LLMLingua-2 27.10 (512/1024/2048).
 Ours vs BGE chunks on 14B: significant at all 3 budgets for both seed types (p <= 0.028).
 Totals: frozen hybrid config beats BGE chunks in 9/9 model x budget settings, significant in 8/9.
+Full context Qwen-14B: 47.59 (ours hybrid 2048: 47.50).

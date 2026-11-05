@@ -1,0 +1,30 @@
+{
+ "bp_main": {
+  "mean_ms": 614.4,
+  "p50_ms": 598.4,
+  "p95_ms": 961.9,
+  "max_tok": 1024,
+  "mean_tok": 927.7
+ },
+ "bge_chunk": {
+  "mean_ms": 279.8,
+  "p50_ms": 266.9,
+  "p95_ms": 470.7,
+  "max_tok": 1024,
+  "mean_tok": 986.5
+ },
+ "ours_hybrid": {
+  "mean_ms": 432.4,
+  "p50_ms": 415.1,
+  "p95_ms": 698.3,
+  "max_tok": 1024,
+  "mean_tok": 1013.8
+ },
+ "ours_bge": {
+  "mean_ms": 410.4,
+  "p50_ms": 401.6,
+  "p95_ms": 637.6,
+  "max_tok": 1024,
+  "mean_tok": 1013.8
+ }
+}
