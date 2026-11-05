@@ -1,0 +1,135 @@
+== macro
+qwen bp_main_budget=512 33.88 32.87 47.32 47.82 37.24 21.24 16.77 MH 35.43
+qwen bp_main_budget=1024 39.11 40.40 50.08 54.05 46.25 26.83 17.05 MH 42.38
+qwen bp_main_budget=2048 40.68 41.17 50.41 55.83 48.75 30.33 17.58 MH 44.97
+qwen bge_chunk_budget=512 33.05 33.45 46.05 44.17 39.37 20.99 14.26 MH 34.84
+qwen bge_chunk_budget=1024 38.85 38.90 47.90 51.61 45.88 30.72 18.08 MH 42.74
+qwen bge_chunk_budget=2048 40.98 38.99 47.47 54.97 52.19 31.95 20.29 MH 46.37
+qwen lex_rep_seed_mode=2_sent=1_budget=512 36.74 36.76 48.12 50.94 44.40 23.07 17.13 MH 39.47
+qwen lex_rep_seed_mode=2_sent=1_budget=1024 40.64 38.73 49.31 57.10 48.32 33.39 16.97 MH 46.27
+qwen lex_rep_seed_mode=2_sent=1_budget=2048 43.60 43.52 49.14 61.54 49.70 36.38 21.31 MH 49.20
+qwen lex_rep_seed_mode=1_sent=1_budget=512 35.64 36.76 44.85 49.40 44.23 23.64 14.96 MH 39.09
+qwen lex_rep_seed_mode=1_sent=1_budget=1024 40.76 42.03 46.40 57.00 52.41 29.89 16.82 MH 46.43
+qwen lex_rep_seed_mode=1_sent=1_budget=2048 43.14 43.07 47.05 58.45 51.52 38.88 19.90 MH 49.62
+qwen lingua2_budget=1024 24.60 33.23 31.00 32.80 29.19 13.19 8.16 MH 25.06
+qwen fullctx 43.04 44.86 51.41 58.07 45.61 29.36 28.94 MH 44.35
+qwen lex_rep_seed_mode=0_sent=1_budget=1024 39.33 38.67 49.99 55.50 43.36 30.19 18.27 MH 43.01
+qwen final_abl_sent=0_budget=1024 40.77 42.29 48.48 56.95 47.38 31.98 17.53 MH 45.44
+qwen final_abl_merge=0_budget=1024 40.08 38.52 49.58 55.30 47.93 31.40 17.76 MH 44.88
+qwen final_abl_docorder=0_budget=1024 40.37 36.77 48.92 55.80 50.05 32.78 17.94 MH 46.21
+qwen final_abl_backfill=0_budget=1024 40.34 39.51 49.44 55.53 48.71 32.52 16.33 MH 45.59
+llama bp_main_budget=512 34.05 34.16 49.35 44.92 39.92 18.30 17.63 MH 34.38
+llama bp_main_budget=1024 37.79 38.33 50.09 49.47 45.11 24.25 19.46 MH 39.61
+llama bp_main_budget=2048 39.60 39.46 49.81 52.26 48.79 28.54 18.76 MH 43.20
+llama bge_chunk_budget=512 33.27 35.01 46.51 43.80 38.33 18.44 17.52 MH 33.52
+llama bge_chunk_budget=1024 38.99 40.65 48.49 47.33 48.11 28.50 20.86 MH 41.31
+llama bge_chunk_budget=2048 40.85 41.94 47.66 53.14 47.90 31.37 23.07 MH 44.14
+llama lex_rep_seed_mode=2_sent=1_budget=512 36.44 38.00 50.74 47.77 41.20 22.10 18.82 MH 37.02
+llama lex_rep_seed_mode=2_sent=1_budget=1024 40.98 41.28 52.99 51.86 49.42 30.37 19.95 MH 43.89
+llama lex_rep_seed_mode=2_sent=1_budget=2048 42.78 44.38 51.77 59.33 45.75 32.27 23.19 MH 45.78
+llama lex_rep_seed_mode=1_sent=1_budget=512 36.16 39.19 46.62 49.94 40.80 22.15 18.25 MH 37.63
+llama lex_rep_seed_mode=1_sent=1_budget=1024 41.67 41.79 49.78 56.18 49.58 31.84 20.85 MH 45.87
+llama lex_rep_seed_mode=1_sent=1_budget=2048 43.58 45.36 49.62 58.05 49.46 36.96 22.01 MH 48.16
+llama lingua2_budget=1024 28.43 34.31 33.35 37.35 31.53 20.40 13.61 MH 29.76
+llama fullctx 43.13 45.28 54.80 55.79 44.14 31.26 27.52 MH 43.73
+llama lex_rep_seed_mode=0_sent=1_budget=1024 40.19 39.58 52.68 52.78 45.19 29.00 21.92 MH 42.32
+llama final_abl_sent=0_budget=1024 40.42 40.86 51.09 52.45 47.07 30.26 20.81 MH 43.26
+llama final_abl_merge=0_budget=1024 40.62 39.94 53.11 53.35 46.33 31.61 19.36 MH 43.76
+llama final_abl_docorder=0_budget=1024 41.60 43.51 52.51 52.04 49.44 32.31 19.81 MH 44.60
+llama final_abl_backfill=0_budget=1024 41.12 41.23 52.33 52.30 49.48 32.12 19.29 MH 44.63
+qwen14 bp_main_budget=512 36.73 33.41 48.93 50.04 45.11 26.23 16.63 MH 40.46
+qwen14 bp_main_budget=1024 41.69 39.37 49.88 56.88 52.25 31.82 19.92 MH 46.98
+qwen14 bp_main_budget=2048 44.23 41.17 50.86 62.07 52.67 37.89 20.73 MH 50.88
+qwen14 bge_chunk_budget=512 36.27 34.46 46.22 49.88 44.13 26.06 16.83 MH 40.02
+qwen14 bge_chunk_budget=1024 42.34 39.75 49.05 55.42 53.34 35.28 21.19 MH 48.02
+qwen14 bge_chunk_budget=2048 45.29 41.66 49.07 58.51 58.93 40.26 23.30 MH 52.57
+qwen14 lex_rep_seed_mode=2_sent=1_budget=512 40.44 38.83 51.58 53.95 49.55 29.03 19.67 MH 44.18
+qwen14 lex_rep_seed_mode=2_sent=1_budget=1024 44.32 40.70 53.03 58.78 55.52 36.65 21.24 MH 50.32
+qwen14 lex_rep_seed_mode=2_sent=1_budget=2048 47.50 44.02 50.51 63.90 60.44 43.68 22.44 MH 56.01
+qwen14 lex_rep_seed_mode=1_sent=1_budget=512 39.21 39.77 47.65 53.92 50.55 25.49 17.89 MH 43.32
+qwen14 lex_rep_seed_mode=1_sent=1_budget=1024 45.18 41.29 50.37 60.59 60.29 37.33 21.18 MH 52.74
+qwen14 lex_rep_seed_mode=1_sent=1_budget=2048 48.10 45.62 50.45 61.26 61.26 45.83 24.15 MH 56.12
+qwen14 lingua2_budget=1024 27.10 30.93 32.71 38.34 34.15 18.34 8.12 MH 30.27
+qwen14 fullctx 47.59 45.46 53.86 62.00 58.52 37.21 28.50 MH 52.58
+qwen14 lex_rep_seed_mode=0_sent=1_budget=1024 43.69 38.97 52.75 57.69 53.97 35.32 23.44 MH 48.99
+qwen14 final_abl_sent=0_budget=1024 44.75 40.79 52.66 58.07 56.42 40.14 20.43 MH 51.54
+qwen14 final_abl_merge=0_budget=1024 42.89 40.74 51.15 58.40 53.61 33.09 20.37 MH 48.37
+qwen14 final_abl_docorder=0_budget=1024 44.61 42.72 52.29 59.56 54.98 37.46 20.63 MH 50.67
+qwen14 final_abl_backfill=0_budget=1024 43.59 39.72 51.43 59.55 54.37 34.76 21.74 MH 49.56
+== pooled over 3 models
+512 hyb - BGEchunk +3.68 [2.53, 4.82] p=0.0000
+512 hyb - BP +2.99 [2.04, 3.94] p=0.0000
+512 bge - BGEchunk +2.81 [1.88, 3.76] p=0.0000
+512 bge - BP +2.12 [0.94, 3.33] p=0.0006
+1024 hyb - BGEchunk +1.92 [0.87, 2.97] p=0.0006
+1024 hyb - BP +2.45 [1.52, 3.39] p=0.0000
+1024 bge - BGEchunk +2.48 [1.50, 3.45] p=0.0000
+1024 bge - BP +3.01 [1.92, 4.10] p=0.0000
+2048 hyb - BGEchunk +2.26 [1.24, 3.29] p=0.0000
+2048 hyb - BP +3.12 [2.18, 4.08] p=0.0000
+2048 bge - BGEchunk +2.57 [1.58, 3.57] p=0.0000
+2048 bge - BP +3.43 [2.39, 4.50] p=0.0000
+== per model
+qwen 512 hyb - BGEchunk +3.69 [1.69, 5.68] p=0.0002
+qwen 512 hyb - BP +2.86 [1.09, 4.59] p=0.0016
+qwen 512 bge - BGEchunk +2.59 [0.91, 4.29] p=0.0020
+qwen 512 bge - BP +1.76 [-0.29, 3.83] p=0.0978
+qwen 1024 hyb - BGEchunk +1.79 [-0.08, 3.65] p=0.0614
+qwen 1024 hyb - BP +1.53 [-0.14, 3.17] p=0.0736
+qwen 1024 bge - BGEchunk +1.91 [0.21, 3.64] p=0.0266
+qwen 1024 bge - BP +1.65 [-0.25, 3.58] p=0.0880
+qwen 2048 hyb - BGEchunk +2.62 [0.82, 4.49] p=0.0042
+qwen 2048 hyb - BP +2.92 [1.26, 4.58] p=0.0004
+qwen 2048 bge - BGEchunk +2.17 [0.43, 3.96] p=0.0150
+qwen 2048 bge - BP +2.47 [0.69, 4.27] p=0.0070
+qwen hyb1024 - lingua +16.04 [13.65, 18.47] p=0.0000
+qwen hyb2048 - lingua +19.00 [16.56, 21.45] p=0.0000
+qwen hyb1024 - full -2.41 [-4.58, -0.25] p=0.0276
+qwen hyb2048 - full +0.56 [-1.46, 2.56] p=0.5784
+qwen lex-seed1024 - BGEchunk +0.48 [-1.60, 2.58] p=0.6548
+qwen lex-seed1024 - BP +0.22 [-1.40, 1.82] p=0.8042
+llama 512 hyb - BGEchunk +3.17 [1.14, 5.17] p=0.0018
+llama 512 hyb - BP +2.39 [0.69, 4.07] p=0.0070
+llama 512 bge - BGEchunk +2.89 [1.24, 4.56] p=0.0010
+llama 512 bge - BP +2.11 [-0.00, 4.15] p=0.0506
+llama 1024 hyb - BGEchunk +1.99 [0.20, 3.84] p=0.0286
+llama 1024 hyb - BP +3.19 [1.48, 4.89] p=0.0002
+llama 1024 bge - BGEchunk +2.68 [1.06, 4.38] p=0.0010
+llama 1024 bge - BP +3.88 [1.97, 5.80] p=0.0000
+llama 2048 hyb - BGEchunk +1.93 [0.08, 3.80] p=0.0402
+llama 2048 hyb - BP +3.18 [1.53, 4.80] p=0.0004
+llama 2048 bge - BGEchunk +2.73 [1.03, 4.44] p=0.0016
+llama 2048 bge - BP +3.97 [2.12, 5.80] p=0.0000
+llama hyb1024 - lingua +12.55 [10.15, 14.92] p=0.0000
+llama hyb2048 - lingua +14.35 [11.99, 16.72] p=0.0000
+llama hyb1024 - full -2.15 [-4.29, -0.04] p=0.0474
+llama hyb2048 - full -0.35 [-2.39, 1.65] p=0.7264
+llama lex-seed1024 - BGEchunk +1.20 [-0.76, 3.21] p=0.2222
+llama lex-seed1024 - BP +2.41 [0.95, 3.90] p=0.0018
+qwen14 512 hyb - BGEchunk +4.17 [2.27, 6.12] p=0.0000
+qwen14 512 hyb - BP +3.71 [2.15, 5.26] p=0.0000
+qwen14 512 bge - BGEchunk +2.95 [1.38, 4.53] p=0.0004
+qwen14 512 bge - BP +2.49 [0.45, 4.47] p=0.0146
+qwen14 1024 hyb - BGEchunk +1.98 [0.20, 3.85] p=0.0282
+qwen14 1024 hyb - BP +2.63 [1.17, 4.12] p=0.0004
+qwen14 1024 bge - BGEchunk +2.84 [1.25, 4.49] p=0.0002
+qwen14 1024 bge - BP +3.49 [1.62, 5.33] p=0.0002
+qwen14 2048 hyb - BGEchunk +2.21 [0.45, 3.99] p=0.0136
+qwen14 2048 hyb - BP +3.27 [1.65, 4.90] p=0.0002
+qwen14 2048 bge - BGEchunk +2.81 [1.12, 4.59] p=0.0008
+qwen14 2048 bge - BP +3.86 [2.06, 5.69] p=0.0000
+qwen14 hyb1024 - lingua +17.22 [14.92, 19.63] p=0.0000
+qwen14 hyb2048 - lingua +20.40 [18.02, 22.80] p=0.0000
+qwen14 hyb1024 - full -3.27 [-5.32, -1.23] p=0.0016
+qwen14 hyb2048 - full -0.10 [-2.04, 1.82] p=0.9312
+qwen14 lex-seed1024 - BGEchunk +1.35 [-0.64, 3.39] p=0.1866
+qwen14 lex-seed1024 - BP +2.00 [0.56, 3.46] p=0.0076
+== pooled lexical seeds / ablated variants vs BGE chunks (1024)
+lex +1.01 [-0.18, 2.18] p=0.0976
+lex-BP +1.54 [0.68, 2.43] p=0.0006
+sent=0 vs BGEchunk +1.92 [0.87, 3.02] p=0.0006 | full - abl -0.00 [-0.75, 0.73] p=0.9786
+merge=0 vs BGEchunk +1.14 [0.11, 2.19] p=0.0288 | full - abl +0.78 [0.03, 1.52] p=0.0394
+docorder=0 vs BGEchunk +2.14 [1.06, 3.22] p=0.0000 | full - abl -0.22 [-0.97, 0.53] p=0.5612
+backfill=0 vs BGEchunk +1.63 [0.56, 2.71] p=0.0028 | full - abl +0.29 [-0.13, 0.71] p=0.1718
+hyb-lingua pooled +15.27 [13.90, 16.64] p=0.0000
+hyb-bge seeds pooled 1024 -0.56 [-1.49, 0.40] p=0.2450

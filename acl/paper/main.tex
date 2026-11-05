@@ -1,4 +1,5 @@
-% ACL submission draft (all numbers from the unified A100 re-run; analysis scripts in ../analysis)
+% ACL submission draft v2. All main-text numbers come from one frozen test run
+% (../research/test_preds, ../research/paper_tables.py -> paper_numbers.txt).
 \documentclass[11pt]{article}
 \usepackage[review]{acl}
 \usepackage{times}
@@ -18,11 +19,9 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
 
-\newcommand{\bp}{\textsc{BridgePack}}
-\newcommand{\bpbge}{\textsc{BridgePack}-BGE}
-\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\newcommand{\spk}{\textsc{SentPack}}
 
-\title{Repair, Pair, Repack: Evidence-Level Context Compression\\for Long-Context Question Answering under Exact Token Budgets}
+\title{Whole Sentences, Exact Budgets: Retriever-Agnostic Evidence Packing\\for Long-Context Question Answering}
 
 \author{Anonymous ACL submission}
 
@@ -30,56 +29,49 @@
 \maketitle
 
 \begin{abstract}
-Long-context question answering is often run under a hard prompt budget, imposed by cost, latency, or a model's context window: for Llama-3-8B, 59\% of LongBench QA prompts exceed its 8K window. Popular prompt compressors meet such budgets by deleting tokens or phrases, and chunk retrievers by concatenating fixed-size chunks; both break evidence apart, either inside a sentence or at an arbitrary chunk boundary. We argue that compression for QA should operate on \emph{evidence units} that stay verbatim and readable. We present \bp{}, a training-free context repacker that (i)~selects query--support evidence pairs, (ii)~repairs every selected span with its surrounding text so that answers cut by a boundary are restored, and (iii)~admits evidence under the exact token count of the downstream model's own tokenizer before emitting it in document order. On all 1,150 English single- and multi-document QA instances of LongBench, with a 1,024-token budget (about 7--8$\times$ compression) and two LLMs, \bp{} outperforms LongLLMLingua by 6.6 F1, LLMLingua-2 by 11.3, Selective Context by 18.2, and head/middle truncation by more than 13, and it improves over BM25 and TF-IDF packing by 2.1 and 1.9 F1 (paired bootstrap, $p<0.001$). It matches dense BGE retrieval without any encoder, and plugging dense recall into \bp{} yields the best compressed result on both models. Boundary repair alone contributes 2.4--2.7 F1 on each model, and the gains persist under nucleus sampling, across frozen hyperparameters, and on BABILong.
+When a long document must be answered from under a hard token budget, most systems rank chunks or spans and concatenate the top ones until the budget runs out. We show that \emph{how} the selected evidence is packed matters as much as \emph{which} evidence is selected. We present \spk{}, a training-free packer that sits behind any span ranker: it extends every selected span to the nearest sentence boundaries, merges overlapping extensions so that no text is paid for twice, admits evidence under the exact token count of the downstream model's tokenizer, keeps filling the budget with later spans after an earlier one does not fit, and emits the result in document order. We freeze every design choice on a development split and run the LongBench test set (1,150 single- and multi-document QA instances) once, with three instruction models (Qwen2.5-7B, Llama-3.1-8B, Qwen2.5-14B) and three budgets (512, 1,024, 2,048 tokens). \spk{} outperforms dense BGE chunk packing in all nine model--budget settings, by 1.9--3.7 F1 when pooled over models ($p\le0.001$ at every budget), and outperforms a structured lexical pair packer by 2.5--3.1 F1. The gain is retriever-agnostic: with BGE alone as the ranker it is 2.5--2.8 F1. At 2,048 tokens, \spk{} is statistically indistinguishable from reading the full context on all three models, and it exceeds LLMLingua-2 at the same budget by 15.3 F1.
 \end{abstract}
 
 % =====================================================================
 \section{Introduction}
 
-Large language models (LLMs) are increasingly asked to answer questions over long documents and multi-document collections. Even when a model's context window is long enough, there are good reasons to send it less: inference cost and latency grow with prompt length, many deployed models still have short native windows, and long inputs dilute the few passages that actually matter \citep{liu2024lost}. In LongBench \citep{bai2023longbench}, for example, 59\% of the English QA prompts are longer than the 8K-token window of Llama-3-8B-Instruct \citep{grattafiori2024llama3}, with a median of about 11K tokens. A practical system therefore needs to turn a long context into a short one under a \emph{hard} budget, measured in the tokens of the model that will read it.
+Large language models (LLMs) are routinely asked to answer questions about long documents and document collections. Even when the context window is long enough, there are reasons to send the model less text: prefill cost and latency grow with prompt length, many deployed models have short windows, and long inputs dilute the few passages that matter \citep{liu2024lost}. In practice a long context is therefore often reduced to a \emph{hard} budget of a few hundred to a few thousand tokens, measured in the tokenizer of the model that will read it.
 
-Two families of methods address this. \emph{Prompt compressors} such as Selective Context \citep{li2023selectivecontext}, LLMLingua \citep{jiang2023llmlingua}, LongLLMLingua \citep{jiang2024longllmlingua} and LLMLingua-2 \citep{pan2024llmlingua2} estimate the importance of tokens or phrases and delete the least informative ones. \emph{Chunk retrievers} rank fixed-size chunks with BM25, TF-IDF or a dense encoder and concatenate the top ones \citep{robertson2009probabilistic,karpukhin2020dense,xiao2023cpack}. Both treat compression as deciding \emph{what to drop}. For extractive QA this has a cost that is easy to overlook: token deletion damages the sentences that carry the answer, and chunking cuts evidence at arbitrary boundaries, so an answer phrase can end up half inside and half outside the kept text. Multi-hop questions add a further difficulty, because the second-hop fact is often only weakly related to the question and is dropped by any ranker that scores spans one at a time.
+Two families of methods do this. \emph{Prompt compressors} \citep{li2023selectivecontext,jiang2023llmlingua,jiang2024longllmlingua,pan2024llmlingua2} delete tokens or phrases judged uninformative. \emph{Retrieval-style packers} split the context into chunks or spans, rank them with BM25 or a dense encoder \citep{robertson2009probabilistic,karpukhin2020dense,xiao2023cpack}, and concatenate the top-ranked units, each padded with a fixed window of neighbouring tokens, until the budget is exhausted. Research effort has concentrated on the ranking step. The packing step is usually treated as bookkeeping, and it has three habits that are costly under a tight budget: fixed windows cut sentences, and frequently the answer phrase, at arbitrary positions; adjacent or overlapping units repeat the same text and pay for it twice; and greedy admission stops filling, or leaves holes, as soon as one long unit does not fit.
 
-We take a different view: under a strict budget, the unit of compression should be a \emph{readable piece of evidence}. We present \bp{}, a training-free repacker built on three operations. \textbf{Pair}: candidate spans are selected as query--support pairs, where a span that answers the question directly is paired with a span that supports it, and the pair is scored jointly. \textbf{Repair}: every selected span is expanded with its neighbouring text, so that answer phrases cut by a span boundary are restored. \textbf{Repack}: evidence is admitted with the downstream model's own tokenizer, so that the final context never exceeds the budget, and is emitted verbatim in document order. Figure~\ref{fig:overview} gives an overview.
+We argue that under an exact budget the packer deserves the same care as the ranker, and we present \spk{}, a packer that can be placed behind any span ranker (Figure~\ref{fig:overview}). \spk{} (i)~extends each selected span to the nearest sentence boundaries within a small radius, (ii)~merges extensions that touch or overlap into a single passage, (iii)~admits spans in rank order under the exact downstream token count and \emph{backfills}, i.e., keeps admitting later spans after one does not fit, and (iv)~emits the merged passages verbatim in document order. None of these operations requires training, and all of them run on the CPU before the model is called.
 
-We evaluate \bp{} under a protocol designed to make the comparison strict: all methods are evaluated with the same 1,024-token budget measured by the downstream tokenizer, the same prompt wrapper, model, decoding and scorer, on the full English single- and multi-document QA portion of LongBench (1,150 instances, six tasks), with two LLMs and paired bootstrap tests. Our findings are:
+We evaluate \spk{} under a protocol designed to leave little room for doubt. Every design choice, including the ranker, was fixed on a development split built from LongBench-E with all LongBench test questions removed; the LongBench test set was then run once. All methods share the candidate spans, the prompt wrapper, the model, greedy decoding, the scorer, and a budget counted with the downstream tokenizer. We test three instruction models and three budgets and report paired bootstrap tests. Our findings are:
 
 \begin{itemize}
-\item \textbf{Evidence-level compression beats token-level compression by a wide margin.} \bp{} outperforms LongLLMLingua by 6.6 F1, LLMLingua-2 by 11.3 and Selective Context by 18.2 (two-model average, all $p<0.001$), and the gaps persist on the three multi-hop tasks.
-\item \textbf{Pairing and repair make lexical evidence competitive with dense retrieval.} With the same lexical signals as BM25 and TF-IDF, \bp{} improves on them by 2.1 and 1.9 F1 ($p<0.001$), matches dense BGE chunk retrieval without any encoder, and, when dense recall is plugged in (\bpbge{}), gives the best compressed result on both models.
-\item \textbf{Boundary repair is a key ingredient.} Removing it costs 2.7 F1 on Qwen and 2.4 on Llama-3, and removing the support term from pair scoring costs 1.4.
-\item \textbf{The gains are robust.} They hold under nucleus sampling, across one-at-a-time changes of every frozen constant, and on the synthetic BABILong benchmark, where \bp{} also uses 30\% fewer prompt tokens than BM25.
+\item \textbf{Packing beats ranking-only improvements.} \spk{} outperforms dense BGE chunk packing in all nine model--budget settings, by +3.68, +1.92 and +2.26 F1 at 512, 1,024 and 2,048 tokens (pooled over models, all $p\le0.001$), and outperforms a structured lexical pair packer by 2.5--3.1 F1 (Tables~\ref{tab:main} and~\ref{tab:sig}).
+\item \textbf{The gain is retriever-agnostic.} Holding the BGE ranking fixed and changing only the packer improves F1 by 2.5--2.8 at every budget; with a purely lexical ranker \spk{} still outperforms the pair packer that uses the same lexical signals (Section~\ref{sec:agnostic}).
+\item \textbf{A 2,048-token \spk{} context is as good as the full context} on all three models (paired differences $+0.56$, $-0.35$ and $-0.10$ F1, none significant), while sending about one sixth of the prompt.
+\item \textbf{Evidence-level packing dominates token deletion.} At the same exact budget, \spk{} exceeds LLMLingua-2 by 15.3 F1.
+\item \textbf{The packer is robust.} Removing any one of its components still leaves a packer that beats BGE chunk packing; merging overlapping evidence is the component whose removal costs the most (Section~\ref{sec:components}).
 \end{itemize}
 
 \begin{figure*}[t]
 \centering
-\begin{tikzpicture}[
+\resizebox{\textwidth}{!}{\begin{tikzpicture}[
   font=\small,
-  box/.style={draw, rounded corners=3pt, thick, align=center, minimum height=1.55cm, text width=2.55cm, inner sep=3pt},
-  arr/.style={-{Stealth[length=2.2mm]}, thick},
-  span/.style={draw, minimum width=0.42cm, minimum height=0.22cm, inner sep=0pt}
+  box/.style={draw, rounded corners=3pt, thick, align=center, minimum height=1.6cm, text width=2.6cm, inner sep=3pt},
+  arr/.style={-{Stealth[length=2.2mm]}, thick}
 ]
-\node[box, fill=blue!6, draw=blue!60] (seg) {\textbf{1. Segment}\\[2pt] 256-token pages,\\64-token spans\\(stride 32)};
-\node[box, fill=orange!8, draw=orange!70, right=0.45cm of seg] (seed) {\textbf{2. Score seeds}\\[2pt] lexical: BM25 + TF-IDF\\(or dense: BGE)};
-\node[box, fill=violet!7, draw=violet!65, right=0.45cm of seed] (pair) {\textbf{3. Pair}\\[2pt] query span + support span,\\greedy, redundancy-aware};
-\node[box, fill=teal!8, draw=teal!70, right=0.45cm of pair] (rep) {\textbf{4. Repair}\\[2pt] expand each span by\\$\pm$32 tokens in its page};
-\node[box, fill=green!7, draw=green!55!black, right=0.45cm of rep] (pack) {\textbf{5. Repack}\\[2pt] admit with the model's\\tokenizer ($\le B$); emit\\in document order};
-\draw[arr] (seg) -- (seed);
-\draw[arr] (seed) -- (pair);
-\draw[arr] (pair) -- (rep);
-\draw[arr] (rep) -- (pack);
-% repair illustration
-\node[below=0.35cm of rep, align=center, font=\scriptsize] (ill) {
-\begin{tikzpicture}
-\node[span, fill=gray!20] (l) {}; \node[span, fill=blue!35, right=0pt of l, minimum width=0.9cm] (c) {}; \node[span, fill=gray!20, right=0pt of c] (r) {};
-\node[span, fill=teal!30, below=0.18cm of l] (l2) {}; \node[span, fill=blue!35, right=0pt of l2, minimum width=0.9cm] (c2) {}; \node[span, fill=teal!30, right=0pt of c2] (r2) {};
-\node[left=1pt of l, font=\tiny] {cut}; \node[left=1pt of l2, font=\tiny] {repaired};
-\end{tikzpicture}};
-\node[below=0.35cm of pair, align=left, font=\scriptsize, text width=3.4cm] {$S(i,j)=Q(q,s_i)+L_{\mathrm{bridge}}(s_i,s_j)$\\$\qquad\quad+\,0.5\,S_{\mathrm{seed}}(s_j)$};
-\node[below=0.35cm of seg, align=center, font=\scriptsize, text width=2.7cm] {question $q$ + long context $C$\\(e.g.\ 12.5K Qwen tokens)};
-\node[below=0.35cm of pack, align=center, font=\scriptsize, text width=2.7cm] {verbatim context $\hat C$,\\$|\hat C|\le 1{,}024$ model tokens};
-\end{tikzpicture}
-\caption{Overview of \bp{}. Spans are scored (lexically, or with a dense encoder in \bpbge{}), selected as query--support pairs, expanded with their neighbouring text so that boundary-cut evidence is restored, admitted under the exact budget of the downstream tokenizer, and emitted verbatim in document order. \bp{} runs before prefill; it shortens the input and does not modify the model or its KV cache.}
+\node[box, fill=blue!6, draw=blue!60] (rank) {\textbf{Any span ranker}\\[2pt] lexical, dense (BGE)\\or hybrid; top-60 spans\\in rank order};
+\node[box, fill=teal!8, draw=teal!70, right=0.45cm of rank] (sent) {\textbf{1. Sentence repair}\\[2pt] extend each span to\\the nearest sentence\\ends ($\le$32 tokens)};
+\node[box, fill=violet!7, draw=violet!65, right=0.45cm of sent] (merge) {\textbf{2. Merge}\\[2pt] overlapping or touching\\repairs become one\\passage (paid once)};
+\node[box, fill=orange!8, draw=orange!70, right=0.45cm of merge] (fill) {\textbf{3. Exact backfill}\\[2pt] admit if the rendered\\context fits $B$ model\\tokens; else skip, go on};
+\node[box, fill=green!7, draw=green!55!black, right=0.45cm of fill] (emit) {\textbf{4. Emit}\\[2pt] verbatim passages\\in document order,\\$|\hat C|_\tau\le B$};
+\draw[arr] (rank) -- (sent);
+\draw[arr] (sent) -- (merge);
+\draw[arr] (merge) -- (fill);
+\draw[arr] (fill) -- (emit);
+\node[below=0.3cm of rank, align=center, font=\scriptsize, text width=2.8cm] {question $q$, long context $C$\\(mean 12.5K Qwen tokens)};
+\node[below=0.3cm of merge, align=center, font=\scriptsize, text width=6.2cm] {fixed-window packing: \emph{``\ldots the island of Ko Phi''} $|$ cut\\\spk{}: \emph{``It was filmed on the Thai island of Ko Phi Phi Le.''}};
+\node[below=0.3cm of emit, align=center, font=\scriptsize, text width=2.8cm] {compressed context\\$\hat C$ fed to the LLM};
+\end{tikzpicture}}
+\caption{\spk{} packs the spans returned by any ranker. Each span is extended to sentence boundaries, overlapping extensions are merged, spans are admitted in rank order under the exact downstream token budget with backfilling, and the result is emitted verbatim in document order. \spk{} runs before prefill and does not modify the model.}
 \label{fig:overview}
 \end{figure*}
 
@@ -87,76 +79,56 @@ We evaluate \bp{} under a protocol designed to make the comparison strict: all m
 \section{Related Work}
 
 \paragraph{Prompt and context compression.}
-Selective Context removes lexical units with low self-information under a small language model \citep{li2023selectivecontext}. LLMLingua and LongLLMLingua use a small LM to estimate token importance, and LongLLMLingua adds question-aware coarse-to-fine compression for long contexts \citep{jiang2023llmlingua,jiang2024longllmlingua}. LLMLingua-2 distils token-level keep/drop labels into a bidirectional encoder \citep{pan2024llmlingua2}. CPC trains a sentence encoder to score sentences against the question \citep{liskavets2025cpc}, and RECOMP and CompAct train extractive or abstractive compressors for retrieved documents \citep{xu2023recomp,yoon2024compact}. \bp{} differs in three ways: it is training-free, it never edits the text inside a kept unit, and it selects evidence in query--support pairs rather than scoring units one at a time. We compare against the three published compressors that run off the shelf on arbitrary long contexts (Selective Context, LLMLingua-2, LongLLMLingua), all under the same exact budget.
+Selective Context removes lexical units with low self-information \citep{li2023selectivecontext}. LLMLingua and LongLLMLingua estimate token importance with a small LM, the latter with question-aware coarse-to-fine compression \citep{jiang2023llmlingua,jiang2024longllmlingua}; LLMLingua-2 distils keep/drop labels into a bidirectional encoder \citep{pan2024llmlingua2}. CPC scores sentences against the question with a trained encoder \citep{liskavets2025cpc}, and RECOMP and CompAct train extractive or abstractive compressors \citep{xu2023recomp,yoon2024compact}. \spk{} is training-free, never edits text inside a kept passage, and is complementary to learned scorers: any of them can supply its ranking.
 
 \paragraph{Retrieval-style context construction.}
-Retrieval-augmented generation ranks passages with sparse \citep{robertson2009probabilistic} or dense \citep{karpukhin2020dense,xiao2023cpack} retrievers and concatenates the top results \citep{lewis2020retrieval,izacard2021leveraging}. Diversity-aware selection such as MMR \citep{carbonell1998mmr} trades relevance against redundancy, and multi-hop retrieval chains retrieval steps over an external corpus \citep{xiong2021answering,trivedi2023interleaving}. \bp{} works inside a single given context, selects a supporting span \emph{jointly} with the query-linked span it supports, and repairs span boundaries; its seed scorer is pluggable, and we show that a dense scorer and \bp{}'s organisation are complementary.
+Retrieval-augmented generation ranks passages with sparse \citep{robertson2009probabilistic} or dense \citep{karpukhin2020dense,xiao2023cpack} retrievers and concatenates the top results \citep{lewis2020retrieval,izacard2021leveraging}; diversity-aware selection \citep{carbonell1998mmr} and multi-hop retrieval \citep{xiong2021answering,trivedi2023interleaving} refine \emph{which} units are selected. We study the complementary question of how selected units are turned into a context under an exact budget, and show that this step alone moves F1 by 2--4 points.
 
 \paragraph{Long-context evaluation and KV-cache compression.}
-LongBench \citep{bai2023longbench} and BABILong \citep{kuratov2024babilong} evaluate question answering over long inputs, and models are known to under-use evidence placed in the middle of long contexts \citep{liu2024lost}. KV-cache methods reduce memory during generation by evicting, merging or quantising cached states \citep{xiao2023streamingllm,zhang2023h2o,li2024snapkv,liu2024kivi}. \bp{} is complementary: it shortens the \emph{input} before prefill, so the full long context is never encoded by the downstream model.
+LongBench \citep{bai2023longbench} evaluates QA over long inputs, and models under-use evidence in the middle of long contexts \citep{liu2024lost}. KV-cache methods evict, merge or quantise cached states during generation \citep{xiao2023streamingllm,zhang2023h2o,li2024snapkv,liu2024kivi}. \spk{} instead shortens the input before prefill, so the full context is never encoded.
 
 % =====================================================================
 \section{Method}
 \label{sec:method}
 
 \subsection{Problem Setting}
-Given a question $q$ and a long context $C$, we construct a compressed context $\hat C$ with $|\hat C|_{\tau}\le B$, where $|\cdot|_{\tau}$ counts tokens with the tokenizer $\tau$ of the downstream model and $B$ is the budget. The task instruction and the question are kept unchanged by a fixed prompt wrapper; only the context slot is replaced by $\hat C$. Because the budget is defined with the downstream tokenizer, a 1,024-token context for Qwen is a different text length from a 1,024-token context for Llama-3, and every method in our comparison is held to exactly the same definition.
+Given a question $q$ and a long context $C$, we construct $\hat C$ with $|\hat C|_{\tau}\le B$, where $|\cdot|_{\tau}$ counts tokens with the tokenizer $\tau$ of the downstream model. A fixed prompt wrapper keeps the task instruction and question unchanged; only the context slot is replaced by $\hat C$. Because the budget is defined in downstream tokens, every method is held to exactly the same constraint for each model.
 
-\subsection{Candidate Evidence Units}
-The context is split into contiguous, non-overlapping pages of 256 \emph{regex tokens}, and each page into candidate spans of 64 regex tokens with stride 32; spans never cross page boundaries. Regex tokens are produced by the pattern
-\begin{center}
-{\footnotesize\verb![A-Za-z0-9]+(?:['-][A-Za-z0-9]+)?|[^\w\s]!}
-\end{center}
-i.e., alphanumeric words with internal apostrophes or hyphens, or single punctuation characters. Regex tokens serve only to define candidate units independently of any model; all budget accounting uses the downstream tokenizer. All span- and chunk-based methods in our comparison operate on the same candidate spans.
+\subsection{Candidate Spans}
+The context is split into contiguous pages of 256 regex tokens (words or single punctuation marks), and each page into candidate spans of 64 regex tokens with stride 32; spans never cross pages. Regex tokens only define candidate units; all budget accounting uses $\tau$. All span-based methods in our comparison use the same candidate spans.
 
-\subsection{Seed Scoring}
-Each span $s$ receives a seed score. The default, encoder-free scorer fuses two lexical signals computed over the spans of the current instance,
-\begin{equation}
-\begin{aligned}
-S_{\mathrm{seed}}(s)={}&\alpha\,z\big(S_{\mathrm{BM25}}(q,s)\big)\\
-&+(1-\alpha)\,z\big(S_{\mathrm{TFIDF}}(q,s)\big),
-\end{aligned}
-\end{equation}
-where $z(\cdot)$ standardises scores within the instance, BM25 uses $k_1{=}1.2$, $b{=}0.75$, TF-IDF uses sublinear term frequency and smoothed IDF, and $\alpha=0.5$ weights the two standardised signals equally. \bpbge{} replaces $S_{\mathrm{seed}}$ with the standardised cosine similarity between the question and the span under BGE \citep{xiao2023cpack}; everything downstream is unchanged. The scorer never sees gold answers.
+\subsection{Rankers}
+\spk{} accepts any function that scores spans against $q$. We use three, none of which sees gold answers. The \emph{lexical} ranker fuses $z$-normalised BM25 ($k_1{=}1.2$, $b{=}0.75$) and TF-IDF scores computed over the spans of the instance. The \emph{dense} ranker is the cosine similarity between the question (with BGE's query instruction) and the span under \texttt{bge-small-en-v1.5} \citep{xiao2023cpack}. The \emph{hybrid} ranker adds the $z$-normalised lexical and dense scores. The top 60 spans form the priority list $P$, ordered by score with ties broken by position. Our main configuration uses the hybrid ranker, chosen on the development split; Section~\ref{sec:agnostic} shows the gains do not depend on this choice.
 
-\subsection{Query--Support Pair Selection}
-A span-by-span ranker keeps the spans that look most like the question. In multi-hop questions, however, the fact that completes the answer (e.g., a person's death date once the director is known) shares few words with the question and is ranked low. \bp{} therefore selects \emph{pairs}. The seed pool holds up to 32 spans with positive query relevance $Q(q,s)$; the support pool holds up to 48 spans with positive seed score. A candidate pair $(s_i,s_j)$ of a seed span and a support span is scored as
-\begin{equation}
-\begin{aligned}
-S(i,j)={}&Q(q,s_i)+L_{\mathrm{bridge}}(s_i,s_j)\\
-&+c_{\mathrm{sup}}\,S_{\mathrm{seed}}(s_j),
-\end{aligned}
-\end{equation}
-with $c_{\mathrm{sup}}=0.5$. The bridge term rewards lexical connection between the two spans while penalising near-duplicates,
-\begin{equation}
-L_{\mathrm{bridge}}(i,j)=\frac{|T_i\cap T_j|}{\sqrt{|T_i|\,|T_j|}}+c_{\mathrm{div}}\big(1-J_{ij}\big)-c_{\mathrm{jac}}J_{ij},
-\end{equation}
-where $T_i$ is the content-term set of $s_i$, $J_{ij}$ is their Jaccard overlap, $c_{\mathrm{div}}=0.10$ and $c_{\mathrm{jac}}=0.35$. Pairs are selected greedily, at most 24, by the redundancy-adjusted score $S(i,j)-\lambda\,J\big(T_i\cup T_j,\;T_{\mathrm{sel}}\big)$ with $\lambda=0.55$, where $T_{\mathrm{sel}}$ is the set of terms already covered; ties are broken by source position. In this way a weakly query-related span can enter the context because of the seed it supports, and pairs that add no new terms are discouraged.
+\subsection{The Packer}
+\paragraph{Sentence repair.} Fixed-size spans start and end at arbitrary positions. Rather than padding each span by a fixed window, \spk{} extends its left end backwards to the first token after a sentence terminator (\texttt{.}, \texttt{?}, \texttt{!}) and its right end forwards to the next terminator, each by at most $r=32$ regex tokens and within the page. A repaired span is thus never longer than a fixed $\pm r$ window, and usually shorter, but it starts and ends on sentence boundaries whenever one is within reach.
 
-\subsection{Boundary Repair}
-Fixed-size spans cut sentences at arbitrary positions, and the cut often falls inside the answer phrase (Table~\ref{tab:case}). \bp{} expands every selected span by up to 32 regex tokens on each side, clipped to its page, so that a repaired span covers up to 128 regex tokens.
-\subsection{Exact-Budget Repacking}
-Repaired spans are admitted in selection order while the packed context, measured with the downstream tokenizer $\tau$, stays within $B$; admission stops at the first span that does not fit. The admitted spans are then emitted verbatim in their original document order, separated by blank lines, after the prefix ``Question: $q$ / Selected evidence:''. If re-joining in document order changes the token count, the context is clipped to $B$ tokens; this safeguard ensures $|\hat C|_\tau\le B$ for every instance. Algorithm~\ref{alg:bp} in Appendix~\ref{app:impl} summarises the procedure.
+\paragraph{Merging.} Spans that are close in the document produce repaired ranges that overlap or touch. \spk{} sorts the repaired ranges of the current selection by page and position and merges every pair that overlaps into one passage. Overlapping evidence is therefore rendered, and paid for, once.
 
-\paragraph{Hyperparameter protocol.}
-All constants ($\alpha$, pool sizes, $c_{\mathrm{sup}}$, $c_{\mathrm{div}}$, $c_{\mathrm{jac}}$, $\lambda$, the repair radius) were fixed on a development split disjoint from the LongBench test instances before any test run, and are used unchanged for both models and all tasks. \todo{one sentence naming the development split.} Section~\ref{sec:robust} shows that one-at-a-time changes to each of them never improve significantly on the frozen defaults.
+\paragraph{Exact admission with backfill.} Spans are considered in priority order. A span is admitted if the context rendered from the current selection plus the span (repaired, merged and joined after the prefix ``Question: $q$ / Selected evidence:'') has at most $B$ tokens under $\tau$. Because merging can make a new span nearly free, the cost of a span depends on what is already selected, so it is measured on the rendered context rather than estimated. If a span does not fit, \spk{} skips it and continues with the next one, so short spans further down the list can still use the remaining budget.
+
+\paragraph{Document-order emission.} The merged passages are emitted verbatim in document order, separated by blank lines. If re-joining changes the token count, the context is clipped to $B$, so $|\hat C|_\tau\le B$ always holds. Algorithm~\ref{alg:sp} (Appendix~\ref{app:impl}) gives the procedure.
+
+\paragraph{Development protocol.}
+All choices---the ranker, sentence rather than fixed repair, $r$, the list length, merging, backfilling and emission order---were made on a development split of 584 instances: the HotpotQA and 2WikiMultihopQA portions of LongBench-E \citep{bai2023longbench} after removing every question that also appears in the LongBench test set. The development experiments used a 4-bit Qwen2.5-7B model on a separate GPU. The configuration was then frozen and the test set was run once with every model and budget reported here; no test result was used to change the method.
 
 % =====================================================================
 \section{Experimental Setup}
 
-\paragraph{Data.} We use all English single- and multi-document QA tasks of LongBench \citep{bai2023longbench}: Qasper \citep{dasigi2021qasper} (200), MultiFieldQA-en (150), HotpotQA \citep{yang2018hotpotqa} (200), 2WikiMultihopQA \citep{ho2020constructing} (200), MuSiQue \citep{trivedi2022musique} (200) and NarrativeQA \citep{kocisky2018narrativeqa} (200), 1,150 instances in total. We report LongBench's task metric (token-level F1) and the macro average over the six tasks; ``MH'' is the average over the three multi-hop tasks.
+\paragraph{Data.} All English single- and multi-document QA tasks of LongBench \citep{bai2023longbench}: Qasper \citep{dasigi2021qasper} (200), MultiFieldQA-en (150), HotpotQA \citep{yang2018hotpotqa} (200), 2WikiMultihopQA \citep{ho2020constructing} (200), MuSiQue \citep{trivedi2022musique} (200) and NarrativeQA \citep{kocisky2018narrativeqa} (200), 1,150 instances. We report LongBench's F1 and the macro average over the six tasks; ``MH'' averages the three multi-hop tasks.
 
-\paragraph{Models and decoding.} Qwen2.5-7B-Instruct \citep{qwen2025qwen25} and Meta-Llama-3-8B-Instruct \citep{grattafiori2024llama3}, with LongBench's task prompts inside each model's chat template, greedy decoding and LongBench's per-task output lengths. Section~\ref{sec:robust} repeats the main comparison under nucleus sampling.
+\paragraph{Models and decoding.} Qwen2.5-7B-Instruct, Qwen2.5-14B-Instruct \citep{qwen2025qwen25} and Llama-3.1-8B-Instruct \citep{grattafiori2024llama3}, in bfloat16 with vLLM, LongBench's task prompts inside each model's chat template, greedy decoding and LongBench's per-task output lengths. The 14B model reads the packed contexts built with the Qwen tokenizer, which it shares with the 7B model.
 
-\paragraph{Budget.} The main budget is $B=1{,}024$ downstream tokens for the context slot. Averaged per instance, this keeps 13.25\% of the original prompt for Qwen and 13.80\% for Llama-3 (7.5$\times$ and 7.2$\times$ compression; Appendix~\ref{app:ratio}).
+\paragraph{Budgets.} $B\in\{512, 1{,}024, 2{,}048\}$ downstream tokens for the context slot. The mean full prompt has 12.5K Qwen tokens, so these budgets keep roughly 4\%, 8\% and 16\% of the context.
 
-\paragraph{Baselines.} All baselines fill the same context slot under the same $B$ and the same downstream tokenizer.
-\emph{Truncation}: the first $B$ tokens (head), or the first and last $B/2$ tokens (middle).
-\emph{Published prompt compressors}, run with their official implementations: Selective Context (GPT-2, phrase level), LLMLingua-2 (\texttt{xlm-roberta-large-meetingbank}) and LongLLMLingua (question-aware, Llama-2-7B as the compressor LM). Each is asked to compress the context to the budget; its output is placed after the same ``Question / Selected evidence'' prefix as \bp{}, and if the result still exceeds $B$ it is truncated in downstream tokens.
-\emph{Span- and chunk-based packing} on the shared candidate spans: Span-only packing (top spans without repair), TF-IDF and BM25 chunk packing, and BGE chunk packing with \texttt{bge-small-en-v1.5} (query instruction, CLS pooling, top-64 spans, $\pm$32-token neighbours). These are admitted under the same exact-budget rule.
-\emph{Full context} is reported as a reference: Qwen reads the whole prompt (mean 12.5K tokens), while Llama-3 reads its 8K window with LongBench's middle truncation.
+\paragraph{Baselines.} All baselines fill the same slot under the same exact budget and tokenizer.
+\emph{BGE chunks}: the 64 spans most similar to the question under BGE, each padded by $\pm$32 tokens, admitted in similarity order while they fit and emitted in that order; this is the standard dense packing recipe.
+\emph{Pair packing}: a structured lexical packer that selects query--support span pairs with the lexical ranker, a lexical bridge score and a redundancy penalty, repairs each span with a fixed $\pm$32 window, admits pairs until the first one that does not fit and emits them in document order. It represents structured, multi-hop-aware selection with conventional packing.
+\emph{LLMLingua-2} \citep{pan2024llmlingua2} (\texttt{xlm-roberta-large-meetingbank}), asked to compress the context to the budget; its output is placed after the same prefix and truncated to $B$ downstream tokens if needed.
+\emph{Full context}: the whole context, middle-truncated to 30K tokens as in LongBench (a 32K window for all models), as a reference.
+Appendix~\ref{app:extra} compares the pair packer with truncation, Selective Context, LongLLMLingua and BM25/TF-IDF chunk packing.
 
-\paragraph{Statistics.} Every comparison is paired on the same instances. We use a task-stratified paired bootstrap \citep{efron1993bootstrap} with 10,000 resamples and seed 20260701: instances are resampled within each task and the statistic is the macro average of per-task mean differences. Two-model results resample within the twelve model--task strata. We report 95\% percentile intervals and two-sided bootstrap $p$-values.
+\paragraph{Statistics.} Comparisons are paired on instances. We use a task-stratified paired bootstrap \citep{efron1993bootstrap} with 10,000 resamples and seed 20260701; the statistic is the macro average of per-task mean differences. Pooled results resample within the eighteen model--task strata. We report 95\% percentile intervals and two-sided $p$-values.
 
 % =====================================================================
 \section{Results}
@@ -164,31 +136,24 @@ All constants ($\alpha$, pool sizes, $c_{\mathrm{sup}}$, $c_{\mathrm{div}}$, $c_
 \begin{table*}[t]
 \centering
 \small
-\begin{tabular}{llccc@{\hskip 14pt}cc}
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{l ccc ccc ccc c}
 \toprule
-& & \multicolumn{3}{c}{All six tasks} & \multicolumn{2}{c}{Multi-hop (MH)} \\
-\cmidrule(lr){3-5}\cmidrule(lr){6-7}
-Family & Method & Qwen & Llama-3 & Avg. & Qwen & Llama-3 \\
+& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+Method & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & Avg. \\
 \midrule
-\textit{Reference} & Full context (12.5K / 8K tokens) & 43.30 & 36.73 & 40.02 & 44.91 & 36.13 \\
+Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & \\
 \midrule
-\multirow{2}{*}{Truncation} & Head & 25.47 & 23.92 & 24.70 & 27.05 & 22.90 \\
- & Middle & 24.69 & 23.77 & 24.23 & 26.06 & 24.02 \\
+LLMLingua-2 & -- & 24.60 & -- & -- & 28.43 & -- & -- & 27.10 & -- & -- \\
+Pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 38.64 \\
+BGE chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 38.88 \\
 \midrule
-\multirow{3}{*}{\shortstack[l]{Prompt\\compression}} & Selective Context & 20.15 & 19.13 & 19.64 & 22.02 & 20.67 \\
- & LLMLingua-2 & 26.82 & 26.31 & 26.57 & 30.57 & 28.86 \\
- & LongLLMLingua & 32.64 & 29.87 & 31.26 & 36.95 & 31.42 \\
-\midrule
-\multirow{4}{*}{\shortstack[l]{Span / chunk\\packing}} & Span-only & 22.31 & 20.52 & 21.42 & 25.15 & 20.76 \\
- & TF-IDF chunks & 36.87 & 34.94 & 35.91 & 39.72 & 34.16 \\
- & BM25 chunks & 36.94 & 34.44 & 35.69 & 39.85 & 33.94 \\
- & BGE chunks (dense) & 39.65 & 36.75 & 38.20 & 44.04 & 37.36 \\
-\midrule
-\multirow{2}{*}{Ours} & \bp{} (encoder-free) & 39.45 & 36.18 & 37.82 & 42.75 & 35.51 \\
- & \bpbge{} (dense seeds) & \textbf{39.89} & \textbf{37.19} & \textbf{38.54} & \textbf{44.09} & \textbf{37.64} \\
+\spk{} (BGE ranker) & 35.64 & \textbf{40.76} & 43.14 & 36.16 & \textbf{41.67} & \textbf{43.58} & 39.21 & \textbf{45.18} & \textbf{48.10} & \textbf{41.49} \\
+\spk{} (hybrid ranker, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{41.49} \\
 \bottomrule
 \end{tabular}
-\caption{Macro F1 on the 1,150 LongBench QA instances with a 1,024-token context budget measured by each model's tokenizer. MH averages HotpotQA, 2WikiMultihopQA and MuSiQue. Bold marks the best compressed method in each column. Per-task scores are in Appendix~\ref{app:pertask}.}
+\caption{Macro F1 on the 1,150 LongBench QA instances under exact budgets of 512, 1,024 and 2,048 downstream tokens. The full-context reference reads up to 30K tokens. Bold marks the best compressed result in each column. Per-task scores are in Appendix~\ref{app:pertask}.}
 \label{tab:main}
 \end{table*}
 
@@ -197,104 +162,87 @@ Family & Method & Qwen & Llama-3 & Avg. & Qwen & Llama-3 \\
 \small
 \setlength{\tabcolsep}{3pt}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcc}
+\begin{tabular}{lccc}
 \toprule
-\bp{} minus & All six tasks & Multi-hop \\
+\spk{} minus & 512 & 1,024 & 2,048 \\
 \midrule
-Selective Context & +18.18 [16.49, 19.88] & +17.79 [15.06, 20.40] \\
-Middle truncation & +13.58 [11.92, 15.24] & +14.09 [11.54, 16.60] \\
-Head truncation & +13.12 [11.43, 14.82] & +14.16 [11.56, 16.85] \\
-LLMLingua-2 & +11.25 [9.54, 12.97] & +9.41 [6.71, 12.14] \\
-LongLLMLingua & +6.56 [4.99, 8.15] & +4.95 [2.47, 7.44] \\
-Span-only & +16.40 [14.75, 18.06] & +16.18 [13.65, 18.69] \\
-BM25 chunks & +2.12 [0.95, 3.31] & +2.24 [0.31, 4.20] \\
-TF-IDF chunks & +1.91 [0.74, 3.11] & +2.19 [0.19, 4.14] \\
+BGE chunks & \textbf{+3.68} & \textbf{+1.92} & \textbf{+2.26} \\
+ & {\scriptsize [2.53, 4.82]} & {\scriptsize [0.87, 2.97]} & {\scriptsize [1.24, 3.29]} \\
+Pair packing & \textbf{+2.99} & \textbf{+2.45} & \textbf{+3.12} \\
+ & {\scriptsize [2.04, 3.94]} & {\scriptsize [1.52, 3.39]} & {\scriptsize [2.18, 4.08]} \\
+\midrule
+\multicolumn{4}{l}{\emph{Same BGE ranking, different packer:}} \\
+\spk{}-BGE $-$ BGE chunks & \textbf{+2.81} & \textbf{+2.48} & \textbf{+2.57} \\
+ & {\scriptsize [1.88, 3.76]} & {\scriptsize [1.50, 3.45]} & {\scriptsize [1.58, 3.57]} \\
 \bottomrule
 \end{tabular}}
-\caption{Paired differences (F1) between \bp{} and each baseline, pooled over both models, with 95\% bootstrap intervals. All intervals exclude zero ($p<0.001$ on all six tasks; $p\le0.036$ on the multi-hop subset). Per-model intervals are in Appendix~\ref{app:permodel}.}
+\caption{Paired F1 differences pooled over the three models (95\% bootstrap intervals). All intervals exclude zero ($p\le0.001$). Per-model tests are in Appendix~\ref{app:permodel}.}
 \label{tab:sig}
 \end{table}
 
-\subsection{Evidence-level vs.\ token-level compression}
-Table~\ref{tab:main} shows the main comparison and Table~\ref{tab:sig} the paired tests. Under an exact 1,024-token budget, all three published prompt compressors fall well below \bp{}: LongLLMLingua by 6.6 F1, LLMLingua-2 by 11.3 and Selective Context by 18.2 (two-model average, all $p<0.001$). Selective Context is even below simple truncation. We see two reasons. First, deleting tokens or phrases damages exactly the material that extractive QA needs to copy: names, numbers and the function words that tie them together. \bp{} keeps every admitted unit verbatim. Second, at 7--8$\times$ compression the compressors must remove most of each sentence, whereas \bp{} can spend the whole budget on a few complete passages. The ordering is the same on the multi-hop subset, where \bp{} leads LongLLMLingua by 5.0 F1 and LLMLingua-2 by 9.4.
+\subsection{\spk{} versus standard packing}
+Table~\ref{tab:main} gives macro F1 for every model and budget, and Table~\ref{tab:sig} the pooled paired tests. \spk{} outperforms BGE chunk packing in all nine model--budget settings. Pooled over models, the gain is +3.68 F1 at 512 tokens, +1.92 at 1,024 and +2.26 at 2,048, and every interval excludes zero. Per model, eight of the nine differences are significant at $p<0.05$ (the ninth, Qwen2.5-7B at 1,024 tokens, is +1.79 with $p=0.06$; Appendix~\ref{app:permodel}). The gain is largest at the smallest budget, where every wasted token is most costly.
 
-\subsection{Pairing and repair vs.\ chunk retrieval}
-BM25 and TF-IDF chunk packing use the same lexical signals as \bp{}'s seed scorer and the same candidate spans, so the difference isolates \bp{}'s pair selection, boundary repair and repacking. \bp{} improves on BM25 by 2.12 F1 [0.95, 3.31] and on TF-IDF by 1.91 [0.74, 3.11], with gains of 2.2 F1 on the multi-hop tasks (Table~\ref{tab:sig}). It improves on span-only packing, which selects spans one by one and does not repair them, by 16.4 F1.
+\spk{} also outperforms the structured pair packer by 2.5--3.1 F1 at every budget ($p<0.001$), in all nine settings. The pair packer was designed for multi-hop questions and selects evidence in pairs, yet a packer that ranks spans one at a time but packs them carefully is better on the multi-hop tasks as well: at 1,024 tokens \spk{} reaches 46.3, 43.9 and 50.3 MH F1 on the three models, against 42.4, 39.6 and 47.0 for pair packing and 42.7, 41.3 and 48.0 for BGE chunks (Appendix~\ref{app:pertask}).
 
-Dense retrieval is a stronger baseline. Without any encoder, \bp{} is on par with BGE chunk packing: the paired difference is $-0.38$ F1 with an interval of $[-1.82, 1.05]$, i.e., the two are statistically indistinguishable. Because \bp{}'s seed scorer is pluggable, the two signals can also be combined: \bpbge{} uses BGE similarities as seeds and \bp{}'s pairing, repair and repacking. It is the best compressed method on both models and on both the full and the multi-hop task sets (Table~\ref{tab:main}), and improves on BM25 by 2.85 F1 [1.58, 4.14] and on TF-IDF by 2.64 [1.32, 3.98] (both $p<0.001$; per model, all $p\le0.02$).
+\subsection{The packer, not the ranker, carries the gain}
+\label{sec:agnostic}
+The most direct test of the packer is to keep the ranking fixed. BGE chunk packing and \spk{} with the BGE ranker use the same BGE similarities over the same spans and differ only in how the top spans are turned into a context. Changing the packer improves F1 by +2.81, +2.48 and +2.57 at the three budgets (Table~\ref{tab:sig}), and per model it is significant in all nine settings (Appendix~\ref{app:permodel}).
+
+Conversely, the choice of ranker inside \spk{} matters little. The hybrid ranker selected on the development split and the BGE ranker are within 0.6 F1 of each other on average and their difference is not significant ($-0.56$, $[-1.49, 0.40]$ at 1,024 tokens); each is best in some settings. With a purely lexical ranker, \spk{} outperforms the pair packer, which uses the same lexical signals, by 1.54 F1 [0.68, 2.43] ($p<0.001$) at 1,024 tokens. In short, the improvement comes from the packing operations and transfers across lexical, dense and hybrid rankers.
 
 \subsection{How close to the full context?}
-A 1,024-token \bp{} context recovers 91\% of Qwen's full-context F1 (39.45 vs.\ 43.30) while sending about 8\% of its prompt tokens (1,024 vs.\ a mean of 12.5K). For Llama-3, whose 8K window forces truncation of 59\% of the full prompts, \bp{} with 1,024 tokens is statistically indistinguishable from the full 8K context (36.18 vs.\ 36.73; difference $-0.54$, 95\% interval $[-2.85, 1.78]$, $p=0.65$), and \bpbge{} scores above it (37.19). On the multi-hop tasks, \bp{} is within the bootstrap interval of the full context for both models. In other words, for these QA tasks most of the answer-relevant information in a long input can be packed into 1,024 verbatim tokens, provided the packing keeps evidence intact.
+At 2,048 tokens, \spk{} is statistically indistinguishable from reading the full context on all three models: the paired differences are $+0.56$ [$-1.46$, 2.56] for Qwen2.5-7B, $-0.35$ [$-2.39$, 1.65] for Llama-3.1-8B and $-0.10$ [$-2.04$, 1.82] for Qwen2.5-14B. The packed context is about one sixth of the mean prompt (2,048 vs.\ 12.5K tokens). On the multi-hop tasks it exceeds the full context on all three models (49.2 vs.\ 44.4, 45.8 vs.\ 43.7 and 56.0 vs.\ 52.6 MH F1), consistent with the observation that long inputs dilute the evidence that matters \citep{liu2024lost}. At 1,024 tokens, \spk{} recovers 93--95\% of full-context F1.
 
-\subsection{What drives the gains}
-\label{sec:ablation}
+\subsection{Evidence-level vs.\ token-level compression}
+Under the same exact 1,024-token budget, LLMLingua-2 reaches 24.6--28.4 F1, and \spk{} exceeds it by 15.27 F1 [13.90, 16.64] pooled over models. At roughly 12$\times$ compression a token-level compressor must remove most of every sentence, including the names, numbers and function words that extractive QA needs to copy, whereas \spk{} spends the budget on a few complete passages. Appendix~\ref{app:extra} shows the same ordering for Selective Context and LongLLMLingua.
 
-\begin{table}[t]
-\centering
-\small
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{lccc}
-\toprule
-Removed component & Qwen & Llama-3 & Two-model \\
-\midrule
-Boundary repair & +2.67$^{*}$ & +2.36$^{*}$ & +2.52$^{*}$ \\
- & {\scriptsize [0.98, 4.43]} & {\scriptsize [0.72, 4.02]} & {\scriptsize [1.36, 3.71]} \\
-Support term ($c_{\mathrm{sup}}{=}0$) & +1.86$^{*}$ & +0.86 & +1.36$^{*}$ \\
- & {\scriptsize [0.16, 3.60]} & {\scriptsize [$-$0.86, 2.66]} & {\scriptsize [0.14, 2.59]} \\
-\bottomrule
-\end{tabular}
-\caption{Ablations: F1 of the full \bp{} minus the ablated variant (paired bootstrap, 95\% intervals; $^{*}$: interval excludes zero). Each row changes one component and keeps everything else, including the exact budget, fixed.}
-\label{tab:ablation}
-\end{table}
-
-\paragraph{Boundary repair.} Disabling repair, with everything else unchanged, lowers F1 by 2.67 on Qwen and 2.36 on Llama-3 (Table~\ref{tab:ablation}); both intervals exclude zero. The same holds for a variant without lexical seeding (Qwen $+2.79$ [1.09, 4.43], Llama-3 $+2.13$ [0.42, 3.88]). Repair costs budget, since each repaired span is up to twice as long, so this gain is a net effect: under a fixed budget, fewer complete pieces of evidence are better than more fragments. Table~\ref{tab:case} shows a typical case.
-
-\paragraph{Support term.} Setting $c_{\mathrm{sup}}=0$ reduces a pair's score to the relevance of its seed plus the bridge term, so supporting spans are no longer chosen for their own evidence value. This lowers F1 by 1.36 [0.14, 2.59] across the two models (1.86 on Qwen).
+\subsection{What each packing operation contributes}
+\label{sec:components}
 
 \begin{table}[t]
 \centering
 \small
-\begin{tabular}{p{0.94\columnwidth}}
+\setlength{\tabcolsep}{4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcc}
 \toprule
-\textbf{Q:} Where did they film \emph{The Beach} in the country where Siddhi Savetsila was born? \quad \textbf{Gold:} Ko Phi Phi Le \\
+Variant (1,024 tokens) & vs.\ BGE chunks & Full $-$ variant \\
 \midrule
-\textbf{\bp{}:} \textit{``\ldots The film stars Leonardo DiCaprio, \ldots{} It was filmed on the Thai island of Ko Phi Phi Le.''} $\rightarrow$ \textbf{Ko Phi Phi Le} \checkmark \\[2pt]
-\textbf{w/o repair:} the span ends at \textit{``\ldots landscaping of the natural beach setting of Ko Phi Phi''}; the sentence naming the filming location is not in the context $\rightarrow$ \textit{Thailand} $\times$ \\[2pt]
-\textbf{BM25 chunks} $\rightarrow$ \textit{They filmed The Beach in Thailand.} $\times$ \\
-\textbf{BGE chunks} $\rightarrow$ \textit{Khao Yai National Park in central Thailand} $\times$ \\
+\spk{} (all components) & +1.92$^{*}$ & -- \\
+\quad without merging & +1.14$^{*}$ & +0.78$^{*}$ {\scriptsize [0.03, 1.52]} \\
+\quad without backfill & +1.63$^{*}$ & +0.29 {\scriptsize [$-$0.13, 0.71]} \\
+\quad fixed $\pm$32 repair & +1.92$^{*}$ & +0.00 {\scriptsize [$-$0.75, 0.73]} \\
+\quad rank-order emission & +2.14$^{*}$ & $-$0.22 {\scriptsize [$-$0.97, 0.53]} \\
 \bottomrule
-\end{tabular}
-\caption{A MuSiQue example (Qwen, 1,024 tokens). Repair restores the sentence that names the filming location; without repair, the selected span ends mid-phrase and the model falls back to the country.}
-\label{tab:case}
+\end{tabular}}
+\caption{Component analysis, pooled over the three models (F1, paired bootstrap; $^{*}$: 95\% interval excludes zero). Each variant switches off one operation and keeps the hybrid ranker and the exact budget.}
+\label{tab:components}
 \end{table}
 
-\subsection{Robustness}
-\label{sec:robust}
+Table~\ref{tab:components} switches off one packing operation at a time. Two observations stand out. First, the packer is robust: every single-component variant still outperforms BGE chunk packing significantly, so no single operation is a point of failure. Second, merging overlapping evidence is the operation whose removal costs the most (+0.78 F1, $p=0.04$). Without merging, two selected spans from the same passage are rendered as two overlapping copies, and the duplicated text displaces other evidence; with merging, a span adjacent to already selected evidence costs only its new tokens, which also makes exact, rendered-context admission necessary. The remaining operations are interchangeable in the sense that one can compensate for another: sentence repair and fixed-window repair perform the same once merging and backfilling are in place, and so do document-order and rank-order emission. On the development split, sentence repair improved F1 by 2.5 over fixed repair with a lexical ranker (Appendix~\ref{app:dev}); we keep it because it never lengthens a span beyond the fixed window and yields readable passages.
 
-\paragraph{Decoding.} \bp{} changes only the input text, so its benefit should not depend on greedy decoding. With nucleus sampling \citep{holtzman2020curious} ($T=0.7$, top-$p=0.9$) and three seeds on Qwen, \bp{} improves on BM25 by 2.78 F1 [1.19, 4.43] on the seed-averaged scores, and by 2.74, 2.81 and 2.77 for the individual seeds (each $p\le0.002$).
-
-\paragraph{Frozen constants.} Table~\ref{tab:sens} (Appendix~\ref{app:sens}) changes one constant at a time around the frozen defaults: the fusion weight $\alpha\in\{0.25,0.75\}$, the support weight $c_{\mathrm{sup}}\in\{0.25,1.0\}$, the redundancy weight $\lambda\in\{0.30,0.70\}$, the bridge constants $c_{\mathrm{div}}=0$ and $c_{\mathrm{jac}}=0$, and the repair radius $\in\{16,64\}$. Every change moves macro F1 by at most 0.43 on Qwen and 0.72 on Llama-3, apart from the repair radius, and no setting is significantly better than the default. The default radius of 32 is the best radius on Qwen and within 0.06 F1 of the best on Llama-3; doubling it to 64 costs 1.2--1.5 F1 because fewer repaired spans fit in the budget.
-
-\paragraph{Synthetic long-context reasoning.} On BABILong \citep{kuratov2024babilong} (tasks qa1--qa3 at 16K and 32K tokens, 200 instances each, 1,024-token budget, Qwen), \bp{} reaches 32.17 accuracy vs.\ 29.25 for BM25 chunk packing, a paired gain of 2.92 [1.17, 4.67] ($p<0.001$), while its prompts are 30\% shorter on average (763 vs.\ 1,087 tokens including the task wrapper).
+\subsection{Cost}
+\spk{} runs on a single CPU core in 432~ms per instance on average (median 415~ms, 95th percentile 698~ms, 1,024 tokens, 300 random test instances), compared with 614~ms for the pair packer and 280~ms for BGE chunk packing; the BGE encoder pass is shared by both dense methods. Every packed context respects the exact budget (maximum 1,024 tokens), and \spk{} uses the budget more fully than chunk packing (1,014 vs.\ 987 tokens on average) because backfilling closes the gaps left by spans that do not fit.
 
 % =====================================================================
 \section{Discussion}
 
-\paragraph{Why compress at the level of evidence?} Token-level compressors were designed for settings where a moderate compression ratio leaves most of each sentence intact. Under a strict budget of 7--8$\times$ they must delete most of the text, and the result is no longer readable evidence. Chunk retrievers keep text verbatim but cut it at positions that ignore its content. \bp{} combines the strengths of both: like a retriever, it keeps evidence verbatim, and like a compressor, it decides what each unit should contain, here by repairing its boundaries. The ablations suggest that this second decision matters as much as the selection itself.
+\paragraph{Why does packing matter so much?} Under an exact budget, every token spent on a broken sentence, a duplicated window or an unfilled gap is a token not spent on evidence. Standard packing pays all three costs. Sentence repair turns spans into self-contained statements, merging stops the same text from being bought twice, backfilling uses the remainder of the budget, and document order keeps neighbouring passages in their natural sequence. Each effect is small, and the operations partly substitute for one another, but together they are worth 2--4 F1, as much as replacing a lexical ranker with a dense one.
 
-\paragraph{Lexical or dense seeds?} The encoder-free \bp{} needs nothing beyond term statistics of the current context and is on par with a dense retriever. When a dense encoder is available, \bpbge{} is the strongest compressed method in our study. The two instantiations therefore offer a simple choice between zero additional models and the best accuracy.
+\paragraph{Implications for compression research.} Most work on context compression compares rankers or learned scorers with a fixed, simple packer. Our results suggest that such comparisons should hold the packer fixed \emph{and} strong, because a better packer gives every ranker a similar boost. \spk{} needs only the downstream tokenizer and adds no model calls, so it can be adopted as the default packer behind any retriever or learned scorer.
 
-\paragraph{Deployment.} \bp{} runs on the CPU before the model is called, needs no training, and requires only the downstream tokenizer to enforce the budget. Because the output is verbatim source text in document order, the compressed context remains inspectable by users, which matters in settings where answers must be traced back to their sources.
+\paragraph{Deployment.} \spk{} is training-free, runs before the model is called and outputs verbatim source text in document order, so the compressed context can be shown to users and traced back to its sources.
 
 % =====================================================================
 \section{Conclusion}
-We studied long-context question answering under a hard budget measured in the downstream model's own tokens. Compressing at the level of readable evidence units---selected in query--support pairs, repaired at their boundaries and admitted under the exact budget---outperforms token-level prompt compressors by 6.6--18.2 F1 and lexical chunk retrieval by about 2 F1, matches dense retrieval without an encoder, and with dense seeds gives the best compressed results on two LLMs. At 1,024 tokens it recovers 91\% of Qwen's full-context accuracy and matches Llama-3's full 8K context. We hope this encourages evaluating context compression not only by \emph{what} it keeps, but by whether what it keeps is still usable evidence.
+We studied long-context question answering under a hard budget measured in the downstream model's own tokens and showed that the step that turns ranked spans into a context is a major, under-studied lever. \spk{}---sentence repair, merging of overlapping evidence, exact admission with backfill and document-order emission---improves over dense chunk packing in all nine model--budget settings we test, by 1.9--3.7 F1 pooled over models, transfers across lexical, dense and hybrid rankers, and at 2,048 tokens matches the full context on three LLMs. We hope this encourages treating packing as a first-class component of context compression.
 
 \section*{Limitations}
-\bp{} shortens the input before prefill; it does not reduce the memory needed to encode a long input that has already been sent to the model, and it is not a KV-cache method. Our experiments cover English extractive QA on LongBench and BABILong with two 7--8B instruction models; other languages, generation tasks such as summarisation, and larger models may behave differently. We study a budget of 1,024 tokens, a 7--8$\times$ compression that is large enough to hold several repaired pairs; when the budget is so small that a single repaired span fills it, pairing has no room to operate. The dense instantiation requires an additional encoder at inference time. Finally, the lexical scorer relies on term overlap; questions that share no vocabulary with their evidence are better served by the dense seeds.
+\spk{} shortens the input before prefill and is not a KV-cache method. Our experiments cover English extractive QA on LongBench with three instruction models of 7--14B parameters and budgets of 512--2,048 tokens; other languages, generation tasks such as summarisation, and much larger models may behave differently. The development split covers two multi-hop tasks, and the method was frozen before testing; a broader development set might lead to a different choice of ranker, although our results suggest the ranker matters less than the packer. Our component analysis shows that the packing operations partly substitute for one another, so their individual contributions are smaller than their joint effect. The dense and hybrid rankers require a small encoder at inference time.
 
 \section*{Ethics Statement}
-Context compression can remove information that a user would consider important, which can lead to incomplete or incorrect answers; in high-stakes settings, compressed contexts should be shown to the user or checked against the source. \bp{} keeps all admitted text verbatim, which makes such checks straightforward. All datasets are public research benchmarks used under their licences.
+Context compression can remove information a user would consider important, which can lead to incomplete or incorrect answers; in high-stakes settings, compressed contexts should be shown to the user or checked against the source. \spk{} keeps all admitted text verbatim, which makes such checks straightforward. All datasets are public research benchmarks used under their licences.
 
 \bibliography{references}
 
@@ -305,54 +253,72 @@ Context compression can remove information that a user would consider important,
 \label{app:impl}
 
 \begin{algorithm}[h]
-\caption{\bp{}}
-\label{alg:bp}
+\caption{\spk{}}
+\label{alg:sp}
 \small
 \begin{algorithmic}[1]
-\Require question $q$, context $C$, budget $B$, tokenizer $\tau$
+\Require question $q$, context $C$, budget $B$, tokenizer $\tau$, ranker $f$
 \State split $C$ into 256-token pages and 64-token spans (stride 32)
-\State $S_{\mathrm{seed}}\gets$ fused BM25/TF-IDF $z$-scores (or BGE)
-\State seeds $\gets$ top 32 spans with $Q(q,s)>0$; supports $\gets$ top 48 with $S_{\mathrm{seed}}>0$
-\State $\mathcal P\gets\emptyset$, $T_{\mathrm{sel}}\gets\emptyset$
-\While{$|\mathcal P|<24$ and an unselected pair remains}
-  \State pick $(s_i,s_j)$ maximising $S(i,j)-\lambda J(T_i\cup T_j,T_{\mathrm{sel}})$
-  \State add $(s_i,s_j)$ to $\mathcal P$; $T_{\mathrm{sel}}\gets T_{\mathrm{sel}}\cup T_i\cup T_j$
-\EndWhile
-\State repair each span in $\mathcal P$ by $\pm$32 tokens within its page
-\State admit repaired spans in selection order while $|\hat C|_\tau\le B$
-\State emit admitted spans in document order; clip to $B$ if needed
-\State \Return $\hat C$
+\State $P\gets$ top 60 spans by $f(q,s)$
+\State $\mathcal S\gets\emptyset$
+\For{$s\in P$ in order}
+  \State $R\gets$ sentence-repaired ranges of $\mathcal S\cup\{s\}$ ($\le$32 tokens per side, within page)
+  \State merge overlapping ranges of $R$; render in document order after the prefix
+  \If{$|\text{render}|_\tau\le B$} $\mathcal S\gets\mathcal S\cup\{s\}$ \EndIf
+  \Comment{otherwise skip $s$ and continue (backfill)}
+\EndFor
+\State \Return render of $\mathcal S$, clipped to $B$ tokens if needed
 \end{algorithmic}
 \end{algorithm}
 
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{p{0.38\columnwidth}p{0.52\columnwidth}}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{p{0.36\columnwidth}p{0.54\columnwidth}}
 \toprule
 Item & Value \\
 \midrule
 Pages / spans & 256 regex tokens / 64, stride 32 \\
-Seed fusion & $0.5\,z(\mathrm{BM25})+0.5\,z(\mathrm{TFIDF})$ \\
-BM25 / TF-IDF & $k_1{=}1.2$, $b{=}0.75$ / sublinear TF, smoothed IDF \\
-Seed / support pools & 32 / 48 spans \\
-Max.\ pairs & 24 \\
-$c_{\mathrm{sup}}$, $c_{\mathrm{div}}$, $c_{\mathrm{jac}}$, $\lambda$ & 0.5, 0.10, 0.35, 0.55 \\
-Repair radius & 32 regex tokens per side, page-clamped \\
-Admission & downstream tokenizer, stop at first non-fit \\
-Emission order & document order \\
-Dense seeds (\bpbge{}) & \texttt{bge-small-en-v1.5}, CLS pooling, $\ell_2$-normalised, query instruction prefix \\
+Lexical ranker & $0.5\,z(\mathrm{BM25})+0.5\,z(\mathrm{TFIDF})$; $k_1{=}1.2$, $b{=}0.75$; sublinear TF, smoothed IDF \\
+Dense ranker & \texttt{bge-small-en-v1.5}, CLS pooling, $\ell_2$-normalised, query instruction \\
+Hybrid ranker & $z(\text{lexical})+z(\text{dense})$ \\
+Priority list & top 60 spans \\
+Sentence terminators & \texttt{.} \texttt{?} \texttt{!} \\
+Repair radius & 32 regex tokens per side, within page \\
+Admission & rendered context under $\tau$, backfill \\
+Emission & document order, blank-line separated \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \caption{Implementation constants (all frozen before testing).}
 \label{tab:impl}
 \end{table}
 
-\bpbge{} uses the same pair selection and repair as \bp{}; its spans are selected with regex-token budget estimates, re-admitted under the downstream tokenizer, and emitted in selection order. The code, packed contexts and per-instance predictions for every number in this paper will be released.
+Inference used vLLM 0.7.3 with bfloat16 weights on NVIDIA A100-40GB GPUs (tensor parallelism of two for the 14B full-context run), with a 4,096-token model window for compressed contexts and 32,768 tokens for the full-context reference. Code, packed contexts and per-instance predictions for every number in this paper will be released.
 
-\section{Compression Ratios}
-\label{app:ratio}
-The effective ratio of an instance is $\min(B,T)/T$, where $T$ is the length of the full prompt under the downstream tokenizer. Averaged over the 1,150 instances, a 1,024-token budget keeps 13.25\% of the prompt for Qwen (7.55$\times$ compression) and 13.80\% for Llama-3 (7.25$\times$). Under the Llama-3 tokenizer, 682 of the 1,150 full prompts (59\%) exceed 8,192 tokens.
+\section{Development Results}
+\label{app:dev}
+Table~\ref{tab:dev} reports macro F1 on the development split (HotpotQA-E and 2WikiMultihopQA-E without test questions, 584 instances, 1,024 tokens, 4-bit Qwen2.5-7B-Instruct). These results determined the frozen configuration; the hybrid ranker with sentence repair was the best development configuration, +5.26 F1 [2.34, 8.23] above BGE chunk packing.
+
+\begin{table}[h]
+\centering
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcc}
+\toprule
+Ranker (all with merge + backfill) & Fixed $\pm$32 & Sentence \\
+\midrule
+Lexical & 45.37 & 47.90 \\
+BGE & 48.88 & 50.12 \\
+Hybrid & 48.17 & \textbf{51.19} \\
+\midrule
+BGE chunks & \multicolumn{2}{c}{45.93} \\
+Pair packing & \multicolumn{2}{c}{45.03} \\
+\bottomrule
+\end{tabular}}
+\caption{Development macro F1 (1,024 tokens).}
+\label{tab:dev}
+\end{table}
 
 \section{Per-Task Results}
 \label{app:pertask}
@@ -360,44 +326,41 @@ The effective ratio of an instance is $\min(B,T)/T$, where $T$ is the length of 
 \begin{table*}[t]
 \centering
 \small
-\begin{tabular}{llcccccc}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llcccccc|cc}
 \toprule
-Model & Method & Qasper & MF-en & HotpotQA & 2Wiki & MuSiQue & NarrQA \\
+Model & Method & Qasper & MF-en & HotpotQA & 2Wiki & MuSiQue & NarrQA & MH & Avg. \\
 \midrule
-\multirow{12}{*}{Qwen}
- & Full context & 43.61 & 52.60 & 57.68 & 47.19 & 29.85 & 28.89 \\
- & Head trunc. & 24.77 & 38.39 & 32.83 & 31.59 & 16.74 & 8.53 \\
- & Middle trunc. & 22.56 & 35.46 & 34.18 & 28.93 & 15.07 & 11.95 \\
- & Selective Context & 24.07 & 22.77 & 27.66 & 28.26 & 10.14 & 7.97 \\
- & LLMLingua-2 & 28.01 & 30.31 & 37.34 & 36.54 & 17.84 & 10.89 \\
- & LongLLMLingua & 31.20 & 39.84 & 48.12 & 39.88 & 22.85 & 13.95 \\
- & Span-only & 16.86 & 32.57 & 28.53 & 29.50 & 17.41 & 8.97 \\
- & TF-IDF chunks & 36.99 & 49.08 & 52.38 & 40.21 & 26.59 & 15.95 \\
- & BM25 chunks & 38.10 & 49.33 & 52.41 & 41.00 & 26.13 & 14.69 \\
- & BGE chunks & 40.10 & 47.80 & 52.52 & 48.10 & 31.50 & 17.88 \\
- & \bp{} & 41.76 & 49.89 & 53.91 & 46.33 & 28.02 & 16.76 \\
- & \bpbge{} & 41.23 & 48.64 & 55.00 & 49.90 & 27.36 & 17.19 \\
+\multirow{6}{*}{Qwen2.5-7B}
+ & Full context & 44.86 & 51.41 & 58.07 & 45.61 & 29.36 & 28.94 & 44.35 & 43.04 \\
+ & LLMLingua-2 & 33.23 & 31.00 & 32.80 & 29.19 & 13.19 & 8.16 & 25.06 & 24.60 \\
+ & Pair packing & 40.40 & 50.08 & 54.05 & 46.25 & 26.83 & 17.05 & 42.38 & 39.11 \\
+ & BGE chunks & 38.90 & 47.90 & 51.61 & 45.88 & 30.72 & 18.08 & 42.74 & 38.85 \\
+ & \spk{} (BGE) & 42.03 & 46.40 & 57.00 & 52.41 & 29.89 & 16.82 & 46.43 & 40.76 \\
+ & \spk{} (hybrid) & 38.73 & 49.31 & 57.10 & 48.32 & 33.39 & 16.97 & 46.27 & 40.64 \\
 \midrule
-\multirow{12}{*}{Llama-3}
- & Full context (8K) & 42.98 & 48.06 & 46.99 & 39.10 & 22.29 & 20.95 \\
- & Head trunc. & 26.95 & 36.85 & 33.07 & 22.86 & 12.77 & 11.01 \\
- & Middle trunc. & 24.14 & 33.55 & 32.49 & 26.10 & 13.48 & 12.85 \\
- & Selective Context & 23.95 & 19.58 & 28.36 & 23.17 & 10.48 & 9.23 \\
- & LLMLingua-2 & 31.87 & 26.00 & 37.02 & 31.31 & 18.25 & 13.40 \\
- & LongLLMLingua & 31.04 & 38.96 & 42.27 & 31.39 & 20.59 & 14.97 \\
- & Span-only & 19.34 & 30.49 & 27.66 & 23.07 & 11.54 & 11.04 \\
- & TF-IDF chunks & 39.40 & 49.63 & 47.04 & 34.36 & 21.09 & 18.09 \\
- & BM25 chunks & 38.10 & 49.47 & 49.48 & 32.76 & 19.58 & 17.24 \\
- & BGE chunks & 40.84 & 47.52 & 46.08 & 39.08 & 26.92 & 20.03 \\
- & \bp{} & 39.94 & 50.35 & 47.06 & 39.73 & 19.74 & 20.27 \\
- & \bpbge{} & 42.22 & 50.29 & 49.89 & 38.33 & 24.68 & 17.73 \\
+\multirow{6}{*}{Llama-3.1-8B}
+ & Full context & 45.28 & 54.80 & 55.79 & 44.14 & 31.26 & 27.52 & 43.73 & 43.13 \\
+ & LLMLingua-2 & 34.31 & 33.35 & 37.35 & 31.53 & 20.40 & 13.61 & 29.76 & 28.43 \\
+ & Pair packing & 38.33 & 50.09 & 49.47 & 45.11 & 24.25 & 19.46 & 39.61 & 37.79 \\
+ & BGE chunks & 40.65 & 48.49 & 47.33 & 48.11 & 28.50 & 20.86 & 41.31 & 38.99 \\
+ & \spk{} (BGE) & 41.79 & 49.78 & 56.18 & 49.58 & 31.84 & 20.85 & 45.87 & 41.67 \\
+ & \spk{} (hybrid) & 41.28 & 52.99 & 51.86 & 49.42 & 30.37 & 19.95 & 43.89 & 40.98 \\
+\midrule
+\multirow{6}{*}{Qwen2.5-14B}
+ & Full context & 45.46 & 53.86 & 62.00 & 58.52 & 37.21 & 28.50 & 52.58 & 47.59 \\
+ & LLMLingua-2 & 30.93 & 32.71 & 38.34 & 34.15 & 18.34 & 8.12 & 30.27 & 27.10 \\
+ & Pair packing & 39.37 & 49.88 & 56.88 & 52.25 & 31.82 & 19.92 & 46.98 & 41.69 \\
+ & BGE chunks & 39.75 & 49.05 & 55.42 & 53.34 & 35.28 & 21.19 & 48.02 & 42.34 \\
+ & \spk{} (BGE) & 41.29 & 50.37 & 60.59 & 60.29 & 37.33 & 21.18 & 52.74 & 45.18 \\
+ & \spk{} (hybrid) & 40.70 & 53.03 & 58.78 & 55.52 & 36.65 & 21.24 & 50.32 & 44.32 \\
 \bottomrule
 \end{tabular}
-\caption{Per-task F1 at a 1,024-token budget.}
+\caption{Per-task F1 at 1,024 tokens (full context: up to 30K tokens).}
 \label{tab:pertask}
 \end{table*}
 
-Table~\ref{tab:pertask} lists per-task F1 for all methods in Table~\ref{tab:main}.
+Table~\ref{tab:pertask} lists per-task F1 at 1,024 tokens. Multi-hop (MH) F1 of \spk{} (hybrid) at 512 / 2,048 tokens is 39.47 / 49.20 (Qwen2.5-7B), 37.02 / 45.78 (Llama-3.1-8B) and 44.18 / 56.01 (Qwen2.5-14B), against 34.84 / 46.37, 33.52 / 44.14 and 40.02 / 52.57 for BGE chunks.
 
 \section{Per-Model Paired Tests}
 \label{app:permodel}
@@ -405,56 +368,32 @@ Table~\ref{tab:pertask} lists per-task F1 for all methods in Table~\ref{tab:main
 \begin{table*}[t]
 \centering
 \small
-\begin{tabular}{lccc}
+\begin{tabular}{llccc}
 \toprule
-Comparison & Qwen & Llama-3 & Two-model \\
+Model & Comparison & 512 & 1,024 & 2,048 \\
 \midrule
-\bp{} $-$ Selective Context & +19.30 [16.90, 21.71] & +17.06 [14.57, 19.49] & +18.18 [16.49, 19.88] \\
-\bp{} $-$ Middle truncation & +14.75 [12.37, 17.13] & +12.41 [10.07, 14.78] & +13.58 [11.92, 15.24] \\
-\bp{} $-$ Head truncation & +13.97 [11.58, 16.37] & +12.27 [9.96, 14.67] & +13.12 [11.43, 14.82] \\
-\bp{} $-$ LLMLingua-2 & +12.62 [10.24, 15.07] & +9.88 [7.47, 12.32] & +11.25 [9.54, 12.97] \\
-\bp{} $-$ LongLLMLingua & +6.81 [4.59, 9.05] & +6.31 [4.01, 8.66] & +6.56 [4.99, 8.15] \\
-\bp{} $-$ Span-only & +17.14 [14.79, 19.52] & +15.66 [13.34, 18.04] & +16.40 [14.75, 18.06] \\
-\bp{} $-$ BM25 chunks & +2.50 [0.78, 4.26] & +1.75 [0.13, 3.42] & +2.12 [0.95, 3.31] \\
-\bp{} $-$ TF-IDF chunks & +2.58 [0.87, 4.33] & +1.25 [$-$0.32, 2.89] & +1.91 [0.74, 3.11] \\
-\bpbge{} $-$ BM25 chunks & +2.94 [1.04, 4.80] & +2.75 [0.87, 4.60] & +2.85 [1.58, 4.14] \\
-\bpbge{} $-$ TF-IDF chunks & +3.02 [1.14, 4.87] & +2.26 [0.37, 4.21] & +2.64 [1.32, 3.98] \\
-\bpbge{} $-$ Span-only & +17.58 [15.14, 19.99] & +16.67 [14.29, 19.04] & +17.12 [15.40, 18.83] \\
+\multirow{3}{*}{Qwen2.5-7B}
+ & \spk{} $-$ BGE chunks & +3.69 [1.69, 5.68] & +1.79 [$-$0.08, 3.65] & +2.62 [0.82, 4.49] \\
+ & \spk{} $-$ Pair packing & +2.86 [1.09, 4.59] & +1.53 [$-$0.14, 3.17] & +2.92 [1.26, 4.58] \\
+ & \spk{}-BGE $-$ BGE chunks & +2.59 [0.91, 4.29] & +1.91 [0.21, 3.64] & +2.17 [0.43, 3.96] \\
+\midrule
+\multirow{3}{*}{Llama-3.1-8B}
+ & \spk{} $-$ BGE chunks & +3.17 [1.14, 5.17] & +1.99 [0.20, 3.84] & +1.93 [0.08, 3.80] \\
+ & \spk{} $-$ Pair packing & +2.39 [0.69, 4.07] & +3.19 [1.48, 4.89] & +3.18 [1.53, 4.80] \\
+ & \spk{}-BGE $-$ BGE chunks & +2.89 [1.24, 4.56] & +2.68 [1.06, 4.38] & +2.73 [1.03, 4.44] \\
+\midrule
+\multirow{3}{*}{Qwen2.5-14B}
+ & \spk{} $-$ BGE chunks & +4.17 [2.27, 6.12] & +1.98 [0.20, 3.85] & +2.21 [0.45, 3.99] \\
+ & \spk{} $-$ Pair packing & +3.71 [2.15, 5.26] & +2.63 [1.17, 4.12] & +3.27 [1.65, 4.90] \\
+ & \spk{}-BGE $-$ BGE chunks & +2.95 [1.38, 4.53] & +2.84 [1.25, 4.49] & +2.81 [1.12, 4.59] \\
 \bottomrule
 \end{tabular}
-\caption{Per-model paired bootstrap differences (F1, 95\% intervals) on all six tasks.}
+\caption{Per-model paired bootstrap differences (F1, 95\% intervals). \spk{} denotes the frozen hybrid configuration.}
 \label{tab:permodel}
 \end{table*}
 
-Table~\ref{tab:permodel} reports the paired comparisons of Table~\ref{tab:sig} separately for each model, together with those of \bpbge{}.
-
-\section{Sensitivity to Frozen Constants}
-\label{app:sens}
-
-\begin{table}[h]
-\centering
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lcc}
-\toprule
-Setting (default) & Qwen & Llama-3 \\
-\midrule
-Default & 39.45 & 36.18 \\
-\midrule
-$\alpha=0.25$ (0.5) & 39.22 & 36.20 \\
-$\alpha=0.75$ & 39.19 & 35.95 \\
-$c_{\mathrm{sup}}=0.25$ (0.5) & 39.01 & 36.90 \\
-$c_{\mathrm{sup}}=1.0$ & 39.37 & 35.75 \\
-$\lambda=0.30$ (0.55) & 39.02 & 36.21 \\
-$\lambda=0.70$ & 39.35 & 36.04 \\
-$c_{\mathrm{div}}=0$ (0.10) & 39.43 & -- \\
-$c_{\mathrm{jac}}=0$ (0.35) & 39.21 & -- \\
-Repair radius 16 (32) & 38.84 & 36.24 \\
-Repair radius 64 & 37.99 & 35.02 \\
-\bottomrule
-\end{tabular}
-\caption{One-at-a-time changes of the frozen constants (macro F1, 1,024 tokens). No setting is significantly better than the default (paired bootstrap).}
-\label{tab:sens}
-\end{table}
+\section{Additional Baselines}
+\label{app:extra}
+In an earlier run with the same candidate spans, prompt wrapper, scorer and exact 1,024-token budget, but with Qwen2.5-7B-Instruct and Meta-Llama-3-8B-Instruct in an earlier software environment, the pair packer of Table~\ref{tab:main} outperformed head and middle truncation by 13.1 and 13.6 F1, Selective Context by 18.2, LLMLingua-2 by 11.3, LongLLMLingua by 6.6, and BM25 and TF-IDF chunk packing by 2.1 and 1.9 F1 (two-model averages, all $p<0.001$). Since \spk{} outperforms the pair packer in every setting of Table~\ref{tab:main}, these baselines are dominated by \spk{} as well; we report them here rather than in the main table because they were run in a different environment.
 
 \end{document}
