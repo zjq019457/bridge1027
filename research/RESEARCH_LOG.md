@@ -96,3 +96,8 @@ Ours vs BGE chunks (paired bootstrap): beats it in 12/12 settings, significant (
 (hybrid, Qwen-1024: +1.79, p=0.061). Ablations at 1024 (one component off): no single
 component significant (|diff| <= 0.6). Packing latency (CPU, 300 q): bp_main 614 ms, BGE chunks
 280 ms, ours 432 ms (+BGE encode); max tokens 1024 for all, mean 1013.8 (ours) vs 986.5 (BGE).
+Full context (~30k tokens, middle-truncated): Qwen-7B 43.04, Llama-8B 43.13.
+Qwen2.5-14B (same Qwen traces): BGE chunks 36.27/42.34/45.29, old BridgePack 36.73/41.69/44.23,
+ours hybrid 40.44/44.32/47.50, ours BGE seeds 39.21/45.18/48.10, LLMLingua-2 27.10 (512/1024/2048).
+Ours vs BGE chunks on 14B: significant at all 3 budgets for both seed types (p <= 0.028).
+Totals: frozen hybrid config beats BGE chunks in 9/9 model x budget settings, significant in 8/9.
