@@ -210,3 +210,52 @@ def bge_chunk(s, tok, budget=1024, neighbor=32, top_k=64):
         if len(tok("\n\n".join([prefix, *pieces, piece]).strip()).input_ids) <= budget:
             pieces.append(piece)
     return _emit(tok, q, pieces, budget)
+
+
+# ---------------------------------------------------------------------------------------------
+# Component ablations of the final packer (hybrid seeds + sentence repair + merged backfill
+# admission + document-order emission). Each flag switches one component off.
+def _abl_ranges(sel, page_map, radius, sent, merge, docorder):
+    rng = []
+    for k, c in enumerate(sel):
+        page = page_map[c.page_id]
+        ps, toks = int(page["start_token"]), page["tokens"]
+        if sent:
+            a, b = _sentence_range(toks, ps, c.start_token, c.end_token, radius)
+        else:
+            a, b = max(ps, c.start_token - radius), min(ps + len(toks), c.end_token + radius)
+        rng.append((c.page_id, a, b, k))
+    if merge:
+        rng.sort()
+        m = []
+        for p, a, b, k in rng:
+            if m and m[-1][0] == p and a <= m[-1][2]:
+                m[-1] = (p, m[-1][1], max(m[-1][2], b), min(m[-1][3], k))
+            else:
+                m.append((p, a, b, k))
+        rng = m
+    rng.sort(key=(lambda r: (r[0], r[1])) if docorder else (lambda r: r[3]))
+    return [r[:3] for r in rng]
+
+
+def final_abl(s, tok, budget=1024, seed_mode=2, sent=1, merge=1, docorder=1, backfill=1, radius=32):
+    q = s["question"]
+    cands, page_map = etp.build_candidate_spans(s["sample_id"], s["task"], q, s["context"])
+    if not cands:
+        return _emit(tok, q, [], budget)
+    seed = _seed(s, cands, seed_mode)
+    priority = sorted(cands, key=lambda c: (-seed[c.span_id], c.source_order_index))[:60]
+    prefix = etp._prefix(q, False)
+
+    def render(sel):
+        return "\n\n".join([prefix] + [_range_text(page_map, *r) for r in _abl_ranges(sel, page_map, radius, sent, merge, docorder)])
+    chosen = []
+    for c in priority:
+        n = len(tok(render(chosen + [c])).input_ids)
+        if n <= budget:
+            chosen.append(c)
+        elif not backfill:
+            break
+    if not chosen:
+        return _emit(tok, q, [], budget)
+    return _emit(tok, q, [render(chosen)[len(prefix):].strip()], budget)

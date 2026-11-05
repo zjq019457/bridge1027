@@ -13,7 +13,7 @@ REPO = BK / "bridge1027"
 SRC = REPO / "server/source/SlimInfer_snapshot"
 DATA = REPO / "research/data/longbench"
 GOLD = REPO / "server/golden"
-TOKDIR = REPO / "research/data/tok/qwen"
+TOKDIR = Path(os.environ["BP_TOK"]) if os.environ.get("BP_TOK") else REPO / "research/data/tok/qwen"
 sys.path.insert(0, str(SRC))
 
 from tokenizers import Tokenizer  # noqa: E402
