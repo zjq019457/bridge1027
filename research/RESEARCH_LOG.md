@@ -81,3 +81,18 @@ Reference: BGE chunks (repo baseline, fixed +-32, similarity-order emission) 45.
 Sentence repair helps with every seed (+2.5 / +1.2 / +3.0). BGE cache for the test set computed on Colab.
 
 Round 4 (running): 512 / 2048 budgets for BGE chunks, hybrid + sentence repair, old BridgePack.
+
+## 5. Frozen test run (LongBench, 1,150 q, A100 x2, fp16/bf16, vLLM 0.7.3) — 2026-11-06
+Config frozen on dev before this run: hybrid seeds + sentence repair (lex_rep seed_mode=2 sent=1).
+Macro F1 (6 tasks):
+| config | Qwen 512 | Qwen 1024 | Qwen 2048 | Llama 512 | Llama 1024 | Llama 2048 |
+|---|---|---|---|---|---|---|
+| BridgePack main (old) | 33.88 | 39.11 | 40.68 | 34.05 | 37.79 | 39.60 |
+| BGE chunks | 33.05 | 38.85 | 40.98 | 33.27 | 38.99 | 40.85 |
+| ours, BGE seeds | 35.64 | 40.76 | 43.14 | 36.16 | 41.67 | 43.58 |
+| ours, hybrid seeds (frozen) | 36.74 | 40.64 | 43.60 | 36.44 | 40.98 | 42.78 |
+| LLMLingua-2 (1024) | | 24.60 | | | 28.43 | |
+Ours vs BGE chunks (paired bootstrap): beats it in 12/12 settings, significant (p<0.05) in 11/12
+(hybrid, Qwen-1024: +1.79, p=0.061). Ablations at 1024 (one component off): no single
+component significant (|diff| <= 0.6). Packing latency (CPU, 300 q): bp_main 614 ms, BGE chunks
+280 ms, ours 432 ms (+BGE encode); max tokens 1024 for all, mean 1013.8 (ours) vs 986.5 (BGE).
