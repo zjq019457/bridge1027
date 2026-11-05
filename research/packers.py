@@ -126,7 +126,8 @@ def _bge_sims(s):
     if not _BGE:
         import json
         from pathlib import Path
-        for f in Path(__file__).with_name("cache").glob("bge_*.jsonl"):
+        import os
+        for f in Path(__file__).with_name("cache").glob(os.environ.get("BP_ENC", "bge") + "_*.jsonl"):
             for line in f.open(encoding="utf-8"):
                 r = json.loads(line)
                 _BGE[r["key"]] = r["sim"]

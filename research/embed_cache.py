@@ -27,16 +27,16 @@ model = AutoModel.from_pretrained(BGE).to(DEV).eval()
 @torch.no_grad()
 def enc(texts):
     out = []
-    for i in range(0, len(texts), 64):
-        b = tok(texts[i:i + 64], padding=True, truncation=True, max_length=512, return_tensors="pt").to(DEV)
+    for i in range(0, len(texts), 256):
+        b = tok(texts[i:i + 256], padding=True, truncation=True, max_length=512, return_tensors="pt").to(DEV)
         e = model(**b).last_hidden_state[:, 0]
         out.append(torch.nn.functional.normalize(e, dim=-1))
     return torch.cat(out).float().cpu().numpy()
 
 
 which = sys.argv[1]
-samples = L.load_dev() if which == "dev" else L.load_samples()
-path = OUT / f"bge_{which}.jsonl"
+samples = L.load_dev() if which == "dev" else L.load_inf() if which == "inf" else L.load_samples()
+path = OUT / f"{os.environ.get('BP_ENC', 'bge')}_{which}.jsonl"
 done = set()
 if path.exists():
     done = {json.loads(l)["key"] for l in path.open(encoding="utf-8")}

@@ -74,3 +74,23 @@ def load_dev(tasks=("hotpotqa_e", "2wikimqa_e")):
             out.append({"task": t, "sample_id": str(r.get("_id", i)), "question": r["input"],
                         "context": r["context"], "answers": r.get("answers", [])})
     return out
+
+
+INF = REPO / "research/data/infbench"
+
+
+def load_inf(tasks=("en_qa", "en_mc")):
+    """InfiniteBench En.QA / En.MC (English novels, ~150K+ tokens). For En.MC the options are
+    part of the question text and the gold answer is the option letter."""
+    out = []
+    for t in tasks:
+        for i, r in enumerate(map(json.loads, (INF / f"{t.replace('_', '.')}.jsonl").open(encoding="utf-8"))):
+            q, ans = r["input"], r["answer"] if isinstance(r["answer"], list) else [r["answer"]]
+            if t == "en_mc":
+                opts = r["options"]
+                q = (f"Question: {q}\n\nOnly one of the following options is correct, tell me the answer using one "
+                     "single letter (A, B, C, or D). Don't say anything else.\n"
+                     + "\n".join(f"{'ABCD'[k]}. {o}" for k, o in enumerate(opts)))
+                ans = ["ABCD"[opts.index(ans[0])]] if ans[0] in opts else ans
+            out.append({"task": t, "sample_id": str(r.get("id", i)), "question": q, "context": r["context"], "answers": ans})
+    return out

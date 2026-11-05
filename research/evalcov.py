@@ -31,7 +31,7 @@ if __name__ == "__main__":
     kw = dict(a.split("=") for a in sys.argv[4:])
     tasks = sys.argv[2].split(",") if len(sys.argv) > 2 else ["hotpotqa", "2wikimqa", "musique"]
     limit = int(sys.argv[3]) if len(sys.argv) > 3 else 10**9
-    samples = L.load_dev() if tasks == ["dev"] else [s for s in L.load_samples() if s["task"] in tasks]
+    samples = L.load_dev() if tasks == ["dev"] else L.load_inf() if set(tasks) <= {"en_qa", "en_mc"} else [s for s in L.load_samples() if s["task"] in tasks]
     tasks = sorted({s["task"] for s in samples})
     per = {}
     samples = [s for s in samples if per.setdefault(s["task"], []).append(1) or len(per[s["task"]]) <= limit]

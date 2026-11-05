@@ -151,7 +151,14 @@ def qa_f1_zh_score(prediction, ground_truth, **kwargs):
     return f1_score(prediction_tokens, ground_truth_tokens)
 
 
+def mc_letter_score(prediction, ground_truth, **kw):
+    m = re.search(r"\b([A-D])\b", prediction.strip())
+    return float(bool(m) and m.group(1) == ground_truth)
+
+
 dataset2metric = {
+    "en_qa": qa_f1_score,
+    "en_mc": mc_letter_score,
     "narrativeqa": qa_f1_score,
     "qasper": qa_f1_score,
     "multifieldqa_en": qa_f1_score,
