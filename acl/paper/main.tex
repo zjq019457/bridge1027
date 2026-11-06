@@ -19,7 +19,7 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
 
-\newcommand{\spk}{\textsc{SentPack}}
+\newcommand{\spk}{\textsc{DedupPack}}
 \newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
 \title{A Quarter of the Budget Is Spent Twice: Duplicated Evidence in\\Budgeted Context Packing and a Simple Fix}
@@ -42,7 +42,7 @@ Two families of methods do this. \emph{Prompt compressors} \citep{li2023selectiv
 
 We start from a simple question: \emph{where does the budget go?} Measuring the contexts produced by standard dense chunk packing on LongBench (Section~\ref{sec:diag}), we find that relevant chunks cluster---the passage that answers a question tends to contain several top-ranked chunks---so their padded windows overlap, and the same sentences are rendered and paid for several times. At a 1,024-token budget, 23\% of the packed text duplicates text elsewhere in the same context, and the share grows with the budget (15\%, 23\% and 29\% at 512, 1,024 and 2,048 tokens). In addition, 94\% of packed pieces end in the middle of a sentence, and greedy admission leaves part of the budget unused. Under a hard budget, every duplicated or broken token is a token not spent on evidence.
 
-We then show that this waste can be removed without touching the ranker. \spk{} is a packer that can be placed behind any span ranker (Figure~\ref{fig:overview}). \spk{} (i)~extends each selected span to the nearest sentence boundaries within a small radius, (ii)~merges extensions that touch or overlap into a single passage, (iii)~admits spans in rank order under the exact downstream token count and \emph{backfills}, i.e., keeps admitting later spans after one does not fit, and (iv)~emits the merged passages verbatim in document order. None of these operations requires training, and all of them run on the CPU before the model is called.
+We then show that this waste can be removed without touching the ranker. \spk{} is a packer that can be placed behind any span ranker (Figure~\ref{fig:overview}). Its core operation is \emph{deduplication by merging}: the padded ranges of all selected spans that touch or overlap are merged into a single passage, so every token of the source is paid for at most once, and the cost of a new span is the number of tokens it actually adds. Around this core, \spk{} admits spans in rank order under the exact downstream token count and \emph{backfills} (keeps admitting later spans after one does not fit), aligns the padding to sentence boundaries, and emits the merged passages verbatim in document order. None of these operations requires training, and all of them run on the CPU before the model is called.
 
 We evaluate \spk{} under a protocol designed to leave little room for doubt. Every design choice, including the ranker, was fixed on a development split built from LongBench-E with all LongBench test questions removed; the LongBench test set was then run once. All methods share the candidate spans, the prompt wrapper, the model, greedy decoding, the scorer, and a budget counted with the downstream tokenizer. We test three instruction models and three budgets and report paired bootstrap tests. Our findings are:
 
@@ -53,7 +53,7 @@ We evaluate \spk{} under a protocol designed to leave little room for doubt. Eve
 \item \textbf{The gain is retriever-agnostic.} Holding the BGE ranking fixed and changing only the packer improves F1 by 2.5--2.8 at every budget; with a purely lexical ranker \spk{} still outperforms the pair packer that uses the same lexical signals (Section~\ref{sec:agnostic}).
 \item \textbf{A 2,048-token \spk{} context is as good as the full context} on all three models (paired differences $+0.56$, $-0.35$ and $-0.10$ F1, none significant), while sending about one sixth of the prompt.
 \item \textbf{Evidence-level packing dominates token deletion.} At the same exact budget, \spk{} exceeds LLMLingua-2 by 15.3 F1.
-\item \textbf{The packer is robust.} Removing any one of its components still leaves a packer that beats BGE chunk packing; merging overlapping evidence is the component whose removal costs the most (Section~\ref{sec:components}).
+\item \textbf{Deduplication is the active ingredient.} In a build-up ablation with a fixed ranker, merging alone recovers 77\% of the gain (+2.11 F1, $p<0.001$, significant at every budget and on each model), removing it from the full packer costs 1.71 F1 ($p<0.001$), and the remaining operations add small, non-significant amounts. Instances with more duplication benefit more (Section~\ref{sec:components}).
 \end{itemize}
 
 \begin{figure*}[t]
@@ -64,8 +64,8 @@ We evaluate \spk{} under a protocol designed to leave little room for doubt. Eve
   arr/.style={-{Stealth[length=2.2mm]}, thick}
 ]
 \node[box, fill=blue!6, draw=blue!60] (rank) {\textbf{Any span ranker}\\[2pt] lexical, dense (BGE)\\or hybrid; top-60 spans\\in rank order};
-\node[box, fill=teal!8, draw=teal!70, right=0.45cm of rank] (sent) {\textbf{1. Sentence repair}\\[2pt] extend each span to\\the nearest sentence\\ends ($\le$32 tokens)};
-\node[box, fill=violet!7, draw=violet!65, right=0.45cm of sent] (merge) {\textbf{2. Merge}\\[2pt] overlapping or touching\\repairs become one\\passage (paid once)};
+\node[box, fill=teal!8, draw=teal!70, right=0.45cm of rank] (sent) {\textbf{1. Pad}\\[2pt] extend each span by\\$\le$32 tokens, to the\\nearest sentence end};
+\node[box, fill=violet!15, draw=violet!80, very thick, right=0.45cm of sent] (merge) {\textbf{2. Deduplicate}\\[2pt] merge overlapping or\\touching ranges: every\\token is paid for once};
 \node[box, fill=orange!8, draw=orange!70, right=0.45cm of merge] (fill) {\textbf{3. Exact backfill}\\[2pt] admit if the rendered\\context fits $B$ model\\tokens; else skip, go on};
 \node[box, fill=green!7, draw=green!55!black, right=0.45cm of fill] (emit) {\textbf{4. Emit}\\[2pt] verbatim passages\\in document order,\\$|\hat C|_\tau\le B$};
 \draw[arr] (rank) -- (sent);
@@ -73,10 +73,10 @@ We evaluate \spk{} under a protocol designed to leave little room for doubt. Eve
 \draw[arr] (merge) -- (fill);
 \draw[arr] (fill) -- (emit);
 \node[below=0.3cm of rank, align=center, font=\scriptsize, text width=2.8cm] {question $q$, long context $C$\\(mean 12.5K Qwen tokens)};
-\node[below=0.3cm of merge, align=center, font=\scriptsize, text width=6.2cm] {fixed-window packing: \emph{``\ldots the island of Ko Phi''} $|$ cut\\\spk{}: \emph{``It was filmed on the Thai island of Ko Phi Phi Le.''}};
+\node[below=0.3cm of merge, align=center, font=\scriptsize, text width=6.2cm] {standard packing: neighbouring windows overlap, and\\15--30\% of the budget repeats text already packed};
 \node[below=0.3cm of emit, align=center, font=\scriptsize, text width=2.8cm] {compressed context\\$\hat C$ fed to the LLM};
 \end{tikzpicture}}
-\caption{\spk{} packs the spans returned by any ranker. Each span is extended to sentence boundaries, overlapping extensions are merged, spans are admitted in rank order under the exact downstream token budget with backfilling, and the result is emitted verbatim in document order. \spk{} runs before prefill and does not modify the model.}
+\caption{\spk{} packs the spans returned by any ranker. Each span is padded up to a sentence boundary, overlapping padded ranges are merged so that no text is paid for twice, spans are admitted in rank order under the exact downstream token budget with backfilling, and the result is emitted verbatim in document order. \spk{} runs before prefill and does not modify the model.}
 \label{fig:overview}
 \end{figure*}
 
@@ -87,7 +87,7 @@ We evaluate \spk{} under a protocol designed to leave little room for doubt. Eve
 Selective Context removes lexical units with low self-information \citep{li2023selectivecontext}. LLMLingua and LongLLMLingua estimate token importance with a small LM, the latter with question-aware coarse-to-fine compression \citep{jiang2023llmlingua,jiang2024longllmlingua}; LLMLingua-2 distils keep/drop labels into a bidirectional encoder \citep{pan2024llmlingua2}. CPC scores sentences against the question with a trained encoder \citep{liskavets2025cpc}, and RECOMP and CompAct train extractive or abstractive compressors \citep{xu2023recomp,yoon2024compact}. \spk{} is training-free, never edits text inside a kept passage, and is complementary to learned scorers: any of them can supply its ranking.
 
 \paragraph{Retrieval-style context construction.}
-Retrieval-augmented generation ranks passages with sparse \citep{robertson2009probabilistic} or dense \citep{karpukhin2020dense,xiao2023cpack} retrievers and concatenates the top results \citep{lewis2020retrieval,izacard2021leveraging}; diversity-aware selection \citep{carbonell1998mmr} and multi-hop retrieval \citep{xiong2021answering,trivedi2023interleaving} refine \emph{which} units are selected. We study the complementary question of how selected units are turned into a context under an exact budget, and show that this step alone moves F1 by 2--4 points.
+Retrieval-augmented generation ranks passages with sparse \citep{robertson2009probabilistic} or dense \citep{karpukhin2020dense,xiao2023cpack} retrievers and concatenates the top results \citep{lewis2020retrieval,izacard2021leveraging}; diversity-aware selection \citep{carbonell1998mmr} and multi-hop retrieval \citep{xiong2021answering,trivedi2023interleaving} refine \emph{which} units are selected. We study the complementary question of how selected units are turned into a context under an exact budget, and show that this step alone moves F1 by 2--4 points. Practitioners have observed that overlapping chunks can return near-duplicate neighbours that waste prompt budget, and an industrial system limits the index gap between selected chunks \citep{sundar2026overlap}; exact deduplication of identical chunks or documents has been measured in RAG corpora \citep{bytedup2026}, and sentence-window retrieval has been reported to underperform fixed-size chunks \citep{eibich2024aragog}. To our knowledge, the share of the budget that standard packing spends on duplicated text within a single long document, and its effect on accuracy, have not been quantified before.
 
 \paragraph{Long-context evaluation and KV-cache compression.}
 LongBench \citep{bai2023longbench} evaluates QA over long inputs, and models under-use evidence in the middle of long contexts \citep{liu2024lost}. KV-cache methods evict, merge or quantise cached states during generation \citep{xiao2023streamingllm,zhang2023h2o,li2024snapkv,liu2024kivi}. \spk{} instead shortens the input before prefill, so the full context is never encoded.
@@ -146,11 +146,11 @@ The context is split into contiguous pages of 256 regex tokens (words or single 
 \spk{} accepts any function that scores spans against $q$. We use three, none of which sees gold answers. The \emph{lexical} ranker fuses $z$-normalised BM25 ($k_1{=}1.2$, $b{=}0.75$) and TF-IDF scores computed over the spans of the instance. The \emph{dense} ranker is the cosine similarity between the question (with BGE's query instruction) and the span under \texttt{bge-small-en-v1.5} \citep{xiao2023cpack}. The \emph{hybrid} ranker adds the $z$-normalised lexical and dense scores. The top 60 spans form the priority list $P$, ordered by score with ties broken by position. Our main configuration uses the hybrid ranker, chosen on the development split; Section~\ref{sec:agnostic} shows the gains do not depend on this choice.
 
 \subsection{The Packer}
-\paragraph{Sentence repair.} Fixed-size spans start and end at arbitrary positions. Rather than padding each span by a fixed window, \spk{} extends its left end backwards to the first token after a sentence terminator (\texttt{.}, \texttt{?}, \texttt{!}) and its right end forwards to the next terminator, each by at most $r=32$ regex tokens and within the page. A repaired span is thus never longer than a fixed $\pm r$ window, and usually shorter, but it starts and ends on sentence boundaries whenever one is within reach.
+\paragraph{Deduplication by merging (core).} Top-ranked spans cluster in the relevant passages, and their padded ranges overlap (Section~\ref{sec:diag}). \spk{} keeps the selection as a set of token ranges, sorts them by page and position, and merges every pair that overlaps or touches into one range. Overlapping evidence is therefore rendered, and paid for, once, and a span adjacent to already selected evidence costs only the tokens it adds.
 
-\paragraph{Merging.} Spans that are close in the document produce repaired ranges that overlap or touch. \spk{} sorts the repaired ranges of the current selection by page and position and merges every pair that overlaps into one passage. Overlapping evidence is therefore rendered, and paid for, once.
+\paragraph{Sentence-aligned padding.} As in standard packing, each span is padded with context, by at most $r=32$ regex tokens per side and within its page. Instead of a fixed window, \spk{} stops the padding at the nearest sentence terminator (\texttt{.}, \texttt{?}, \texttt{!}) within that radius, so padded ranges are never longer than the fixed window and usually end on a sentence boundary. This operation mainly improves readability; Section~\ref{sec:components} shows that its effect on accuracy is small.
 
-\paragraph{Exact admission with backfill.} Spans are considered in priority order. A span is admitted if the context rendered from the current selection plus the span (repaired, merged and joined after the prefix ``Question: $q$ / Selected evidence:'') has at most $B$ tokens under $\tau$. Because merging can make a new span nearly free, the cost of a span depends on what is already selected, so it is measured on the rendered context rather than estimated. If a span does not fit, \spk{} skips it and continues with the next one, so short spans further down the list can still use the remaining budget.
+\paragraph{Exact admission with backfill.} Spans are considered in priority order. A span is admitted if the context rendered from the current selection plus the span (padded, merged and joined after the prefix ``Question: $q$ / Selected evidence:'') has at most $B$ tokens under $\tau$. Because merging can make a new span nearly free, the cost of a span depends on what is already selected; admission therefore measures the rendered, deduplicated context rather than summing per-span lengths. If a span does not fit, \spk{} skips it and continues with the next one, so short spans further down the list can still use the remaining budget.
 
 \paragraph{Document-order emission.} The merged passages are emitted verbatim in document order, separated by blank lines. If re-joining changes the token count, the context is clipped to $B$, so $|\hat C|_\tau\le B$ always holds. Algorithm~\ref{alg:sp} (Appendix~\ref{app:impl}) gives the procedure.
 
@@ -302,7 +302,7 @@ Full context (30K) & \multicolumn{2}{c}{--} & \multicolumn{2}{c}{38.16} \\
 \label{tab:infbench}
 \end{table}
 
-To test whether the findings transfer beyond LongBench, we run the frozen configuration on InfiniteBench's English novel QA and multiple-choice tasks \citep{zhang2024infinitebench}, whose contexts are about ten times longer (Table~\ref{tab:infbench}). No parameter was changed. The frozen \spk{} is the best method in three of the four model--budget settings and outperforms the pair packer by 4.54 F1 [3.02, 6.02] pooled ($p<0.001$). Its advantage over dense chunk packing points in the same direction as on LongBench (+1.21 pooled, between +0.84 and +1.56 per setting) but, with 580 questions, is not significant. With only 1,024 tokens, \spk{} matches Llama-3.1-8B reading 30K tokens of the book (38.36 vs.\ 38.16).
+To test whether the findings transfer beyond LongBench, we run the frozen configuration on InfiniteBench's English novel QA and multiple-choice tasks \citep{zhang2024infinitebench}, whose contexts are about ten times longer (Table~\ref{tab:infbench}). Because relevant passages are scattered over a whole novel, chunk packing duplicates only 8--11\% of its context here (vs.\ 23--29\% on LongBench), so the diagnosis predicts a smaller gain. No parameter was changed. The frozen \spk{} is the best method in three of the four model--budget settings and outperforms the pair packer by 4.54 F1 [3.02, 6.02] pooled ($p<0.001$). Its advantage over dense chunk packing points in the same direction as on LongBench (+1.21 pooled, between +0.84 and +1.56 per setting) but, with 580 questions, is not significant. With only 1,024 tokens, \spk{} matches Llama-3.1-8B reading 30K tokens of the book (38.36 vs.\ 38.16).
 
 \subsection{How close to the full context?}
 At 2,048 tokens, \spk{} is statistically indistinguishable from reading the full context on all three models: the paired differences are $+0.56$ [$-1.46$, 2.56] for Qwen2.5-7B, $-0.35$ [$-2.39$, 1.65] for Llama-3.1-8B and $-0.10$ [$-2.04$, 1.82] for Qwen2.5-14B. The packed context is about one sixth of the mean prompt (2,048 vs.\ 12.5K tokens). On the multi-hop tasks it exceeds the full context on all three models (49.2 vs.\ 44.4, 45.8 vs.\ 43.7 and 56.0 vs.\ 52.6 MH F1), consistent with the observation that long inputs dilute the evidence that matters \citep{liu2024lost}. At 1,024 tokens, \spk{} recovers 93--95\% of full-context F1.
@@ -310,30 +310,34 @@ At 2,048 tokens, \spk{} is statistically indistinguishable from reading the full
 \subsection{Evidence-level vs.\ token-level compression}
 Under the same exact 1,024-token budget, LLMLingua-2 reaches 24.6--28.4 F1, and \spk{} exceeds it by 15.27 F1 [13.90, 16.64] pooled over models. At roughly 12$\times$ compression a token-level compressor must remove most of every sentence, including the names, numbers and function words that extractive QA needs to copy, whereas \spk{} spends the budget on a few complete passages. Appendix~\ref{app:extra} shows the same ordering for Selective Context and LongLLMLingua.
 
-\subsection{What each packing operation contributes}
+\subsection{Deduplication is the active ingredient}
 \label{sec:components}
 
 \begin{table}[t]
 \centering
 \small
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3pt}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcc}
+\begin{tabular}{lcccc}
 \toprule
-Variant (1,024 tokens) & vs.\ BGE chunks & Full $-$ variant \\
+Packer (BGE ranking, 1,024 tokens) & Qwen-14B & Llama-8B & Step $\Delta$ & Dup. \\
 \midrule
-\spk{} (all components) & +1.92$^{*}$ & -- \\
-\quad without merging & +1.14$^{*}$ & +0.78$^{*}$ {\scriptsize [0.03, 1.52]} \\
-\quad without backfill & +1.63$^{*}$ & +0.29 {\scriptsize [$-$0.13, 0.71]} \\
-\quad fixed $\pm$32 repair & +1.92$^{*}$ & +0.00 {\scriptsize [$-$0.75, 0.73]} \\
-\quad rank-order emission & +2.14$^{*}$ & $-$0.22 {\scriptsize [$-$0.97, 0.53]} \\
+Chunk packing & 42.34 & 39.03 & & 22.8 \\
+\ + merge overlapping ranges & 44.42 & 41.17 & \textbf{+2.11}$^{***}$ & 1.2 \\
+\ + document-order emission & 44.75 & 41.05 & +0.11 & 1.2 \\
+\ + sentence-aligned padding (= \spk{}) & \textbf{45.18} & \textbf{41.67} & +0.52 & 1.3 \\
+\midrule
+\spk{} without backfilling & 44.84 & 41.24 & $-$0.38 & 1.3 \\
+\spk{} without merging & 43.32 & 40.10 & $-$\textbf{1.71}$^{***}$ & 19.7 \\
 \bottomrule
 \end{tabular}}
-\caption{Component analysis, pooled over the three models (F1, paired bootstrap; $^{*}$: 95\% interval excludes zero). Each variant switches off one operation and keeps the hybrid ranker and the exact budget.}
+\caption{Build-up ablation with a fixed BGE ranking. Step $\Delta$: paired F1 difference to the row above (bottom rows: to \spk{}), pooled over the two models ($^{***}$: $p<0.001$; significant on each model separately). Dup.: duplicated share of the packed context (\%, Qwen tokenizer).}
 \label{tab:components}
 \end{table}
 
-Table~\ref{tab:components} switches off one packing operation at a time. Two observations stand out. First, the packer is robust: every single-component variant still outperforms BGE chunk packing significantly, so no single operation is a point of failure. Second, merging overlapping evidence is the operation whose removal costs the most (+0.78 F1, $p=0.04$). Without merging, two selected spans from the same passage are rendered as two overlapping copies, and the duplicated text displaces other evidence; with merging, a span adjacent to already selected evidence costs only its new tokens, which also makes exact, rendered-context admission necessary. The remaining operations are interchangeable in the sense that one can compensate for another: sentence repair and fixed-window repair perform the same once merging and backfilling are in place, and so do document-order and rank-order emission. On the development split, sentence repair improved F1 by 2.5 over fixed repair with a lexical ranker (Appendix~\ref{app:dev}); we keep it because it never lengthens a span beyond the fixed window and yields readable passages.
+To find out which operation produces the gain, we start from standard chunk packing and add one operation at a time, keeping the BGE ranking fixed so that only the packing changes (Table~\ref{tab:components}; our re-implementation of chunk packing reproduces the baseline of Table~\ref{tab:external} within 0.04 F1). Merging overlapping ranges alone raises F1 by 2.11 [1.16, 3.09] ($p<0.001$), on each model separately, and removes almost all duplication (22.8\%$\rightarrow$1.2\%). It accounts for 77\% of the full gain of 2.74 F1. Document-order emission and sentence-aligned padding add 0.11 and 0.52 F1, and backfilling 0.38; none of these steps is significant on its own. Conversely, removing merging from the full packer costs 1.71 F1 [0.76, 2.66] ($p<0.001$) and brings duplication back to 20\%. Merging alone is also significant at the other budgets (+1.47 at 512 and +1.64 at 2,048 tokens, both $p\le0.002$). We keep the secondary operations because they never hurt significantly and make the packed context more readable, but the evidence is clear that the accuracy gain comes from not paying for the same text twice.
+
+\paragraph{More duplication, larger gain.} If deduplication drives the gain, instances whose chunk-packed context is more redundant should benefit more. We split the test instances into terciles by the duplication rate of their chunk-packed context. At 512 tokens, the F1 gain of \spk{} over chunk packing (same BGE ranking) grows from $-$0.2 and +1.7 in the least redundant tercile to +6.8 and +7.1 in the most redundant one (Qwen2.5-7B and Llama-3.1-8B), and the gain in answer coverage grows monotonically with duplication at 512 and 1,024 tokens on both models (e.g.\ +1.0, +3.1 and +7.8 points for Qwen2.5-7B at 512). The same mechanism explains the smaller gains on InfiniteBench (Section~\ref{sec:infbench}): there, relevant passages are scattered over a whole novel, and chunk packing duplicates only 8--11\% of its context.
 
 \subsection{Cost}
 \spk{} runs on a single CPU core in 432~ms per instance on average (median 415~ms, 95th percentile 698~ms, 1,024 tokens, 300 random test instances), compared with 614~ms for the pair packer and 280~ms for BGE chunk packing; the BGE encoder pass is shared by both dense methods. Every packed context respects the exact budget (maximum 1,024 tokens), and \spk{} uses the budget more fully than chunk packing (1,014 vs.\ 987 tokens on average) because backfilling closes the gaps left by spans that do not fit.
@@ -341,7 +345,7 @@ Table~\ref{tab:components} switches off one packing operation at a time. Two obs
 % =====================================================================
 \section{Discussion}
 
-\paragraph{Why does packing matter so much?} Under an exact budget, every token spent on a broken sentence, a duplicated window or an unfilled gap is a token not spent on evidence. Standard packing pays all three costs. Sentence repair turns spans into self-contained statements, merging stops the same text from being bought twice, backfilling uses the remainder of the budget, and document order keeps neighbouring passages in their natural sequence. Each effect is small, and the operations partly substitute for one another, but together they are worth 2--4 F1, as much as replacing a lexical ranker with a dense one.
+\paragraph{Why does packing matter so much?} Under an exact budget, every duplicated token is a token not spent on evidence. Standard packing pads each top-ranked chunk independently, but top-ranked chunks are not independent: they cluster in the relevant passages, so their padding overlaps and a quarter of the budget is spent twice. Merging the padded ranges removes this waste and is worth about 2 F1 on its own, as much as replacing BGE-small with BGE-large or adding a cross-encoder reranker. Simpler designs that avoid overlap by construction, such as non-overlapping sentence chunks, recover part of the gain, consistent with this diagnosis; \spk{} achieves it behind any existing chunking and ranker, without re-indexing.
 
 \paragraph{Implications for compression research.} Most work on context compression compares rankers or learned scorers with a fixed, simple packer. Our results suggest that such comparisons should hold the packer fixed \emph{and} strong, because a better packer gives every ranker a similar boost. \spk{} needs only the downstream tokenizer and adds no model calls, so it can be adopted as the default packer behind any retriever or learned scorer.
 
@@ -349,10 +353,10 @@ Table~\ref{tab:components} switches off one packing operation at a time. Two obs
 
 % =====================================================================
 \section{Conclusion}
-We studied long-context question answering under a hard budget measured in the downstream model's own tokens and showed that the step that turns ranked spans into a context is a major, under-studied lever. \spk{}---sentence repair, merging of overlapping evidence, exact admission with backfill and document-order emission---improves over dense chunk packing in all nine model--budget settings we test, by 1.9--3.7 F1 pooled over models, transfers across lexical, dense and hybrid rankers, and at 2,048 tokens matches the full context on three LLMs. We hope this encourages treating packing as a first-class component of context compression.
+We studied long-context question answering under a hard budget measured in the downstream model's own tokens and showed that the step that turns ranked spans into a context is a major, under-studied lever. Standard packing spends 15--30\% of the budget on duplicated text; \spk{}, whose core is merging overlapping evidence so that no text is paid for twice, improves over dense chunk packing in all nine model--budget settings we test, by 1.9--3.7 F1 pooled over models, transfers across lexical, dense and hybrid rankers, and at 2,048 tokens matches the full context on three LLMs. We hope this encourages treating packing as a first-class component of context compression.
 
 \section*{Limitations}
-\spk{} shortens the input before prefill and is not a KV-cache method. Our experiments cover English extractive QA on LongBench with three instruction models of 7--14B parameters and budgets of 512--2,048 tokens; other languages, generation tasks such as summarisation, and much larger models may behave differently. The development split covers two multi-hop tasks, and the method was frozen before testing; a broader development set might lead to a different choice of ranker, although our results suggest the ranker matters less than the packer. Our component analysis shows that the packing operations partly substitute for one another, so their individual contributions are smaller than their joint effect. The dense and hybrid rankers require a small encoder at inference time.
+\spk{} shortens the input before prefill and is not a KV-cache method. Our experiments cover English extractive QA on LongBench with three instruction models of 7--14B parameters and budgets of 512--2,048 tokens; other languages, generation tasks such as summarisation, and much larger models may behave differently. The development split covers two multi-hop tasks, and the method was frozen before testing; a broader development set might lead to a different choice of ranker, although our results suggest the ranker matters less than the packer. Apart from merging, the individual packing operations have small effects that are not significant on their own. The dense and hybrid rankers require a small encoder at inference time.
 
 \section*{Ethics Statement}
 Context compression can remove information a user would consider important, which can lead to incomplete or incorrect answers; in high-stakes settings, compressed contexts should be shown to the user or checked against the source. \spk{} keeps all admitted text verbatim, which makes such checks straightforward. All datasets are public research benchmarks used under their licences.

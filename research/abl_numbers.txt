@@ -1,0 +1,16 @@
+BGE chunks (re-impl.)        qwen=42.34 llama=39.03
++ merge                      qwen=44.42 llama=41.17
++ document order             qwen=44.75 llama=41.05
++ sentence repair (= full)   qwen=45.18 llama=41.67
+full - backfill              qwen=44.84 llama=41.24
+full - merge                 qwen=43.32 llama=40.10
++ merge - BGE chunks (re-impl.): +2.08 [0.84, 3.36] p=0.0006 | +2.14 [0.74, 3.57] p=0.0022 || pooled +2.11 [1.16, 3.09] p=0.0000
++ document order - + merge: +0.33 [-0.83, 1.52] p=0.5702 | -0.12 [-1.42, 1.14] p=0.8568 || pooled +0.11 [-0.77, 0.99] p=0.7976
++ sentence repair (= full) - + document order: +0.42 [-0.84, 1.68] p=0.5136 | +0.62 [-0.67, 1.96] p=0.3514 || pooled +0.52 [-0.41, 1.44] p=0.2768
++ sentence repair (= full) - BGE chunks (re-impl.): +2.84 [1.25, 4.49] p=0.0002 | +2.64 [1.01, 4.34] p=0.0014 || pooled +2.74 [1.57, 3.94] p=0.0000
++ sentence repair (= full) - full - backfill: +0.34 [-0.42, 1.10] p=0.3892 | +0.43 [-0.33, 1.21] p=0.2670 || pooled +0.38 [-0.16, 0.91] p=0.1594
++ sentence repair (= full) - full - merge: +1.86 [0.54, 3.18] p=0.0056 | +1.56 [0.19, 2.97] p=0.0260 || pooled +1.71 [0.76, 2.66] p=0.0004
++ merge - + sentence repair (= full): -0.76 [-2.19, 0.63] p=0.2896 | -0.50 [-2.02, 0.99] p=0.5126 || pooled -0.63 [-1.68, 0.43] p=0.2340
+== merge only at other budgets
+512 qwen: base=36.33 merge=37.96 llama: base=33.27 merge=34.58 || pooled +1.47 [0.62, 2.34] p=0.0014
+2048 qwen: base=45.29 merge=46.70 llama: base=40.81 merge=42.66 || pooled +1.64 [0.63, 2.65] p=0.0012
