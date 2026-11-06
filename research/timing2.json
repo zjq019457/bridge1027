@@ -1,0 +1,44 @@
+{
+ "BGE-small encoding (shared)": {
+  "mean_s": 0.154,
+  "median_s": 0.161,
+  "device": "gpu",
+  "peak_gpu_gb": 0.32
+ },
+ "DedupPack packing (CPU, after encoding)": {
+  "mean_s": 0.395,
+  "median_s": 0.388,
+  "device": "cpu",
+  "peak_gpu_gb": 0.07
+ },
+ "Chunk packing (CPU, after encoding)": {
+  "mean_s": 0.265,
+  "median_s": 0.261,
+  "device": "cpu",
+  "peak_gpu_gb": 0.07
+ },
+ "Reranker (top-100, after encoding)": {
+  "mean_s": 0.158,
+  "median_s": 0.158,
+  "device": "gpu",
+  "peak_gpu_gb": 1.29
+ },
+ "Provence pruning (top-60, after encoding)": {
+  "mean_s": 0.761,
+  "median_s": 0.755,
+  "device": "gpu",
+  "peak_gpu_gb": 3.4
+ },
+ "LLMLingua-2": {
+  "mean_s": 0.867,
+  "median_s": 0.832,
+  "device": "gpu",
+  "peak_gpu_gb": 3.28
+ },
+ "LongLLMLingua (Llama-3.1-8B LM)": {
+  "mean_s": 21.046,
+  "median_s": 9.219,
+  "device": "gpu",
+  "peak_gpu_gb": 18.44
+ }
+}

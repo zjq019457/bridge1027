@@ -51,6 +51,7 @@ We evaluate \spk{} under a protocol designed to leave little room for doubt. Eve
 \item \textbf{Removing the waste beats ranking-only improvements.} \spk{} outperforms dense BGE chunk packing in all nine model--budget settings, by +3.68, +1.92 and +2.26 F1 at 512, 1,024 and 2,048 tokens (pooled over models, all $p\le0.001$), and outperforms a structured lexical pair packer by 2.5--3.1 F1 (Tables~\ref{tab:main} and~\ref{tab:sig}).
 \item \textbf{Better rankers do not remove the waste.} With BGE-large and with a cross-encoder reranker, swapping only the packer improves F1 by 3.8 and 2.0 ($p\le0.001$); \spk{} with the reranker is the best compressed configuration and outperforms LlamaIndex's sentence-window and auto-merging retrievers, Provence and LongLLMLingua (Section~\ref{sec:external}). The direction carries over to book-length InfiniteBench contexts (Section~\ref{sec:infbench}).
 \item \textbf{The gain is retriever-agnostic.} Holding the BGE ranking fixed and changing only the packer improves F1 by 2.5--2.8 at every budget; with a purely lexical ranker \spk{} still outperforms the pair packer that uses the same lexical signals (Section~\ref{sec:agnostic}).
+\item \textbf{The gain extends beyond QA and is cheap.} Over all eleven query-bearing LongBench tasks, \spk{} outperforms chunk packing by 5.1 F1 ($p<0.001$); it runs on one CPU core in 0.4\,s per instance, about 40$\times$ faster than LongLLMLingua (Sections~\ref{sec:extra} and~\ref{sec:cost}).
 \item \textbf{A 2,048-token \spk{} context is as good as the full context} on all three models (paired differences $+0.56$, $-0.35$ and $-0.10$ F1, none significant), while sending about one sixth of the prompt.
 \item \textbf{Evidence-level packing dominates token deletion.} At the same exact budget, \spk{} exceeds LLMLingua-2 by 15.3 F1.
 \item \textbf{Deduplication is the active ingredient.} In a build-up ablation with a fixed ranker, merging alone recovers 77\% of the gain (+2.11 F1, $p<0.001$, significant at every budget and on each model), removing it from the full packer costs 1.71 F1 ($p<0.001$), and the remaining operations add small, non-significant amounts. Instances with more duplication benefit more (Section~\ref{sec:components}).
@@ -275,6 +276,34 @@ A natural question is whether the waste we identify matters only for weak ranker
 
 We also compare with published context-construction systems under the same budget and wrapper. LlamaIndex's sentence-window retrieval \citep{liu2022llamaindex}, which retrieves single sentences and replaces each with its $\pm$3-sentence window, trails the frozen \spk{} configuration by 4.18 F1 [2.76, 5.65]; its windows of neighbouring top sentences overlap heavily, which is exactly the duplication of Section~\ref{sec:diag}. LlamaIndex's auto-merging retriever, which replaces retrieved leaf chunks by their parent when most of the parent's children are retrieved, trails it by 2.33 [0.94, 3.79]: merging at fixed hierarchy levels removes some duplication but admits whole parents that are mostly irrelevant. LongLLMLingua \citep{jiang2024longllmlingua} trails it by 2.48 [1.02, 3.98]. Provence \citep{chirkova2025provence}, a trained pruner that removes irrelevant sentences from each retrieved chunk, is close to the frozen configuration (+0.17, n.s.) and is clearly below \spk{} given a reranker (+2.80 [1.49, 4.16]); \spk{} needs no trained pruner. Finally, packing non-overlapping sentence-aligned chunks with BGE, which avoids duplication by construction, recovers part of the gain, as our diagnosis predicts; \spk{} with the same BGE ranker remains 1.31 F1 higher [$-$0.03, 2.67].
 
+\subsection{Beyond question answering}
+\label{sec:extra}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{5 new tasks} & \multicolumn{2}{c}{All 11 tasks} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Method (1,024 tokens) & Qwen-14B & Llama-8B & Qwen-14B & Llama-8B \\
+\midrule
+Pair packing & 58.39 & 42.94 & 49.28 & 40.13 \\
+BGE chunks & 54.64 & 39.98 & 47.93 & 39.44 \\
+\spk{} (BGE) & 61.81 & 47.20 & \textbf{52.74} & 44.18 \\
+\spk{} (hybrid, frozen) & \textbf{62.56} & \textbf{49.67} & 52.61 & \textbf{44.93} \\
+\midrule
+Full context (30K) & 63.10 & 46.59 & 54.64 & 44.70 \\
+\bottomrule
+\end{tabular}}
+\caption{All query-bearing English LongBench tasks: the six QA tasks plus query-based summarisation (QMSum), few-shot learning (TriviaQA, TREC, SAMSum) and passage retrieval (PassageRetrieval-en), 200 instances each. Per-task scores are in Appendix~\ref{app:pertask}.}
+\label{tab:extra}
+\end{table}
+
+LongBench contains five further English tasks that come with a query: query-based meeting summarisation (QMSum), three few-shot tasks whose context is a long list of demonstrations (TriviaQA, TREC, SAMSum), and passage retrieval, which asks which of 30 paragraphs a given summary describes. We run them with the frozen configuration and no change (Table~\ref{tab:extra}). Over all eleven query-bearing tasks, \spk{} outperforms chunk packing by 5.08 F1 [4.18, 6.00] and the pair packer by 4.06 [3.21, 4.89] pooled over the two models (both $p<0.001$, and on each model separately); on Llama-3.1-8B it is above the 30K-token full context (44.93 vs.\ 44.70). Most of the gain on the new tasks comes from passage retrieval (95.6 vs.\ 56.6 accuracy on Qwen2.5-14B, 59.5 vs.\ 12.5 on Llama-3.1-8B), where duplicated padding pushes candidate paragraphs out of the context, so that the correct one is often missing. On the summarisation and few-shot tasks, which need some relevant material rather than one specific passage, \spk{} and chunk packing are on par (+0.25, n.s.): removing duplicates does not hurt tasks in which it has little to recover.
+
 \subsection{A second benchmark: book-length contexts}
 \label{sec:infbench}
 
@@ -295,14 +324,14 @@ Sentence chunks + BGE & 36.36 & 37.69 & 36.09 & 39.99 \\
 \spk{} (hybrid, frozen) & \textbf{38.03} & \textbf{38.45} & \textbf{38.36} & 40.98 \\
 \spk{} (BGE) & 36.76 & 37.63 & 36.56 & \textbf{41.49} \\
 \midrule
-Full context (30K) & \multicolumn{2}{c}{--} & \multicolumn{2}{c}{38.16} \\
+Full context (30K) & \multicolumn{2}{c}{36.44} & \multicolumn{2}{c}{38.16} \\
 \bottomrule
 \end{tabular}}
 \caption{InfiniteBench En.QA and En.MC \citep{zhang2024infinitebench} (580 questions over novels of 150K+ tokens), mean of QA F1 and MC accuracy. No setting was tuned on this benchmark.}
 \label{tab:infbench}
 \end{table}
 
-To test whether the findings transfer beyond LongBench, we run the frozen configuration on InfiniteBench's English novel QA and multiple-choice tasks \citep{zhang2024infinitebench}, whose contexts are about ten times longer (Table~\ref{tab:infbench}). Because relevant passages are scattered over a whole novel, chunk packing duplicates only 8--11\% of its context here (vs.\ 23--29\% on LongBench), so the diagnosis predicts a smaller gain. No parameter was changed. The frozen \spk{} is the best method in three of the four model--budget settings and outperforms the pair packer by 4.54 F1 [3.02, 6.02] pooled ($p<0.001$). Its advantage over dense chunk packing points in the same direction as on LongBench (+1.21 pooled, between +0.84 and +1.56 per setting) but, with 580 questions, is not significant. With only 1,024 tokens, \spk{} matches Llama-3.1-8B reading 30K tokens of the book (38.36 vs.\ 38.16).
+To test whether the findings transfer beyond LongBench, we run the frozen configuration on InfiniteBench's English novel QA and multiple-choice tasks \citep{zhang2024infinitebench}, whose contexts are about ten times longer (Table~\ref{tab:infbench}). Because relevant passages are scattered over a whole novel, chunk packing duplicates only 8--11\% of its context here (vs.\ 23--29\% on LongBench), so the diagnosis predicts a smaller gain. No parameter was changed. The frozen \spk{} is the best method in three of the four model--budget settings and outperforms the pair packer by 4.54 F1 [3.02, 6.02] pooled ($p<0.001$). Its advantage over dense chunk packing points in the same direction as on LongBench (+1.21 pooled, between +0.84 and +1.56 per setting) but, with 580 questions, is not significant. With only 1,024 tokens, \spk{} matches or exceeds the models reading 30K tokens of the book (38.03 vs.\ 36.44 for Qwen2.5-14B, 38.36 vs.\ 38.16 for Llama-3.1-8B).
 
 \subsection{How close to the full context?}
 At 2,048 tokens, \spk{} is statistically indistinguishable from reading the full context on all three models: the paired differences are $+0.56$ [$-1.46$, 2.56] for Qwen2.5-7B, $-0.35$ [$-2.39$, 1.65] for Llama-3.1-8B and $-0.10$ [$-2.04$, 1.82] for Qwen2.5-14B. The packed context is about one sixth of the mean prompt (2,048 vs.\ 12.5K tokens). On the multi-hop tasks it exceeds the full context on all three models (49.2 vs.\ 44.4, 45.8 vs.\ 43.7 and 56.0 vs.\ 52.6 MH F1), consistent with the observation that long inputs dilute the evidence that matters \citep{liu2024lost}. At 1,024 tokens, \spk{} recovers 93--95\% of full-context F1.
@@ -340,7 +369,31 @@ To find out which operation produces the gain, we start from standard chunk pack
 \paragraph{More duplication, larger gain.} If deduplication drives the gain, instances whose chunk-packed context is more redundant should benefit more. We split the test instances into terciles by the duplication rate of their chunk-packed context. At 512 tokens, the F1 gain of \spk{} over chunk packing (same BGE ranking) grows from $-$0.2 and +1.7 in the least redundant tercile to +6.8 and +7.1 in the most redundant one (Qwen2.5-7B and Llama-3.1-8B), and the gain in answer coverage grows monotonically with duplication at 512 and 1,024 tokens on both models (e.g.\ +1.0, +3.1 and +7.8 points for Qwen2.5-7B at 512). The same mechanism explains the smaller gains on InfiniteBench (Section~\ref{sec:infbench}): there, relevant passages are scattered over a whole novel, and chunk packing duplicates only 8--11\% of its context.
 
 \subsection{Cost}
-\spk{} runs on a single CPU core in 432~ms per instance on average (median 415~ms, 95th percentile 698~ms, 1,024 tokens, 300 random test instances), compared with 614~ms for the pair packer and 280~ms for BGE chunk packing; the BGE encoder pass is shared by both dense methods. Every packed context respects the exact budget (maximum 1,024 tokens), and \spk{} uses the budget more fully than chunk packing (1,014 vs.\ 987 tokens on average) because backfilling closes the gaps left by spans that do not fit.
+\label{sec:cost}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+Method & Trained & Extra model & s / inst. & Device & GPU mem. \\
+\midrule
+BGE-small encoding (shared) & no & 33M & 0.15 & GPU & 0.3 GB \\
+\ + chunk packing & no & -- & +0.27 & CPU & -- \\
+\ + \spk{} & no & -- & +0.40 & CPU & -- \\
+\ + reranker (top 100) & no & 568M & +0.16 & GPU & 1.3 GB \\
+\ + Provence pruning & yes & DeBERTa-v3 & +0.76 & GPU & 3.4 GB \\
+LLMLingua-2 & yes & 560M & 0.87 & GPU & 3.3 GB \\
+LongLLMLingua & no & 8B & 21.05 & GPU & 18.4 GB \\
+\bottomrule
+\end{tabular}}
+\caption{Cost of building a 1,024-token context (100 random LongBench test instances, one at a time, one A100 to itself; \spk{} and chunk packing run on one CPU core). The downstream model's prefill cost is identical for all methods because the budget is identical; it is about 12$\times$ smaller than for the full context.}
+\label{tab:cost}
+\end{table}
+
+Table~\ref{tab:cost} measures the cost of each context-construction method under controlled conditions. \spk{} adds 0.40\,s of single-core CPU time to the shared BGE encoding pass (0.15\,s on the GPU), 0.13\,s more than chunk packing, and needs neither training nor GPU memory beyond the 33M-parameter encoder. Provence and LLMLingua-2 require a trained pruning or compression model and take about 1.6 times as long end to end, and LongLLMLingua, which scores a long context with an 8B language model, takes 21\,s per instance and 18\,GB of GPU memory---about 40 times the cost of \spk{} for 2.5 F1 less. Every \spk{} context respects the exact budget (maximum 1,024 tokens) and fills it almost completely (1,014 tokens on average vs.\ 987 for chunk packing).
 
 % =====================================================================
 \section{Discussion}
