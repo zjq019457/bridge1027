@@ -1,0 +1,30 @@
+qwen 512 BGE chunks    cov=30.4 dup8=14.7% sent_end=6.7% tok=473
+qwen 512 Pair packing  cov=30.0 dup8=3.0% sent_end=6.2% tok=439
+qwen 512 SentPack      cov=33.9 dup8=1.1% sent_end=70.6% tok=500
+qwen 512 SentPack-BGE  cov=34.3 dup8=1.1% sent_end=71.1% tok=500
+qwen 1024 BGE chunks    cov=39.0 dup8=22.8% sent_end=6.3% tok=985
+qwen 1024 Pair packing  cov=36.9 dup8=5.4% sent_end=6.0% tok=920
+qwen 1024 SentPack      cov=41.9 dup8=1.4% sent_end=68.1% tok=1014
+qwen 1024 SentPack-BGE  cov=43.2 dup8=1.3% sent_end=69.1% tok=1015
+qwen 1024 -merge        cov=39.2 dup8=22.1% sent_end=78.2% tok=998
+qwen 1024 -backfill     cov=41.4 dup8=1.4% sent_end=68.6% tok=977
+qwen 1024 -sent         cov=40.9 dup8=1.2% sent_end=6.7% tok=1009
+qwen 2048 BGE chunks    cov=45.0 dup8=29.1% sent_end=6.2% tok=2010
+qwen 2048 Pair packing  cov=41.2 dup8=7.3% sent_end=6.1% tok=1502
+qwen 2048 SentPack      cov=49.0 dup8=1.6% sent_end=62.8% tok=2032
+qwen 2048 SentPack-BGE  cov=49.7 dup8=1.5% sent_end=64.1% tok=2033
+llama 512 BGE chunks    cov=31.1 dup8=15.3% sent_end=6.8% tok=469
+llama 512 Pair packing  cov=30.6 dup8=3.0% sent_end=6.1% tok=438
+llama 512 SentPack      cov=34.8 dup8=1.1% sent_end=70.4% tok=500
+llama 512 SentPack-BGE  cov=35.0 dup8=1.1% sent_end=70.7% tok=501
+llama 1024 BGE chunks    cov=39.6 dup8=23.2% sent_end=6.4% tok=986
+llama 1024 Pair packing  cov=37.0 dup8=5.5% sent_end=5.9% tok=919
+llama 1024 SentPack      cov=41.8 dup8=1.4% sent_end=67.6% tok=1015
+llama 1024 SentPack-BGE  cov=43.5 dup8=1.3% sent_end=68.8% tok=1015
+llama 1024 -merge        cov=39.7 dup8=22.4% sent_end=78.0% tok=997
+llama 1024 -backfill     cov=41.7 dup8=1.4% sent_end=68.4% tok=979
+llama 1024 -sent         cov=41.3 dup8=1.2% sent_end=6.7% tok=1009
+llama 2048 BGE chunks    cov=45.1 dup8=29.6% sent_end=6.1% tok=2010
+llama 2048 Pair packing  cov=41.4 dup8=7.3% sent_end=6.1% tok=1470
+llama 2048 SentPack      cov=49.6 dup8=1.6% sent_end=62.6% tok=2031
+llama 2048 SentPack-BGE  cov=49.9 dup8=1.5% sent_end=63.6% tok=2031

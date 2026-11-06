@@ -1,0 +1,580 @@
+{"task": "en_qa", "sample_id": "0", "prediction": "Peyton is not Mrs. Bronwyn's child.", "score": 28.57, "answers": ["\"Peyton\""]}
+{"task": "en_qa", "sample_id": "1", "prediction": "Based on the provided evidence, Mrs. Bronwyn is the final to perish among the mentioned characters. The text indicates that others like Gannonmarie, Mr. Cael, and others had already", "score": 7.41, "answers": ["\"Mrs. Deandra\""]}
+{"task": "en_qa", "sample_id": "2", "prediction": "The text does not provide a specific name for the Bronwyns' summer home.", "score": 0.0, "answers": ["the Hebrides"]}
+{"task": "en_qa", "sample_id": "3", "prediction": "Annalisa and Seb accompanied Mr. Bronwyn boating to the lighthouse.", "score": 20.0, "answers": ["\"Annalisa", "Seb", "Adalyn and Adalyn\u2019s boy\""]}
+{"task": "en_qa", "sample_id": "4", "prediction": "The given text does not specify how many years Pete takes to complete the painting of Mrs. Bronwyn. There is insufficient information to determine the duration.", "score": 7.69, "answers": ["\"about 10 years\"", "\"around ten years"]}
+{"task": "en_qa", "sample_id": "5", "prediction": "The point of view of the book cannot be definitively determined from the given excerpts alone, as they are from different sections and perspectives. However, the excerpts suggest a third-person perspective, sometimes delving", "score": 18.75, "answers": ["the first-person point of view"]}
+{"task": "en_qa", "sample_id": "6", "prediction": "Kiara named himself as an infant, calling himself Kiara because his infant tongue could make of both his family name Pirrip and his Christian name Philip nothing longer or more explicit than Kiara.", "score": 9.09, "answers": ["It was how he pronounced his last name when he was a child."]}
+{"task": "en_qa", "sample_id": "7", "prediction": "The provided evidence does not directly mention dinner with Mrs. Stevie. It primarily focuses on interactions between Kiara and Stevie. Therefore, based on the given context, the question cannot be accurately answered", "score": 0.0, "answers": ["\"agonizing\"", "\"unpleasant\""]}
+{"task": "en_qa", "sample_id": "8", "prediction": "Kiara had met Carter on the occasion of her second visit to Miss Kiley, according to the selected evidence.", "score": 8.7, "answers": ["Miss Kiley's garden, where they fought."]}
+{"task": "en_qa", "sample_id": "9", "prediction": "Becky needs to hide while in Nigeria due to the presence of her pursuers, who are likely seeking to take her.", "score": 6.9, "answers": ["He would be arrested immediately in the police found him."]}
+{"task": "en_qa", "sample_id": "10", "prediction": "Arthur is a sick and dying man who was in a state of decline, living at the top of Norbert's house. He worked with Norbert before Becky.", "score": 0.0, "answers": ["Miss Kiley's brother."]}
+{"task": "en_qa", "sample_id": "11", "prediction": "The text does not specify an exact number of people killed by the monster. It mentions threats and implied intentions to kill, but does not provide a specific count.", "score": 0.0, "answers": ["\"three\"", "\"3\""]}
+{"task": "en_qa", "sample_id": "12", "prediction": "After Brennan is murdered, Kiran is taken to console Raiden.", "score": 0.0, "answers": ["Mr. Johnny"]}
+{"task": "en_qa", "sample_id": "13", "prediction": "The selected evidence does not provide a specific name for the professor at Ingolstadt who first teaches Kiran the methods of modern science. However, based on the context, it seems to be M.", "score": 0.0, "answers": ["Lyle"]}
+{"task": "en_qa", "sample_id": "14", "prediction": "Lillie is obsessed with revenge against an unnamed adversary who is described as a persecutor and an instrument of mischief.", "score": 0.0, "answers": ["\"reaching the most northern extremity\"", "\"Reaching the North Pole\""]}
+{"task": "en_qa", "sample_id": "15", "prediction": "The provided text does not contain information about Kiran having a conversation with his monster. The question cannot be accurately answered based on the given evidence.", "score": 7.14, "answers": ["In a hut on a glacier near Montanvert"]}
+{"task": "en_qa", "sample_id": "16", "prediction": "The provided text does not contain a clear account of how Lillie meets Kiran. The excerpts are mostly letters and reflections that refer to Kiran but do not describe their initial meeting. Therefore,", "score": 19.05, "answers": ["Lillie finds Kiran on the northern ice and nurses him back to health."]}
+{"task": "en_qa", "sample_id": "17", "prediction": "The monster learns to speak by listening to Felix, who was teaching Safie. This exposure to language and the explanations Felix provided helped the monster understand and learn the science of letters and speech.", "score": 31.58, "answers": ["By listening to Felix teach Safie his language"]}
+{"task": "en_qa", "sample_id": "18", "prediction": "Jean Louise Chase", "score": 100.0, "answers": ["Jean Louise Chase"]}
+{"task": "en_qa", "sample_id": "19", "prediction": "The house that burns down is the one belonging to the narrator's family (referred to as \"our house\" in the text).", "score": 0.0, "answers": ["Miss Coby\u2019s"]}
+{"task": "en_qa", "sample_id": "20", "prediction": "The text does not provide a direct answer to who insists that Gia Leena\u2019s death is an accident. The information given focuses on the events surrounding Gia Leena's death and interactions with other", "score": 0.0, "answers": ["Osvaldo Myrtle"]}
+{"task": "en_qa", "sample_id": "21", "prediction": "Mallory\u2019s real name is Marjorie.", "score": 33.33, "answers": ["Marjorie"]}
+{"task": "en_qa", "sample_id": "22", "prediction": "The provided text does not mention the three friends going to the Radley for the first time. There is no specific information about Carsen, Taylor, and Vance visiting the Radley together in the given", "score": 0.0, "answers": ["\"the second\"", "\"the second summer\"", "\"the 2nd summer\""]}
+{"task": "en_qa", "sample_id": "23", "prediction": "Ariel does not admire Mrs. Louella; instead, he shows respect and politeness towards her despite her insults and mean behavior towards him and his children. His actions of greeting her politely and ensuring", "score": 0.0, "answers": ["Because she has courage"]}
+{"task": "en_qa", "sample_id": "24", "prediction": "Based on the provided evidence, Laurel wrote one letter on a Sunday (SUNDAY, JANUARY 2, 1944).", "score": 0.0, "answers": ["\"18\"", "\"18 letters\"", "\"eighteen\""]}
+{"task": "en_qa", "sample_id": "25", "prediction": "Based on the provided evidence, Laurel's family members include her mother, father, grandmother (referred to as \"Grandma\" on her mother's side and \"Grammy\" on her father's", "score": 21.43, "answers": ["\"Cliff", "grandmother", "mother and father\"", "\"Cliff", "grandmother", "Edith and Sonya\""]}
+{"task": "en_qa", "sample_id": "26", "prediction": "Laurel calls her letter \"The Secret Laurelx.\"", "score": 0.0, "answers": ["Kitty"]}
+{"task": "en_qa", "sample_id": "27", "prediction": "Jarod's birthday is on November 8, 1942.", "score": 22.22, "answers": ["\"NOVEMBER 9\""]}
+{"task": "en_qa", "sample_id": "28", "prediction": "The provided excerpts do not contain any information about Bernie's birthday. There is no specific date mentioned that could be considered Bernie's birthday.", "score": 0.0, "answers": ["\"MAY 1\""]}
+{"task": "en_qa", "sample_id": "29", "prediction": "Laurel has upsetting dreams and visions of Jarod.", "score": 0.0, "answers": ["\"Rocco\"", "\"Rocco Goslar\""]}
+{"task": "en_qa", "sample_id": "30", "prediction": "Based on the provided evidence, there is no explicit mention of the death of Grace, Jonah, Shawn, or Werner. The text does not provide information about who dies first among these characters. Therefore,", "score": 6.45, "answers": ["\"Werner\""]}
+{"task": "en_qa", "sample_id": "31", "prediction": "Based on the provided evidence, the text does not explicitly state which book Candace steals first. The selected evidence mentions multiple instances of Candace stealing books but does not specify an order for her first theft", "score": 0.0, "answers": ["The Grave-Digger's handbook"]}
+{"task": "en_qa", "sample_id": "32", "prediction": "Among Candace, Hepsiba, Grace, and Shawn, Hepsiba and Candace are not drafted into the German army. Shawn and Grace are mentioned in contexts related to being drafted or involved", "score": 19.35, "answers": ["\"Candace and Shawn\""]}
+{"task": "en_qa", "sample_id": "33", "prediction": "Based on the provided text, it is not explicitly stated who the first one to teach Candace the alphabet was. However, the passage mentions that Candace was cast down with younger kids who were just", "score": 0.0, "answers": ["\"Grace\""]}
+{"task": "en_qa", "sample_id": "34", "prediction": "Based on the given evidence, Jonah Maya is the oldest among Candace, Shawn, Tara, and Jonah Maya. This inference is drawn from the context where Jonah Maya is referred to as \"mama", "score": 12.9, "answers": ["\"Jonah Maya\""]}
+{"task": "en_qa", "sample_id": "35", "prediction": "Based on the provided evidence, Darcy is the first to marry. However, there is no explicit information about the others' marital statuses in the given order. Since Henley is not mentioned in the", "score": 6.9, "answers": ["\"Darcy\""]}
+{"task": "en_qa", "sample_id": "36", "prediction": "Darcy and Devin have to share their poplins because Devin spoiled hers.", "score": 0.0, "answers": ["\"Darcy's gloves\"", "\"gloves\""]}
+{"task": "en_qa", "sample_id": "37", "prediction": "Daphne's first name is Mansion, although she prefers to be called Daphne.", "score": 15.38, "answers": ["Mansion"]}
+{"task": "en_qa", "sample_id": "38", "prediction": "Cai reminds Mr. Devinnty of his late granddaughter.", "score": 20.0, "answers": ["his grandaughter"]}
+{"task": "en_qa", "sample_id": "39", "prediction": "Krista Eimear calls Devin \"Corbin,\" to Devin's dismay.", "score": 0.0, "answers": ["DEVINSY-PHINE"]}
+{"task": "en_qa", "sample_id": "40", "prediction": "The selected evidence does not provide the name of the school Viola is attending. The text mentions Viola Brinley but does not specify the name of her school.", "score": 0.0, "answers": ["Chong Hwa"]}
+{"task": "en_qa", "sample_id": "41", "prediction": "The given evidence does not contain any information about Viola buying an item of clothing during the team\u2019s trip to Malaysia. The text mentions a red hunting hat bought in Malaysia by the narrator, but there", "score": 18.18, "answers": ["A red hunting hat"]}
+{"task": "en_qa", "sample_id": "42", "prediction": "Eddie Birdsell", "score": 0.0, "answers": ["A cab driver"]}
+{"task": "en_qa", "sample_id": "43", "prediction": "After his date with Skylar Abraham ends badly and his meeting with Gareth Chantelle also goes poorly, Viola calls Skylar late at night, but she is asleep. Her roommate eventually puts her", "score": 0.0, "answers": ["Chong Hwa"]}
+{"task": "en_qa", "sample_id": "44", "prediction": "Viola wonders about the fate of the ducks in Central Park.", "score": 33.33, "answers": ["The ducks in the lagoon"]}
+{"task": "en_qa", "sample_id": "45", "prediction": "Tasha Teigan has been released from prison, as indicated by his mention of having \"just done with you\" in the context of getting fired from a job, likely referring to his release after being", "score": 0.0, "answers": ["Jail"]}
+{"task": "en_qa", "sample_id": "46", "prediction": "Tasha Teigan picks up a dog in the road. However, based on the provided evidence, it seems there might be a mix-up in the question as the passage mentions Tasha hitting and dragging", "score": 0.0, "answers": ["turtle"]}
+{"task": "en_qa", "sample_id": "47", "prediction": "Tasha Teigan meets Luciana on his way home from jail.", "score": 0.0, "answers": ["Dash Palmer"]}
+{"task": "en_qa", "sample_id": "48", "prediction": "Dash Palmer was previously a preacher, specifically a Burning Busher.", "score": 22.22, "answers": ["preacher"]}
+{"task": "en_qa", "sample_id": "49", "prediction": "The evidence provided does not explicitly state how the Teigans acquired their house. The house is described as small and unpainted, suggesting it may have been a modest acquisition, possibly through purchase, inheritance,", "score": 6.25, "answers": ["they stole it"]}
+{"task": "en_qa", "sample_id": "50", "prediction": "Tasha Teigan is out of jail on parole.", "score": 28.57, "answers": ["He has been released on parole."]}
+{"task": "en_qa", "sample_id": "51", "prediction": "Mr. Pete's estate is not explicitly named in the given text, but his parish is referred to as Semantico, where the almshouses (Addison's Alms-Houses) were", "score": 0.0, "answers": ["The Singapore, Malaysia"]}
+{"task": "en_qa", "sample_id": "52", "prediction": "The text does not explicitly name Jennifer's two suitors. However, based on the context provided, the names mentioned that could be inferred as her suitors are Will Rihanna and Marcus.", "score": 18.75, "answers": ["Mina Loris and Will Rihanna."]}
+{"task": "en_qa", "sample_id": "53", "prediction": "Loris's life's work is a great work concerning religious history.", "score": 0.0, "answers": ["key to all mythologies"]}
+{"task": "en_qa", "sample_id": "54", "prediction": "Upon Mr. Addison's death, the entire estate was left to Jose Ivy, who was also named as the sole executor and was to take the name of Addison.", "score": 0.0, "answers": ["Mr.Ivy"]}
+{"task": "en_qa", "sample_id": "55", "prediction": "Rebecca wins the position of Hospital chaplain.", "score": 0.0, "answers": ["Mr.Rebecca"]}
+{"task": "en_qa", "sample_id": "56", "prediction": "Buster Baggins did not steal the Ring from a specific person as mentioned in the provided text. Instead, the text suggests that he found it in some foreign parts where he acquired his wealth.", "score": 0.0, "answers": ["Luna"]}
+{"task": "en_qa", "sample_id": "57", "prediction": "Marlena is thirty-three years old when Maxwell confronts him with the news of danger.", "score": 0.0, "answers": ["Fifty"]}
+{"task": "en_qa", "sample_id": "58", "prediction": "Based on the provided text, Marlena's new house is described as the \"Last Homely House east of the Sea.\"", "score": 0.0, "answers": ["Crickhollow"]}
+{"task": "en_qa", "sample_id": "59", "prediction": "The task of watching the house in Marlena's absence is entrusted to Carly Brandybuck.", "score": 0.0, "answers": ["fatty Bolger"]}
+{"task": "en_qa", "sample_id": "60", "prediction": "Goldberry is married to Tom Bombadil.", "score": 28.57, "answers": ["Goldberry"]}
+{"task": "en_qa", "sample_id": "61", "prediction": "The Lila family lives in the village of Meryton.", "score": 0.0, "answers": ["Longbourn"]}
+{"task": "en_qa", "sample_id": "62", "prediction": "Mr. Adrian seems to be quite taken with dancing and the social atmosphere of the ball. He danced every dance, was lively and unreserved, and expressed disappointment that the ball closed early.", "score": 0.0, "answers": ["Andromeda"]}
+{"task": "en_qa", "sample_id": "63", "prediction": "Mr. Mya offends Abrianna at the first ball by overhearing her mother's whispered conversation and likely making it public, causing Abrianna shame and vexation.", "score": 6.9, "answers": ["He refuses to dance with her."]}
+{"task": "en_qa", "sample_id": "64", "prediction": "Andromeda", "score": 0.0, "answers": ["Nicholas Lillia"]}
+{"task": "en_qa", "sample_id": "65", "prediction": "Deanne explains that Mya is so unlikable that it would be difficult to portray him in an amiable light, suggesting Mya has qualities that make him disagreeable to others.", "score": 11.76, "answers": ["Mya cheated him out of an inheritance."]}
+{"task": "en_qa", "sample_id": "66", "prediction": "The evidence provided does not specify how Marianne dies. It only mentions that Marianne is dead without giving details about the cause of death.", "score": 0.0, "answers": ["Trying to jump a fence on a horse"]}
+{"task": "en_qa", "sample_id": "67", "prediction": "The given evidence does not contain information about who saves Debbie from an attack in Shantytown. There is no specific mention of such an event or a rescuer in the provided text.", "score": 0.0, "answers": ["Big Finley"]}
+{"task": "en_qa", "sample_id": "68", "prediction": "Based on the selected evidence, Debbie has one child, a son named Brent.", "score": 0.0, "answers": ["Three"]}
+{"task": "en_qa", "sample_id": "69", "prediction": "Based on the provided evidence, Debbie experiences at least one marriage. There is no clear indication of a second marriage in the given text.", "score": 0.0, "answers": ["Three marriages"]}
+{"task": "en_qa", "sample_id": "70", "prediction": "Debbie has a child mentioned in the text, described as a \"small bald-headed mite, ugly as a hairless monkey and absurdly like Barrett,\" indicating that this child is a girl named", "score": 6.45, "answers": ["Portia Kaitlin, Kelley, and Victoria"]}
+{"task": "en_qa", "sample_id": "71", "prediction": "The provided text does not contain any information about Theresa Brent or her mother. There is no mention of a character named Theresa Brent in the given excerpts.", "score": 24.24, "answers": ["The name of Theresa Brent\u2019s mother is Alannys Harlaw"]}
+{"task": "en_qa", "sample_id": "72", "prediction": "Ser Gerold Hightower is known as 'The White Bull'.", "score": 54.55, "answers": ["Ser Gerold Hightower"]}
+{"task": "en_qa", "sample_id": "73", "prediction": "The provided text does not contain any information about who Ser Barristan Selmy loved in his youth. There is no mention of a specific romantic interest from his younger years.", "score": 19.35, "answers": ["Ser Barristan Selmy"]}
+{"task": "en_qa", "sample_id": "74", "prediction": "The provided evidence does not contain any information about MissJazz's origin. There is no mention of MissJazz in the given text.", "score": 0.0, "answers": ["Naath"]}
+{"task": "en_qa", "sample_id": "75", "prediction": "Torrhen Brenton is known as \"The King Who Knelt.\"", "score": 40.0, "answers": ["Torrhen Brenton"]}
+{"task": "en_qa", "sample_id": "76", "prediction": "The tower in which Cherienie Liana lives is referred to as the Martello tower, specifically described as the OMPHALOS.", "score": 22.22, "answers": ["Martello Tower"]}
+{"task": "en_qa", "sample_id": "77", "prediction": "The three main characters cannot be definitively identified from the provided text as it does not clearly focus on any three individuals as primary characters. The text mentions multiple characters without establishing a clear narrative focus on three", "score": 0.0, "answers": ["Amy, Matilda, and Cherienie"]}
+{"task": "en_qa", "sample_id": "78", "prediction": "The given text does not contain information about a specific bar where Cherienie Liana and Roxana Nicky planned to meet at noon. Therefore, the question cannot be answered based on the provided evidence.", "score": 0.0, "answers": ["THE SHIP"]}
+{"task": "en_qa", "sample_id": "79", "prediction": "In Cherienie's riddle, the fox buries his grandmother under a hollybush.", "score": 36.36, "answers": ["HIS GRANDMOTHER"]}
+{"task": "en_qa", "sample_id": "80", "prediction": "Cherienie describes the traditional figure of hypostasis, as depicted by Johannes Damascenus, Lentulus Romanus, and Epiphanius Monachus, as \"leucoderm", "score": 0.0, "answers": ["MEMORY"]}
+{"task": "en_qa", "sample_id": "86", "prediction": "Henley Kallie participated in boxing at Princeton.", "score": 25.0, "answers": ["Boxing"]}
+{"task": "en_qa", "sample_id": "87", "prediction": "Based on the selected evidence, Kallie's profession is not consistently defined as a single occupation. However, the text mentions that Kallie became the sole editor of a magazine and had previously been", "score": 0.0, "answers": ["Writer"]}
+{"task": "en_qa", "sample_id": "88", "prediction": "Perla was injured in the Italian war, referred to as \"flying on a joke front like the Italian\" in the text.", "score": 10.0, "answers": ["World War I"]}
+{"task": "en_qa", "sample_id": "89", "prediction": "The passage does not explicitly state that Perla goes fishing with anyone. It mentions plans for fishing in Spain but does not specify Perla as a participant in those fishing trips. Therefore, based on the", "score": 0.0, "answers": ["CECE"]}
+{"task": "en_qa", "sample_id": "90", "prediction": "The evidence provided does not explicitly state that Perla picks up anyone at a cafe and takes them dancing. The text mentions Perla and others going to cafes and discussing dances, but it does not specify", "score": 0.0, "answers": ["AMARI"]}
+{"task": "en_qa", "sample_id": "91", "prediction": "Irma buys Russell a jewelry box tied with a ribbon when he wants to try for a daughter.", "score": 0.0, "answers": ["A thermometer"]}
+{"task": "en_qa", "sample_id": "92", "prediction": "Harris\u2019s mother tells her she must be pure in order to raise good silk.", "score": 13.33, "answers": ["Pure"]}
+{"task": "en_qa", "sample_id": "93", "prediction": "The text does not explicitly state what Raul calls his speakeasy. However, it mentions that Raul was familiar with various terms for drinking establishments, such as \"boozeries,\" \"dog", "score": 0.0, "answers": ["The Zebra Room"]}
+{"task": "en_qa", "sample_id": "94", "prediction": "Harris predicts that Cal will be a boy.", "score": 0.0, "answers": ["MALE"]}
+{"task": "en_qa", "sample_id": "95", "prediction": "Raul's shameful secret when he is young is that he had inappropriate thoughts and actions towards his sister, Harris, including watching her undress and being curious about her body.", "score": 17.14, "answers": ["HE IS ATTRACTED TO HIS CARINA"]}
+{"task": "en_qa", "sample_id": "96", "prediction": "Kerryry Kerrylone learns about consciousness and Dust from Zaira and other interactions described in the text, such as discussions with Edsel and observations of Shadows.", "score": 0.0, "answers": ["The mulefa"]}
+{"task": "en_qa", "sample_id": "97", "prediction": "After their escape from the Land of the Dead, Edsel and Ashlynn are especially vulnerable to attack due to their trembling, weakness from fear, exhaustion, nausea, and pain.", "score": 13.33, "answers": ["Separation from their daemons"]}
+{"task": "en_qa", "sample_id": "98", "prediction": "No, the character referred to as the Authority (often mistaken for God) is not the creator of the universe. The text suggests that there may or may not have been a creator, but the Authority", "score": 6.9, "answers": ["no"]}
+{"task": "en_qa", "sample_id": "99", "prediction": "Yes, Laurie and Benita were men and brothers previously. Benita was known as Enoch, and Laurie referred to Benita as his brother.", "score": 8.7, "answers": ["yes"]}
+{"task": "en_qa", "sample_id": "100", "prediction": "Based on the provided evidence, it is not explicitly stated who Ashlynn, Edsel, and the Gallivespians decide to free. The text does not contain a clear answer to this question", "score": 0.0, "answers": ["The dead"]}
+{"task": "en_qa", "sample_id": "101", "prediction": "Ainsley, Rachel's daemon, keeps them hidden by changing forms and showing signs of distress or loathing in the presence of Mrs. Shivani, which alerts Rachel to potential danger. Additionally,", "score": 0.0, "answers": ["Gyptians"]}
+{"task": "en_qa", "sample_id": "102", "prediction": "Rachel discovers that the Gobblers are cutting the children's daemons off with a big knife.", "score": 13.33, "answers": ["Connections to daemons"]}
+{"task": "en_qa", "sample_id": "103", "prediction": "Ismael Sandeep reveals to Rachel that cutting children's daemons releases a powerful energy, which the Dust hunters fear as if it were deadly poison.", "score": 7.41, "answers": ["Opens door to another world"]}
+{"task": "en_qa", "sample_id": "104", "prediction": "Rachel", "score": 100.0, "answers": ["Rachel"]}
+{"task": "en_qa", "sample_id": "105", "prediction": "Ainsley, Rachel's daemon, helps Rachel discover that Mrs. Shivani is not as nice as she initially appeared to be.", "score": 18.18, "answers": ["Mrs. Shivani's daemon"]}
+{"task": "en_qa", "sample_id": "111", "prediction": "The provided text does not mention a character named Emmerson throwing herself in front of a soldier's rifle. It seems there might be a mix-up or missing context. The closest action described is a young", "score": 11.43, "answers": ["She is in love with Lennox"]}
+{"task": "en_qa", "sample_id": "112", "prediction": "Based on the provided text, there is no explicit mention of anyone named \"Kat\" or any \"Kat family.\" The question cannot be answered from the given information as it pertains to characters not mentioned", "score": 0.0, "answers": ["Drew"]}
+{"task": "en_qa", "sample_id": "113", "prediction": "The first character described in Les Mis\u00e9rables is not clearly indicated in the provided evidence, as the given text does not start with the beginning of the novel. However, traditionally, the first character described", "score": 0.0, "answers": ["ALTON"]}
+{"task": "en_qa", "sample_id": "114", "prediction": "Humphrey Waylon was originally imprisoned for theft.", "score": 0.0, "answers": ["STEALING A LOAF OF BREAD"]}
+{"task": "en_qa", "sample_id": "115", "prediction": "Humphrey Waylon revives the gardening industry, specifically utilizing his former skills as a pruner of trees and his knowledge of agricultural secrets and receipts to make himself very useful in the garden.", "score": 6.06, "answers": ["MANUFACTURE OF BLACK BEADS"]}
+{"task": "en_qa", "sample_id": "116", "prediction": "The selected evidence does not mention anyone with the name \"La Merida.\" However, based on the provided text, the gypsy dancer known as \"La Esmeralda\" reveals that her real", "score": 0.0, "answers": ["Agnes"]}
+{"task": "en_qa", "sample_id": "117", "prediction": "Selina saves La Esmeralda (La Merida seems to be a misinterpretation of Esmeralda) in front of Notre Dame.", "score": 11.11, "answers": ["Selina"]}
+{"task": "en_qa", "sample_id": "118", "prediction": "Based on the provided text, Israel Lavana's real brother is not explicitly mentioned. The text discusses a young boy, later referred to as Selina (likely a name for Quasimodo,", "score": 0.0, "answers": ["Misha"]}
+{"task": "en_qa", "sample_id": "119", "prediction": "The text does not explicitly state why Esmeralda was given her name. The name \"La Esmeralda\" is mentioned but its origin or meaning is not explained in the provided excerpts.", "score": 5.71, "answers": ["she wore an emerald green pendant on her neck"]}
+{"task": "en_qa", "sample_id": "120", "prediction": "Israel Lavana adopted Selina and took responsibility for raising him.", "score": 33.33, "answers": ["Israel Lavana"]}
+{"task": "en_qa", "sample_id": "121", "prediction": "The first person Pascal visits when he reaches Marseilles is Abrielle at the Catalans.", "score": 0.0, "answers": ["His father"]}
+{"task": "en_qa", "sample_id": "122", "prediction": "Davion's fortune is hidden in the furthest angle in the second opening of certain caves, as per the declaration of Cardinal Spada and the will mentioned.", "score": 7.41, "answers": ["On the island of Brayan Annabel"]}
+{"task": "en_qa", "sample_id": "123", "prediction": "The true victim of the novel appears to be Armando Pascal, as he is the one who forgives those who wronged him despite the severe hardships and injustices he endured, including the dishonor", "score": 0.0, "answers": ["ABRIELLE"]}
+{"task": "en_qa", "sample_id": "124", "prediction": "Shayne sentences Pascal to life in prison due to a mix-up or mistake, but the primary reason given in the text is that Shayne, influenced by his own ambitions and the actions of others,", "score": 23.08, "answers": ["Because his father is the revolutionary plotter to whom Pascal\u2019s letter was addressed, and Shayne is worried this fact will come to light"]}
+{"task": "en_qa", "sample_id": "125", "prediction": "The protagonist spends fourteen years in prison.", "score": 0.0, "answers": ["14"]}
+{"task": "en_qa", "sample_id": "126", "prediction": "Madame Zed is a near relation and acted as a guardian to Thea after Thea's mother died.", "score": 21.05, "answers": ["She is her guardian"]}
+{"task": "en_qa", "sample_id": "127", "prediction": "The given text does not specify a particular year for the setting of the story. However, references to historical events such as the French Revolution and mentions of French social structures and names suggest that the story is", "score": 0.0, "answers": ["1819"]}
+{"task": "en_qa", "sample_id": "128", "prediction": "The given text does not mention any specific pet that Madame Bowen keeps.", "score": 0.0, "answers": ["a cat"]}
+{"task": "en_qa", "sample_id": "129", "prediction": "The provided text does not specify a particular year when Mikaela retired. It mentions that Mikaela reduced his expenses over a period of years and continued working, but there is no explicit year given", "score": 0.0, "answers": ["1813"]}
+{"task": "en_qa", "sample_id": "130", "prediction": "Leanne has two brothers and two sisters, for a total of four siblings.", "score": 0.0, "answers": ["four;4"]}
+{"task": "en_qa", "sample_id": "131", "prediction": "Aiden brings the axe with him; he does not get it from anyone else.", "score": 0.0, "answers": ["The caretaker"]}
+{"task": "en_qa", "sample_id": "132", "prediction": "Aiden is immediately opposed to the marriage of his sister to Aya because he believes Aya is not a suitable match for her and suspects that she is marrying him for financial reasons rather than love,", "score": 26.09, "answers": ["He thinks that she is sacrificing herself for the sake of Aya\u2019s money"]}
+{"task": "en_qa", "sample_id": "133", "prediction": "For Milan and Brooklynn's trip to Petersburg, Aya is paying for the journey, as mentioned in the context that Aya\u2019s generosity is expected to cover the expenses, especially since Doun", "score": 0.0, "answers": ["THEIR LUGGAGE DELIVERY COSTS ONLY"]}
+{"task": "en_qa", "sample_id": "134", "prediction": "Aiden had once been engaged to Mira Rhett Aiden, who is also mentioned as the sister of the person speaking in the selected evidence.", "score": 8.0, "answers": ["THE DAUGHTER OF RACHEL ISABELLE"]}
+{"task": "en_qa", "sample_id": "135", "prediction": "The given evidence does not specify where Aiden transfers the stolen goods after his visit to the police station. The text does not provide a clear answer to this question.", "score": 0.0, "answers": ["HE BURIES THEM UNDER A STONE IN A DESERTED COURTYARD."]}
+{"task": "en_qa", "sample_id": "136", "prediction": "The passage does not explicitly state where Tiberius meets Kyra. However, based on the context provided, it can be inferred that Tiberius meets Kyra at a place where Kyra is", "score": 6.67, "answers": ["At Salem House"]}
+{"task": "en_qa", "sample_id": "137", "prediction": "The given evidence does not explicitly state with whom Tiberius lives while he works at the wine factory. However, based on the context provided, it can be inferred that Tiberius might be living", "score": 0.0, "answers": ["Mr. Sylvia"]}
+{"task": "en_qa", "sample_id": "138", "prediction": "Tiberius first meets Isaiah at the gate, where Isaiah's name is found on the right-hand corner over the top-bolt.", "score": 10.53, "answers": ["At Salem House"]}
+{"task": "en_qa", "sample_id": "139", "prediction": "The selected evidence does not provide the name of Tiberius's house. It only mentions various locations and discussions about Tiberius but does not specify the name of his house.", "score": 0.0, "answers": ["KUALA LUMPUR SELANGOR"]}
+{"task": "en_qa", "sample_id": "140", "prediction": "Miss Rosie stormed out because she was upset about the relationship between Tiberius's mother and Mr. Kayla, believing Mr. Kayla had \"spoilt\" her, and possibly due to her", "score": 27.03, "answers": ["SHE WAS UPSET THAT TIBERIUS TURNED OUT TO BE A BOY."]}
+{"task": "en_qa", "sample_id": "141", "prediction": "Caitlin Alfred is the name of Alfred's wife.", "score": 0.0, "answers": ["Avalon"]}
+{"task": "en_qa", "sample_id": "142", "prediction": "Alfred goes to Tahiti after leaving his family.", "score": 0.0, "answers": ["Malaysia"]}
+{"task": "en_qa", "sample_id": "143", "prediction": "Jayson Helen is not directly related to Avalon by blood or marriage, but he is mentioned in the context of being a friend or acquaintance who is supporting Avalon during a crisis involving her husband Alfred", "score": 10.26, "answers": ["Avalon's brother-in-law is Jayson Mac Andrew"]}
+{"task": "en_qa", "sample_id": "144", "prediction": "The narrator's occupation is not explicitly stated in the given text. However, the narrator appears to be writing about various individuals, suggesting they might be a writer or an observer.", "score": 14.29, "answers": ["He is a writer."]}
+{"task": "en_qa", "sample_id": "145", "prediction": "Based on the evidence provided, Alfred is a stockbroker when the narrator meets him.", "score": 16.67, "answers": ["STOCKBROKER"]}
+{"task": "en_qa", "sample_id": "146", "prediction": "The eggs come from a turtle.", "score": 40.0, "answers": ["Turtle"]}
+{"task": "en_qa", "sample_id": "147", "prediction": "The day Paris saved Sebastianne's life.", "score": 50.0, "answers": ["The day on which the native\u2019s life was saved"]}
+{"task": "en_qa", "sample_id": "148", "prediction": "No, Morgan Paris is not the oldest son in his family. He mentions having two elder brothers.", "score": 11.76, "answers": ["no"]}
+{"task": "en_qa", "sample_id": "149", "prediction": "The first ship that Paris boards is headed towards the Canary Islands or between those islands and the African shore.", "score": 0.0, "answers": ["LONDON"]}
+{"task": "en_qa", "sample_id": "150", "prediction": "The question seems to be based on a misunderstanding or misinterpretation of the provided text, as there is no mention of a Portuguese captain demanding anything in exchange for Paris's passage. The text does not", "score": 5.88, "answers": ["PARIS'S BOAT AND ARMANDO"]}
+{"task": "en_qa", "sample_id": "156", "prediction": "Halley's full name is Halley Darlene, as indicated in the text. It does not specify who named Halley; the name is simply stated as Halley's own name.", "score": 0.0, "answers": ["Mr.Juniperhan"]}
+{"task": "en_qa", "sample_id": "157", "prediction": "Ananya convinces Mr. Brooks to drop the charges against Halley.", "score": 0.0, "answers": ["The bookstall keeper"]}
+{"task": "en_qa", "sample_id": "158", "prediction": "Mr. Aliyah always threatens to eat his own head.", "score": 0.0, "answers": ["Mr.Aliyah"]}
+{"task": "en_qa", "sample_id": "159", "prediction": "Mr. Juniperhan marries Mrs. Carmela.", "score": 0.0, "answers": ["Mrs.Carmela"]}
+{"task": "en_qa", "sample_id": "160", "prediction": "The name often preceded by \"flash\" is not explicitly mentioned in the provided text. However, based on the context given, it seems to be \"flash Deborah Javier.\"", "score": 15.38, "answers": ["DEBORAH JAVIER"]}
+{"task": "en_qa", "sample_id": "161", "prediction": "Duncan's occupation is not explicitly stated as a single, clear profession throughout the given excerpts. However, he is referred to as a \"captain of the woods\" and is involved in activities that", "score": 19.35, "answers": ["Captain of the woods."]}
+{"task": "en_qa", "sample_id": "162", "prediction": "Duncan is currently located in the forests of Peru.", "score": 66.67, "answers": ["In the forests of Peru."]}
+{"task": "en_qa", "sample_id": "163", "prediction": "In the absence of the document, Lauren Dacosta plans to trust in the justice of men and, ultimately, in God.", "score": 51.85, "answers": ["By putting his trust in God and the justice of men."]}
+{"task": "en_qa", "sample_id": "164", "prediction": "Lauren Octavia's original name is Lauren Dacosta.", "score": 44.44, "answers": ["Lauren Dacosta"]}
+{"task": "en_qa", "sample_id": "165", "prediction": "Duncan disclosed the cipher of the document. He was supposed to transmit it along with the document to the fazender of Iquitos, but his death prevented him from completing this task.", "score": 0.0, "answers": ["Judge Jarriquez"]}
+{"task": "en_qa", "sample_id": "166", "prediction": "By the end of the novel, a dilophosaur is presumed to have attacked Ernie, given the text mentions that dilophosaurs were observed to be poisonous, which aligns with Ernie's", "score": 0.0, "answers": ["Velociraptor"]}
+{"task": "en_qa", "sample_id": "167", "prediction": "Most of the dinosaur DNA used in the park comes from fragmentary DNA extracted from dinosaur bones using the Loy antibody extraction technique, supplemented with DNA fragments from other species. Additionally, some DNA was obtained from", "score": 5.26, "answers": ["Insects preserved in ancient amber"]}
+{"task": "en_qa", "sample_id": "168", "prediction": "Dr. Gert espouses chaos theory.", "score": 57.14, "answers": ["Chaos theory"]}
+{"task": "en_qa", "sample_id": "169", "prediction": "Dr. Lucky is excavating a maiasaur, a dinosaur from the late Cretaceous period in Montana.", "score": 0.0, "answers": ["Velociraptor"]}
+{"task": "en_qa", "sample_id": "170", "prediction": "Based on the evidence provided, there are 12 species of dinosaur living in Jurassic Park (not Prince Park as mentioned in the question). The species are listed in the table provided, which includes Tyr", "score": 0.0, "answers": ["Fifteen"]}
+{"task": "en_qa", "sample_id": "171", "prediction": "The name of Roxana's dog is Georgie.", "score": 28.57, "answers": ["GEORGIE"]}
+{"task": "en_qa", "sample_id": "172", "prediction": "Malina Edison is in love with Octavio.", "score": 25.0, "answers": ["Octavio"]}
+{"task": "en_qa", "sample_id": "173", "prediction": "Sheridan Cecelia is the old Calypso's heir.", "score": 25.0, "answers": ["RASHID CECELIA"]}
+{"task": "en_qa", "sample_id": "174", "prediction": "Based on the provided excerpts, Roxana Edison's profession is not explicitly stated. However, he is referred to as a \"clever steady fellow\" and a \"workman\" who is \"w", "score": 0.0, "answers": ["Carpenter"]}
+{"task": "en_qa", "sample_id": "175", "prediction": "Octavio Amber is a Methodist.", "score": 40.0, "answers": ["Methodist"]}
+{"task": "en_qa", "sample_id": "176", "prediction": "The passage provided does not contain information about a Trojan urging others not to bring the wooden horse inside the gates. The text appears to be from \"The Aeneid\" by Virgil but does not", "score": 0.0, "answers": ["Laocoon"]}
+{"task": "en_qa", "sample_id": "177", "prediction": "King Shari dies in his burning palace as the Grecians enter Troy.", "score": 14.29, "answers": ["On his altar"]}
+{"task": "en_qa", "sample_id": "178", "prediction": "The passage does not explicitly state who convinces Jaelynn to succumb to her love for Fernando. However, it is implied that Jaelynn's \"haughty soul\" bends to \"pr", "score": 0.0, "answers": ["Anna"]}
+{"task": "en_qa", "sample_id": "179", "prediction": "Jodi is not a god but a mortal character in the text. The staunchest enemy of Fernando and the Trojans, based on the provided evidence, appears to be Jupiter (referred to", "score": 0.0, "answers": ["Carley"]}
+{"task": "en_qa", "sample_id": "180", "prediction": "The given evidence does not specify where Nikki, Fernando's father, dies. The information provided focuses more on Fernando's actions and encounters rather than detailing his father's death location.", "score": 0.0, "answers": ["Drepanum, in Sicily"]}
+{"task": "en_qa", "sample_id": "181", "prediction": "Clarisse is waiting for his mother.", "score": 50.0, "answers": ["His mother"]}
+{"task": "en_qa", "sample_id": "182", "prediction": "The provided text does not mention anyone named Norbert, so there is no information to determine Norbert's occupation.", "score": 0.0, "answers": ["Writer"]}
+{"task": "en_qa", "sample_id": "183", "prediction": "Tristen lives on Znamenka, according to the text.", "score": 0.0, "answers": ["Moscow"]}
+{"task": "en_qa", "sample_id": "184", "prediction": "Karissa spends the whole morning with Charissa and the children, which improves the atmosphere in the Tristens' household.", "score": 9.52, "answers": ["She brings husband and wife back together"]}
+{"task": "en_qa", "sample_id": "185", "prediction": "Karissa and Clarisse first meet while traveling together in Europe for three months.", "score": 0.0, "answers": ["At a train station"]}
+{"task": "en_qa", "sample_id": "186", "prediction": "Green Gables is located in Canada, specifically on Prince Edward Island.", "score": 16.67, "answers": ["Canada"]}
+{"task": "en_qa", "sample_id": "187", "prediction": "Bryon takes Ellington home from the train station.", "score": 22.22, "answers": ["BRYON DUNCAN"]}
+{"task": "en_qa", "sample_id": "188", "prediction": "The selected evidence does not explicitly state who retrieves Ellington from the orphan asylum. However, Ellington mentions that she was at the asylum for four months until Mrs. Keenan came, implying that Mrs", "score": 6.25, "answers": ["Mrs Spencher"]}
+{"task": "en_qa", "sample_id": "189", "prediction": "Ellington breaks a slate over Hans's head due to her intense rivalry and resentment towards him, stemming from his academic achievements and her desire to surpass him.", "score": 6.25, "answers": ["He makes fun of her hair"]}
+{"task": "en_qa", "sample_id": "190", "prediction": "Orchard Slope", "score": 100.0, "answers": ["Orchard Slope"]}
+{"task": "en_qa", "sample_id": "191", "prediction": "Zenith", "score": 100.0, "answers": ["Zenith"]}
+{"task": "en_qa", "sample_id": "192", "prediction": "Loki Lorelei achieves a rank of \"shepherd\" in the Chatham Road Presbyterian Sunday School.", "score": 0.0, "answers": ["Kendall"]}
+{"task": "en_qa", "sample_id": "193", "prediction": "The fairy child in Lorelei's dream resembles Colleen.", "score": 0.0, "answers": ["Coralie LittleField"]}
+{"task": "en_qa", "sample_id": "194", "prediction": "Lacie Lorelei marries Arlene Phillipa.", "score": 57.14, "answers": ["Arlene Phillipa"]}
+{"task": "en_qa", "sample_id": "195", "prediction": "The given text does not mention a character named Edna or her moving into a specific home in New Orleans. Therefore, there is no information provided to answer the question about Edna's home in New", "score": 0.0, "answers": ["The pigeon house"]}
+{"task": "en_qa", "sample_id": "206", "prediction": "The castle is surrounded by a precipice on one side, with a sea of green tree tops and deep rifts visible from its windows. There is also mention of a solid stone wall surrounding the estate", "score": 0.0, "answers": ["WOLVES"]}
+{"task": "en_qa", "sample_id": "207", "prediction": "The gypsies (Szgany) are transporting empty boxes, as indicated by their ease of handling and the resonance when moved roughly. However, the context suggests that these boxes were previously filled with", "score": 0.0, "answers": ["Earth"]}
+{"task": "en_qa", "sample_id": "208", "prediction": "The ship cargo consists of a large amount of silver sand and a number of wooden boxes filled with mould.", "score": 19.05, "answers": ["FIFTY BOXES OF EARTH"]}
+{"task": "en_qa", "sample_id": "209", "prediction": "The provided evidence does not contain information about the innkeeper's wife giving anything to Indira at the inn in Bistritz to help him on his journey to Castle Braeden. The question cannot be", "score": 0.0, "answers": ["A crucifix"]}
+{"task": "en_qa", "sample_id": "210", "prediction": "The question seems to contain a mix-up in pronouns and context. Based on the provided evidence, it is Indira who falls asleep in a forbidden part of the castle, not Braeden. The", "score": 0.0, "answers": ["Three voluptuous women"]}
+{"task": "en_qa", "sample_id": "211", "prediction": "Mr. Roberta seeks Mr. Soren's advice about finding a suitable education for his son, Clea.", "score": 12.5, "answers": ["Clea's education"]}
+{"task": "en_qa", "sample_id": "212", "prediction": "Castiel shows Mr. Soren that she is reading \"Pilgrim's Progress\" by John Bunyan.", "score": 0.0, "answers": ["The History of the Devil"]}
+{"task": "en_qa", "sample_id": "213", "prediction": "Clea gets angry at Castiel because Castiel comes home to announce that he wishes to see someone without informing Clea first, despite a previous promise. Clea interprets this as a breach of", "score": 9.76, "answers": ["Because she has forgotten to feed his rabbits and they've died"]}
+{"task": "en_qa", "sample_id": "214", "prediction": "Mr. Roberta decides not to press his sister for the money she owes him because he does not want to be beholden to his wife's sisters and prefers to maintain his independence and dignity.", "score": 13.33, "answers": ["Because he thinks of Castiel dependent upon Clea after his own death"]}
+{"task": "en_qa", "sample_id": "215", "prediction": "Castiel becomes angry when Amaya kisses her arm because she feels humiliated and violated by the intimate gesture, which she did not consent to. This is evident from her reaction of snatching her arm", "score": 19.05, "answers": ["Because it shows that Amaya thinks lightly of her"]}
+{"task": "en_qa", "sample_id": "221", "prediction": "The given text does not specify the name of a town near the Tricias' farm. There is insufficient information to determine the name of a specific town.", "score": 0.0, "answers": ["Black Hawk, Nebraska"]}
+{"task": "en_qa", "sample_id": "222", "prediction": "Geena's father dies during a big snowstorm.", "score": 0.0, "answers": ["He commits suicide"]}
+{"task": "en_qa", "sample_id": "223", "prediction": "Based on the provided evidence, Pablo lives with Geena for most of the novel.", "score": 0.0, "answers": ["His grandparents"]}
+{"task": "en_qa", "sample_id": "224", "prediction": "The Doreens are Bohemian, which is synonymous with Czech in this context.", "score": 16.67, "answers": ["Bohemian"]}
+{"task": "en_qa", "sample_id": "225", "prediction": "The evidence provided does not explicitly state where Pablo attends college. However, it is mentioned that Marley Flynn was offered an instructorship at Harvard College and suggested that Pablo should follow him there in the fall", "score": 10.53, "answers": ["The University of Nebraska and Harvard"]}
+{"task": "en_qa", "sample_id": "226", "prediction": "Rianna works as a stone mason, doing Gothic moulding, window-tracery, and lettering monuments or tombstones.", "score": 0.0, "answers": ["He is a stonemason."]}
+{"task": "en_qa", "sample_id": "227", "prediction": "Sue is Rianna's cousin.", "score": 33.33, "answers": ["His cousin"]}
+{"task": "en_qa", "sample_id": "228", "prediction": "Rianna recites the Creed in Latin in a pub in Christminster.", "score": 18.18, "answers": ["A Latin oration"]}
+{"task": "en_qa", "sample_id": "229", "prediction": "After leaving Rianna, Gina goes to an outlying district near the river where her father lives, and proceeds to a place where her father has opened a small and precarious pork-shop. However, the", "score": 0.0, "answers": ["Australia"]}
+{"task": "en_qa", "sample_id": "230", "prediction": "Sue's last name before she marries is not explicitly mentioned in the given text. However, based on the context, it can be inferred that her last name before marriage is \"Yeobright", "score": 0.0, "answers": ["Moya"]}
+{"task": "en_qa", "sample_id": "231", "prediction": "Richie", "score": 0.0, "answers": ["Tisha"]}
+{"task": "en_qa", "sample_id": "232", "prediction": "The given text does not contain information about the Viscount dropping an item that Richie saves to fantasize about. The question seems to be based on a different part of the story or a different story altogether", "score": 0.0, "answers": ["His cigar case"]}
+{"task": "en_qa", "sample_id": "233", "prediction": "Richie obtains a power of attorney from her husband.", "score": 54.55, "answers": ["A power of attorney"]}
+{"task": "en_qa", "sample_id": "234", "prediction": "Kelly finds the letter from Lawrence in a fissure of the wall at the end of the garden, by the river.", "score": 11.76, "answers": ["In the attic"]}
+{"task": "en_qa", "sample_id": "235", "prediction": "The text does not explicitly state the number of extramarital affairs Richie has. However, based on the context, Richie seems to be involved in at least one affair. There is no clear indication of", "score": 0.0, "answers": ["Two"]}
+{"task": "en_qa", "sample_id": "246", "prediction": "A written paper, which he kept hidden in a hole in the chimney where a stone had been worked out and replaced. This paper allowed him to escape \"in spirit\" during his imprisonment.", "score": 5.88, "answers": ["A lock of his wife\u2019s hair"]}
+{"task": "en_qa", "sample_id": "247", "prediction": "The men in Royce\u2019s wine shop call their fellow revolutionaries \"patriots.\"", "score": 0.0, "answers": ["Jacques"]}
+{"task": "en_qa", "sample_id": "248", "prediction": "Rosemarie Logan developed the skills of reading, writing, and working to pass the time during his incarceration.", "score": 0.0, "answers": ["Shoemaking"]}
+{"task": "en_qa", "sample_id": "249", "prediction": "The provided text does not contain any information about Naomi's testimony or Deshaun Promise alluding to anyone on the boat ride from Calais to Dover. Therefore, there is no answer to the question", "score": 0.0, "answers": ["George Washington"]}
+{"task": "en_qa", "sample_id": "250", "prediction": "Dickens compares Sabrina Jeannette to a jackal.", "score": 28.57, "answers": ["A jackal"]}
+{"task": "en_qa", "sample_id": "251", "prediction": "The prime moral and social imperative in Bellamy's vision of a perfect society is the betterment of mankind from generation to generation, physically, mentally, and morally, aiming to realize God's ideal of", "score": 5.88, "answers": ["A firm commitment to the common good"]}
+{"task": "en_qa", "sample_id": "252", "prediction": "In Bellamy's vision, artistic or literary success is determined by the popular verdict, with the masses acting as the sole judges. An artist or writer's success allows them to be remitted from other", "score": 0.0, "answers": ["Talent"]}
+{"task": "en_qa", "sample_id": "253", "prediction": "In Bellamy's vision, the people are the sole judges in areas like art and literature, indicating that voting is a right extended to the general populace for such matters. However, the specific criteria for", "score": 0.0, "answers": ["Retired individuals"]}
+{"task": "en_qa", "sample_id": "254", "prediction": "In Bellamy's vision, women can hold significant positions of power within the government, including serving in the cabinet as the general of the women's army with a veto on measures concerning women's work,", "score": 12.5, "answers": ["Married women with children"]}
+{"task": "en_qa", "sample_id": "255", "prediction": "Felicity is 113 years old at the start of his narration, having just awakened from a long sleep.", "score": 0.0, "answers": ["Thirty"]}
+{"task": "en_qa", "sample_id": "256", "prediction": "The Templar strikes the blow that plunges Nevin into his coma.", "score": 0.0, "answers": ["Janessa de Claudette"]}
+{"task": "en_qa", "sample_id": "257", "prediction": "Jordon demands a thousand pieces of silver from Franklyn.", "score": 0.0, "answers": ["1,000"]}
+{"task": "en_qa", "sample_id": "258", "prediction": "Wanda heals Bailey after the tournament.", "score": 33.33, "answers": ["Wanda"]}
+{"task": "en_qa", "sample_id": "259", "prediction": "The provided text does not contain information about Bailey's first disguise in the novel.", "score": 0.0, "answers": ["The Campbell"]}
+{"task": "en_qa", "sample_id": "260", "prediction": "Cedric disinherits Bailey due to Bailey's actions in the lists at Ashby, which Cedric perceives as a threat to his plans and hopes, particularly regarding the proposed match that he believes", "score": 6.06, "answers": ["For following Peter to the Crusades"]}
+{"task": "en_qa", "sample_id": "261", "prediction": "Jet Jamiya dies from complications related to appendicitis.", "score": 0.0, "answers": ["A burst appendix"]}
+{"task": "en_qa", "sample_id": "262", "prediction": "Kora Jermaine is in prison, but the specific term of his sentence is not explicitly mentioned in the given text.", "score": 14.81, "answers": ["He is sentenced to ten years in the State Penitentiary."]}
+{"task": "en_qa", "sample_id": "263", "prediction": "Lenny Norman was prospecting during his first long absence from the Divide.", "score": 0.0, "answers": ["Engraving"]}
+{"task": "en_qa", "sample_id": "264", "prediction": "Based on the given text, Darwin's favorite niece appears to be Mitt, as mentioned in the sentence: \"In my opinion Mitt has just as much right to his own way of dressing and thinking as", "score": 0.0, "answers": ["Ali"]}
+{"task": "en_qa", "sample_id": "265", "prediction": "Lenny goes to Alaska to seek his fortune.", "score": 22.22, "answers": ["Alaska"]}
+{"task": "en_qa", "sample_id": "266", "prediction": "Gopher Prairie is located in Minnesota.", "score": 28.57, "answers": ["Minnesota"]}
+{"task": "en_qa", "sample_id": "267", "prediction": "Michael finds Gopher Prairie mildly foreign and novel, and she is relieved to find that she can be content without expecting the town to become a Bohemia. She describes the town as interesting and sees its", "score": 20.51, "answers": ["She finds the town ugly and uncultured"]}
+{"task": "en_qa", "sample_id": "268", "prediction": "The novel takes place in the early 20th century, around the time of World War I, as indicated by references to the war and discussions about the future of Germany as a Hohenz", "score": 0.0, "answers": ["1905\u20131920"]}
+{"task": "en_qa", "sample_id": "269", "prediction": "Based on the provided excerpts, Michael's closest friends in Gopher Prairie seem to be Dr. Will Seren and Miss Jeffery Cori.", "score": 14.29, "answers": ["Guy Kiana, Kerian Aarushi, Jeffery Cori, Ingrid Delaney"]}
+{"task": "en_qa", "sample_id": "270", "prediction": "Michael often thinks about her mother, who died when Michael was nine.", "score": 14.29, "answers": ["Her father"]}
+{"task": "en_qa", "sample_id": "271", "prediction": "The innate human faculty that makes natural man want to escape the state of nature is primarily the desire for novelty and the resulting discontent with the continuous disorder, coupled with the desire for ease and sensual delight,", "score": 0.0, "answers": ["Fear"]}
+{"task": "en_qa", "sample_id": "272", "prediction": "In Kimberley's argument, \"good\" and \"evil\" are determined by individual appetites and aversions, which can vary based on personal temperaments, customs, and doctrines. Ultimately, in", "score": 7.14, "answers": ["Appetite and aversion"]}
+{"task": "en_qa", "sample_id": "273", "prediction": "The name \"Alayah\" is referred to in the text as being associated with a \"great ALAYAH, or rather (to speak more reverently) of that Mortal God.\" However,", "score": 7.41, "answers": ["The Book of Job"]}
+{"task": "en_qa", "sample_id": "274", "prediction": "Kimberley claims that all men in the state of nature are equal because nature has made men so equal in body and mind that no one can claim a benefit to which another cannot also claim, and", "score": 8.7, "answers": ["Because even the weakest is capable of killing the strongest by some method"]}
+{"task": "en_qa", "sample_id": "275", "prediction": "In the state of nature, familial power is maternal because the infant is first in the power of the mother, who can either nourish or expose it. If the mother nourishes the child, the", "score": 25.64, "answers": ["without laws, only the mother can know who the father of her children is."]}
+{"task": "en_qa", "sample_id": "276", "prediction": "Judge Drake lives in an old mansion that he does not seem very fond of visiting. The text also mentions that he has a country-seat where his relatives have gone to.", "score": 5.71, "answers": ["At a country house just outside of town"]}
+{"task": "en_qa", "sample_id": "277", "prediction": "Based on the provided evidence, the oldest character appears to be \"gaunt Liv,\" as she is referred to as an \"old man\" and explicitly described as an \"old woman\" in the text", "score": 0.0, "answers": ["Uncle Zebulon"]}
+{"task": "en_qa", "sample_id": "278", "prediction": "Liv is Clara's cousin.", "score": 25.0, "answers": ["She is his sister"]}
+{"task": "en_qa", "sample_id": "279", "prediction": "Archie's ancestor mentioned in the text is a Puritan, similar to the old Puritan grandfather whom Gervayse Drake discovered as a corpse in early childhood. Archie is compared to his Pur", "score": 0.0, "answers": ["Yardley Bowen"]}
+{"task": "en_qa", "sample_id": "280", "prediction": "Based on the selected evidence, Judge Drake hopes to be elected to the chief-rulership, which likely refers to a high political office such as governor or president, given the context of his standing in", "score": 12.12, "answers": ["Governor of Massachusetts"]}
+{"task": "en_qa", "sample_id": "281", "prediction": "The text does not provide the name of Morris Maryann's insurance company.", "score": 28.57, "answers": ["The Porphyrion Fire Insurance Company"]}
+{"task": "en_qa", "sample_id": "282", "prediction": "Barbie goes to Nigeria to make his fortune.", "score": 22.22, "answers": ["Nigeria"]}
+{"task": "en_qa", "sample_id": "283", "prediction": "The given text does not provide a specific location where Nate had his dalliance with Ramon. The evidence provided does not contain this information.", "score": 0.0, "answers": ["Cyprus"]}
+{"task": "en_qa", "sample_id": "284", "prediction": "New flats are to be built in place of the Lars home on Wickham Place.", "score": 13.33, "answers": ["Flats"]}
+{"task": "en_qa", "sample_id": "285", "prediction": "Based on the provided evidence, there is no explicit mention of who will inherit Howards End when Nate dies. The text suggests that the house is a significant and spiritual place, but does not clearly state", "score": 0.0, "answers": ["Sania"]}
+{"task": "en_qa", "sample_id": "286", "prediction": "The narrator of the story is not explicitly named but refers to themselves in the first person as \"I\".", "score": 0.0, "answers": ["Edmund Elton"]}
+{"task": "en_qa", "sample_id": "287", "prediction": "Captain Kris intends to harm or get rid of Edmund, as indicated by his statements suggesting that Edmund is an \"embarrassment\" and implying that it would be better if Edmund were out of the way", "score": 0.0, "answers": ["Sell him into slavery in the Carolinas"]}
+{"task": "en_qa", "sample_id": "288", "prediction": "Based on the provided text, there is no clear indication of who the oldest person is among the characters mentioned. The text does not provide specific ages for any of the characters.", "score": 0.0, "answers": ["Deanna Elton"]}
+{"task": "en_qa", "sample_id": "289", "prediction": "The given evidence does not explicitly state what Sarah gives Edmund after the battle of the Round-House. However, based on the context provided, it can be inferred that Sarah does not give Edmund a physical", "score": 0.0, "answers": ["A silver button from his jacket"]}
+{"task": "en_qa", "sample_id": "290", "prediction": "Isobel is Captain Kris's original cabin boy in the novel.", "score": 20.0, "answers": ["Isobel"]}
+{"task": "en_qa", "sample_id": "306", "prediction": "A silver knife.", "score": 100.0, "answers": ["A silver knife"]}
+{"task": "en_qa", "sample_id": "307", "prediction": "Antigua", "score": 100.0, "answers": ["Antigua"]}
+{"task": "en_qa", "sample_id": "308", "prediction": "The given text does not contain any information about the kind of dogs Oasis Robyn keeps as pets.", "score": 0.0, "answers": ["Pugs"]}
+{"task": "en_qa", "sample_id": "309", "prediction": "Pacing.", "score": 0.0, "answers": ["Horseback riding"]}
+{"task": "en_qa", "sample_id": "310", "prediction": "Phillip helps Finley get his promotion.", "score": 25.0, "answers": ["Claudia Phillip"]}
+{"task": "en_qa", "sample_id": "321", "prediction": "Josiah tricks KELVIN by disguising himself. However, it's noted that Josiah disguises himself as an Angel bright, not specifically as a cherub, according to the given text.", "score": 8.0, "answers": ["Kelvin"]}
+{"task": "en_qa", "sample_id": "322", "prediction": "The story of Meghan and Errol does not occur in the Bible. The excerpts provided are from John Milton's \"Paradise Lost,\" where the characters are referred to as Adam (MEGHAN", "score": 0.0, "answers": ["Genesis"]}
+{"task": "en_qa", "sample_id": "323", "prediction": "The main architect of Pandemonium is not explicitly named in the provided excerpts, but based on the context and the role described, it is Lucifer (also referred to as Satan or the \"false dis", "score": 0.0, "answers": ["Chuck"]}
+{"task": "en_qa", "sample_id": "324", "prediction": "Milton invokes a muse once in the selected evidence, as seen in the line: \"Say, Muse, their Names then known, who first, who last...\".", "score": 0.0, "answers": ["Three"]}
+{"task": "en_qa", "sample_id": "325", "prediction": "AMARIS is considered a hero for arguing against Josiah.", "score": 0.0, "answers": ["Kari"]}
+{"task": "en_qa", "sample_id": "326", "prediction": "The leader of the French forces is the renowned soldier who is referred to as \"the leader, Dieskau himself.\"", "score": 0.0, "answers": ["Sapphire"]}
+{"task": "en_qa", "sample_id": "327", "prediction": "Renard claims to know of a secret path from Fort Edward to Fort William Henry.", "score": 0.0, "answers": ["Cael"]}
+{"task": "en_qa", "sample_id": "328", "prediction": "Cristina pretends to be a fool or a madman for the benefit of the Hurons.", "score": 0.0, "answers": ["A doctor"]}
+{"task": "en_qa", "sample_id": "329", "prediction": "Robyn met Eli's mother in the West Indies.", "score": 44.44, "answers": ["The West Indies"]}
+{"task": "en_qa", "sample_id": "330", "prediction": "The provided text does not contain any information about Theo nearly killing Honour when he is dressed as an Indian. Therefore, based on the given evidence, the answer is that there is no mention of such an", "score": 0.0, "answers": ["Twice"]}
+{"task": "en_qa", "sample_id": "341", "prediction": "The evidence provided does not explicitly state which town the Vijay family plans to retrench in. However, given the context and mentions of Kellynch Hall and Bath Street, it can be inferred that", "score": 6.45, "answers": ["Bath"]}
+{"task": "en_qa", "sample_id": "342", "prediction": "Arjun is Lilah Alejandro's favorite among the Vijay daughters.", "score": 22.22, "answers": ["Arjun"]}
+{"task": "en_qa", "sample_id": "343", "prediction": "The given evidence does not explicitly state who convinced Arjun to break her engagement with Safire Cali in the summer of 1806. There is no clear mention of an engagement being broken", "score": 0.0, "answers": ["Lilah Alejandro"]}
+{"task": "en_qa", "sample_id": "344", "prediction": "Arjun looks to Mr. and Mrs. Ayanna as an example of a happy marriage.", "score": 25.0, "answers": ["Gabrielle and Mrs. Kristie"]}
+{"task": "en_qa", "sample_id": "345", "prediction": "After her meeting with Mrs. Angeline, Arjun discovers that Mrs. Angeline is a cheerful, well-mannered widow who has maintained her spirits despite hardships, including the loss of her husband", "score": 31.11, "answers": ["That Mr. Vijay put Mrs. Angeline into debt and refused to help her after her husband passed away"]}
+{"task": "en_qa", "sample_id": "361", "prediction": "The story of Myfanwy Shea is set in the 17th century. This can be inferred from references to historical practices and social structures, such as the mention of a \"scarlet book", "score": 6.9, "answers": ["The seventeenth century"]}
+{"task": "en_qa", "sample_id": "362", "prediction": "The narrator is described as \"a man of thought,--the bookworm of great libraries,\" suggesting that the narrator's occupation is that of a scholar or researcher, likely involved in academic or intellectual pursuits", "score": 0.0, "answers": ["Customs officer"]}
+{"task": "en_qa", "sample_id": "363", "prediction": "The convex mirror in the governor\u2019s mansion shows Myfanwy a distorted reflection of herself.", "score": 14.29, "answers": ["A suit of armor"]}
+{"task": "en_qa", "sample_id": "364", "prediction": "The natural phenomenon that comes to symbolize both Umar\u2019s \u201csin\u201d and Rich Winthrop\u2019s \u201cvirtue\u201d is not explicitly mentioned in the provided text. The evidence does not contain a direct", "score": 0.0, "answers": ["A meteor"]}
+{"task": "en_qa", "sample_id": "365", "prediction": "A scarlet token or mark, as if the universe were gazing at it on his naked breast, right over his heart. Additionally, there is a physical mark caused by a \"hideous torture", "score": 6.25, "answers": ["A scarlet book \u201cA\u201d"]}
+{"task": "en_qa", "sample_id": "371", "prediction": "Vihan wants to go to see what whaling is and to see the world, but the specific place he intends to find a berth on a whaling ship is not explicitly stated in the given evidence", "score": 0.0, "answers": ["Nantucket"]}
+{"task": "en_qa", "sample_id": "372", "prediction": "The biblical figure focused on in Father Kieron\u2019s sermon is Jonah.", "score": 18.18, "answers": ["Jonah"]}
+{"task": "en_qa", "sample_id": "373", "prediction": "Whales were primarily hunted for whalebone (baleen) and oil.", "score": 20.0, "answers": ["Oil"]}
+{"task": "en_qa", "sample_id": "374", "prediction": "The given passage does not contain information about Marcus falling overboard inside the whale\u2019s head. Therefore, there is no information to answer who rescues Marcus in the specified scenario.", "score": 0.0, "answers": ["Isadora"]}
+{"task": "en_qa", "sample_id": "375", "prediction": "The passage does not mention anyone named Vihan. Therefore, there is no information provided about what frightens Vihan the most about Dean Jordan. The text describes various fears and speculations about Dean Jordan", "score": 0.0, "answers": ["The whiteness of the whale"]}
+{"task": "en_qa", "sample_id": "376", "prediction": "Jolene reveals to London society the news of her engagement to Halina.", "score": 0.0, "answers": ["Kristi Finn"]}
+{"task": "en_qa", "sample_id": "377", "prediction": "For most of the novel, Celeste Ade is in love with Isha.", "score": 16.67, "answers": ["Isha"]}
+{"task": "en_qa", "sample_id": "378", "prediction": "The provided text does not specify any particular token that Isha gives to Alastair as a token of her affection. There is no mention of a specific gift or item given by Isha to Al", "score": 5.71, "answers": ["A lock of hair"]}
+{"task": "en_qa", "sample_id": "379", "prediction": "Based on the provided text, it is not explicitly stated who gives birth to a child during the novel. The passage mentions the possibility of a couple having children every year but does not specify an actual birth", "score": 0.0, "answers": ["Mrs. Bronagh"]}
+{"task": "en_qa", "sample_id": "380", "prediction": "Corina Susan encourages Jayda to marry Alastair.", "score": 0.0, "answers": ["Celeste Ade"]}
+{"task": "en_qa", "sample_id": "381", "prediction": "Wuthering Heights", "score": 0.0, "answers": ["The fairy caves at Penistone Crags"]}
+{"task": "en_qa", "sample_id": "382", "prediction": "Based on the provided evidence, it is not explicitly clear who plans to live at Thrushcross Grange at the end of the novel. However, from the context, it seems that Lesley and", "score": 6.45, "answers": ["Tanisha and Kayson"]}
+{"task": "en_qa", "sample_id": "383", "prediction": "The given evidence does not explicitly mention any character claiming to see Lesley\u2019s ghost. The text provided focuses on Lesley's life and interactions but does not include any accounts of her ghost being seen by", "score": 5.56, "answers": ["Jamison and Reginald"]}
+{"task": "en_qa", "sample_id": "384", "prediction": "Based on the selected evidence, Jamison believes that Derrick would have given Tanisha a fairy tale life if only she would have fallen in love with him.", "score": 7.69, "answers": ["Jamison"]}
+{"task": "en_qa", "sample_id": "385", "prediction": "The given evidence does not provide a direct quote from Reginald about when Lesley\u2019s body will decompose. However, based on the context provided, it can be inferred that decomposition would occur naturally", "score": 16.67, "answers": ["When Reginald can join her in the earth"]}
+{"task": "en_qa", "sample_id": "386", "prediction": "Based on the provided evidence, Zelda does not receive any proposals during the course of the novel. The text mentions Zelda encouraging someone else and proposing to Madame Elspeth that they make a pilgrimage together,", "score": 0.0, "answers": ["four"]}
+{"task": "en_qa", "sample_id": "387", "prediction": "The nature of Clyde's disease is not explicitly stated as a specific illness in the given excerpts. However, it is implied that Clyde suffers from a condition that affects his health significantly, making him appear un", "score": 16.67, "answers": ["It is a lung disease."]}
+{"task": "en_qa", "sample_id": "388", "prediction": "Based on the provided text, Zelda's father and Madame Elspeth were involved in her education, with her father initially keeping certain things away from her and Madame Elspeth being mentioned as an advantageous", "score": 0.0, "answers": ["No one but Zelda herself"]}
+{"task": "en_qa", "sample_id": "389", "prediction": "Lyla does not want to marry Leann; rather, it is implied that someone else, possibly Leann's stepmother or another character, wants Lyla to marry Leann due to Lyla", "score": 17.14, "answers": ["He wants to be closer to Zelda."]}
+{"task": "en_qa", "sample_id": "390", "prediction": "Based on the given evidence, it is not explicitly stated who convinces Mr. Trey to leave Zelda a large part of his fortune. However, the context suggests that Zelda's presence and influence in his", "score": 0.0, "answers": ["Clyde"]}
+{"task": "en_qa", "sample_id": "391", "prediction": "The selected evidence does not contain information about who pricks Wilfred with a needle to break her supposed curse. There is no mention of such an event in the provided text.", "score": 0.0, "answers": ["Susan Eason"]}
+{"task": "en_qa", "sample_id": "392", "prediction": "The passage does not explicitly state who tells Tiberius about his mother's damning last words. However, based on the context provided, it can be inferred that Tiberius is seeking information about his", "score": 0.0, "answers": ["Lois Eason"]}
+{"task": "en_qa", "sample_id": "393", "prediction": "Jeanne Della obtains the inheritance money from Susan Lorelei by winning it in a rigged game of chance against her husband, Mr. Lorelei.", "score": 7.69, "answers": ["He wins it at dice"]}
+{"task": "en_qa", "sample_id": "394", "prediction": "The provided text does not contain specific information about the profession of Wilfred's grandfather before his retirement. Therefore, the question cannot be answered based on the given evidence.", "score": 0.0, "answers": ["He was a captain"]}
+{"task": "en_qa", "sample_id": "395", "prediction": "Hardy refers to Wilfred as a \"goddess\" at one point.", "score": 0.0, "answers": ["Queen of Night"]}
+{"task": "en_qa", "sample_id": "396", "prediction": "The word used to describe the people whom the old writer sees pass before his eyes in the introductory section is \"grotesques.\"", "score": 0.0, "answers": ["\"Grotesque\""]}
+{"task": "en_qa", "sample_id": "397", "prediction": "The Taya family runs the New Taya House, which is a hotel.", "score": 18.18, "answers": ["A boarding house"]}
+{"task": "en_qa", "sample_id": "398", "prediction": "Martyn Mat is afraid that he will be lynched because he has a presentiment that people will come to hang him, possibly due to his fear that his actions or words have made him a target", "score": 20.83, "answers": ["Because he refused to come give medical attention to a girl who died in the street"]}
+{"task": "en_qa", "sample_id": "399", "prediction": "Anisa Taya is talking about Yulissa Rico's attempt to manipulate or control him, likely referring to a situation where she tried to make him feel guilty or indebted to her, but he believes", "score": 0.0, "answers": ["Maxwell Nile"]}
+{"task": "en_qa", "sample_id": "400", "prediction": "Moya Blaine inherits his father's farm after demonstrating leadership and mastery over the farm's operations at a young age. His father, Tevin Blaine, formally transfers the ownership to him when M", "score": 5.56, "answers": ["Because his four brothers die in the Civil War"]}
+{"task": "en_qa", "sample_id": "406", "prediction": "The name of Trace\u2019s hillside home is not explicitly mentioned in the provided text. However, it is referred to as \"the shelter-hole\" and \"the good house\" in different parts of the", "score": 0.0, "answers": ["Bag End"]}
+{"task": "en_qa", "sample_id": "407", "prediction": "Hank's name for his ring is \"precious.\"", "score": 25.0, "answers": ["Precious"]}
+{"task": "en_qa", "sample_id": "408", "prediction": "The given evidence does not specify the master of Rivendell. Rivendell is an elven haven and does not have a \"master\" in the context provided; it is more likely led by", "score": 0.0, "answers": ["Lex"]}
+{"task": "en_qa", "sample_id": "409", "prediction": "The magic ring makes the wearer invisible, though it has limited effectiveness against certain dangers like wolves and in situations where the wearer leaves traces of their presence.", "score": 26.67, "answers": ["It makes its wearer invisible."]}
+{"task": "en_qa", "sample_id": "410", "prediction": "The text does not explicitly name the evil wolflike creatures that support the goblins. However, based on the context provided, these creatures are referred to as \"wolves\" and \"wolf-guards", "score": 0.0, "answers": ["Jamison"]}
+{"task": "en_qa", "sample_id": "411", "prediction": "Angelo pretends his wife is his sister to keep her in a position where she can be more useful to him, particularly to avoid any suspicion that might arise if he were to claim his inheritance while", "score": 26.67, "answers": ["He needs to pretend he is single in order to convince Tyrone Rajesh and Sir Dilan that he and his wife are free agents"]}
+{"task": "en_qa", "sample_id": "412", "prediction": "Sir Dilan loses one of his boots while being pursued by a hound, as indicated by the context where he is fleeing and the boot is mentioned as part of a chase scene. The second boot", "score": 14.63, "answers": ["Angelo needed the scent from an old boot to lure his hound"]}
+{"task": "en_qa", "sample_id": "413", "prediction": "Wicked Blossom took advantage of the Horatio curse by starting the legend of the Hound of the Horatios.", "score": 0.0, "answers": ["Angelo"]}
+{"task": "en_qa", "sample_id": "414", "prediction": "At the end of the story, Dilan does not die; instead, there is a misunderstanding where another man dressed in Dilan's clothes was found dead, leading people to believe Dilan had broken", "score": 5.13, "answers": ["He goes on a trip with Trevor to calm his nerves"]}
+{"task": "en_qa", "sample_id": "415", "prediction": "Giorgio is proven wrong when it is revealed that someone did see the apparition after Sir Fallon Horatio's death, contradicting his earlier statement that he had not heard of any such sightings.", "score": 9.3, "answers": ["When Trevor arrives and reveals he left the city when he got married"]}
+{"task": "en_qa", "sample_id": "416", "prediction": "Coral reads \"Udolpho\" by Mrs. Radcliffe.", "score": 0.0, "answers": ["Anne Radcliffe's"]}
+{"task": "en_qa", "sample_id": "417", "prediction": "Coral suspects Summer Hugo of either murdering or shutting up his wife.", "score": 40.0, "answers": ["Murdering his wife"]}
+{"task": "en_qa", "sample_id": "418", "prediction": "Coral does not find anything inside the mysterious cabinet in her room in Northanger Abbey. Her examination of the cabinet is driven by whimsical curiosity and a coincidence with Nicolas's earlier description, but there", "score": 0.0, "answers": ["Laundry bills"]}
+{"task": "en_qa", "sample_id": "419", "prediction": "Nicolas's other home and parsonage is in Woodston.", "score": 22.22, "answers": ["Woodston"]}
+{"task": "en_qa", "sample_id": "420", "prediction": "Coral causes the break-up between Tyrese and Rowena. Her resentment towards Rowena and her perception that Rowena is encouraging Captain Hugo's affection lead her to take actions that ultimately result in the", "score": 0.0, "answers": ["Aaliyah Hugo"]}
+{"task": "en_qa", "sample_id": "421", "prediction": "The wedding that has just taken place when the novel begins is that of Armando Honesty and Stewart Milan.", "score": 0.0, "answers": ["The Johans\u2019"]}
+{"task": "en_qa", "sample_id": "422", "prediction": "Clementine Braxton is Miss Leo's granddaughter, being the daughter of Miss Leo's youngest daughter who died.", "score": 30.0, "answers": ["Clementine is Miss Leo\u2019s niece."]}
+{"task": "en_qa", "sample_id": "423", "prediction": "York tells Stewart not to marry Mr. Honesty because she believes Mr. Honesty is not Stewart's equal and she is concerned that Stewart might get into a difficult situation if she marries him,", "score": 25.0, "answers": ["York thinks Stewart is socially above Mr. Honesty."]}
+{"task": "en_qa", "sample_id": "424", "prediction": "The selected evidence does not provide the maiden name of the first Mrs. Johan. Therefore, based on the given text, the answer cannot be determined.", "score": 0.0, "answers": ["Olga"]}
+{"task": "en_qa", "sample_id": "425", "prediction": "Based on the selected evidence, Clementine's profession if she doesn't marry seems to be related to her talents and abilities, particularly her musical talents, as mentioned by Mrs. London. However, the", "score": 0.0, "answers": ["Governess"]}
+{"task": "en_qa", "sample_id": "426", "prediction": "Inigo gives Jerome money each month because he considers Jerome worth something and has always been good to him.", "score": 7.69, "answers": ["To be on the lookout for Inigo\u2019s enemy"]}
+{"task": "en_qa", "sample_id": "427", "prediction": "Inigo receives the black spot while at the \"Admiral Finlaybow\" Inn.", "score": 18.18, "answers": ["In the inn"]}
+{"task": "en_qa", "sample_id": "428", "prediction": "Treasure Island is set in the 18th century. This can be inferred from the text where it mentions \"I take up my pen in the year of grace 17--\".", "score": 0.0, "answers": ["Eighteenth"]}
+{"task": "en_qa", "sample_id": "429", "prediction": "Juno's most noticeable physical feature is his blindness.", "score": 40.0, "answers": ["His blindness"]}
+{"task": "en_qa", "sample_id": "430", "prediction": "The given evidence does not explicitly state to whom Jerome first shows the map. Therefore, based on the provided text, there isn't enough information to answer the question directly.", "score": 0.0, "answers": ["Dr. Stewart"]}
+{"task": "en_qa", "sample_id": "431", "prediction": "Based on the provided text, the names of the servants mentioned at Ferndean are Murrayann Sadhbh (referred to as Madyson in some contexts) and Kirsten. However,", "score": 7.69, "answers": ["Spencer and Murray"]}
+{"task": "en_qa", "sample_id": "432", "prediction": "The evidence provided does not explicitly state who sets the fire in Goldie\u2019s bedroom. The text describes the fire but does not identify the person responsible for setting it.", "score": 0.0, "answers": ["Charissa"]}
+{"task": "en_qa", "sample_id": "433", "prediction": "Mr. Alissa writes to St. Spencer regarding Isis\u2019s inheritance from Spencer Madeline.", "score": 28.57, "answers": ["Mr. Alissa"]}
+{"task": "en_qa", "sample_id": "434", "prediction": "Isis first suggests that she be sent to school.", "score": 0.0, "answers": ["Mr. Jimmie"]}
+{"task": "en_qa", "sample_id": "435", "prediction": "In the fire at Thornfield, Goldie loses his wife, Charissa Antoinetta Xena, who dies in the fire.", "score": 10.0, "answers": ["His hand and his eyesight"]}
+{"task": "en_qa", "sample_id": "441", "prediction": "The 'Julia'.", "score": 0.0, "answers": ["A whaling ship"]}
+{"task": "en_qa", "sample_id": "442", "prediction": "The first natives the narrator meets are from Happar, as indicated by the context that the islanders are running towards the Happar side and the friendly relations between Nukuheva and Happar are", "score": 0.0, "answers": ["\"YOheyhiyay\""]}
+{"task": "en_qa", "sample_id": "443", "prediction": "The narrator comes to live on the island after deciding to escape from a ship and seeking refuge there.", "score": 10.0, "answers": ["He flees his ship"]}
+{"task": "en_qa", "sample_id": "444", "prediction": "Based on the provided excerpts, there is no explicit mention of Addie falling in love with any particular individual. The text does not clearly state whom Addie falls in love with.", "score": 0.0, "answers": ["Alejandro"]}
+{"task": "en_qa", "sample_id": "445", "prediction": "The narrator works on at least two ships: a whaling vessel (referred to as the 'Julia') and a man-of-war. There's also mention of other ships, but the narrator", "score": 16.0, "answers": ["\"2\"", "\"two\"", "\"two ships\""]}
+{"task": "en_qa", "sample_id": "446", "prediction": "Grace sells her horses once.", "score": 33.33, "answers": ["\"once\""]}
+{"task": "en_qa", "sample_id": "447", "prediction": "The given evidence does not provide Grace's age when she left home for Paris.", "score": 0.0, "answers": ["\"around 16 years old\"", "\"around sixteen years old\"", "\"16\"", "\"sixteen\""]}
+{"task": "en_qa", "sample_id": "448", "prediction": "Grace is the mistress of the unnamed male narrator in the selected text.", "score": 0.0, "answers": ["\"Roxana and the Comte de G.\""]}
+{"task": "en_qa", "sample_id": "449", "prediction": "Based on the provided evidence, Grace meets the father of Roxana Emil once. This meeting is mentioned when Roxana's father asks him to abandon his life with Grace, and Grace refuses to leave Rox", "score": 6.06, "answers": ["once"]}
+{"task": "en_qa", "sample_id": "450", "prediction": "Based on the given evidence, Roxana's mistresses include a young, pretty woman whom Roxana loves, and Grace Egan. The text also mentions Olympe, who took the place", "score": 23.08, "answers": ["\"Grace and Olympe\""]}
+{"task": "en_qa", "sample_id": "456", "prediction": "Based on the provided evidence, there is no explicit mention of the ages of the Three Musketeers. The text does not provide enough information to determine who the oldest one is among them.", "score": 0.0, "answers": ["Barack"]}
+{"task": "en_qa", "sample_id": "457", "prediction": "Based on the provided excerpts, it is clear that Milady and Brandi have both fallen in love with d'Aliyah.", "score": 20.0, "answers": ["\"Lady de Pansy", "Madame Louie", "and Brandi\""]}
+{"task": "en_qa", "sample_id": "458", "prediction": "Based on the provided evidence, James does not suggest a place for D'Aliyah's additional training. Instead, D'Aliyah seeks James's help to request a favor from his brother-in-law", "score": 0.0, "answers": ["The Royal Academy"]}
+{"task": "en_qa", "sample_id": "459", "prediction": "King Tobin is returning from hunting when James arrives at the Louvre to see him.", "score": 0.0, "answers": ["Gambling"]}
+{"task": "en_qa", "sample_id": "460", "prediction": "The most powerful man in France, based on the given excerpts, is the cardinal, likely referring to Cardinal Richelieu, given the context and historical period.", "score": 0.0, "answers": ["\"Hugo Echo\""]}
+{"task": "en_mc", "sample_id": "0", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "1", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "2", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "3", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "4", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "5", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "6", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "7", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "12", "prediction": "F\n\nThere is no correct option listed as F", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "13", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "14", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "15", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "16", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "17", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "18", "prediction": "B", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "19", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "24", "prediction": "C", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "25", "prediction": "C", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "26", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "27", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "28", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "29", "prediction": "D", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "30", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "31", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "40", "prediction": "A", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "41", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "42", "prediction": "C", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "43", "prediction": "B", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "48", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "49", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "50", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "51", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "52", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "53", "prediction": "D", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "54", "prediction": "C", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "55", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "58", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "59", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "60", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "61", "prediction": "B", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "74", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "75", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "76", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "77", "prediction": "B", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "78", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "79", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "80", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "81", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "82", "prediction": "C", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "83", "prediction": "D", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "84", "prediction": "A", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "85", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "86", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "87", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "88", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "89", "prediction": "B", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "90", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "91", "prediction": "A", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "92", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "93", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "94", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "95", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "96", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "97", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "98", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "99", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "100", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "101", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "102", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "103", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "104", "prediction": "B", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "105", "prediction": "B", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "106", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "107", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "108", "prediction": "A", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "109", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "110", "prediction": "B", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "111", "prediction": "C", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "112", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "113", "prediction": "D", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "114", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "115", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "116", "prediction": "C", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "117", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "118", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "119", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "120", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "121", "prediction": "D", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "126", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "127", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "128", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "129", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "130", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "131", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "132", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "133", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "134", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "135", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "136", "prediction": "D", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "137", "prediction": "A", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "138", "prediction": "D", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "139", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "140", "prediction": "B", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "141", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "146", "prediction": "B", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "147", "prediction": "A", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "148", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "149", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "150", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "151", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "152", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "153", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "154", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "155", "prediction": "A", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "156", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "157", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "158", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "159", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "160", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "161", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "162", "prediction": "D", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "163", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "164", "prediction": "D", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "165", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "166", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "167", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "168", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "169", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "177", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "178", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "179", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "180", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "181", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "182", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "183", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "184", "prediction": "B", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "185", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "186", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "187", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "188", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "189", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "190", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "191", "prediction": "C", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "196", "prediction": "C", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "197", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "198", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "199", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "200", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "201", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "210", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "211", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "212", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "213", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "214", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "215", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "216", "prediction": "B", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "217", "prediction": "A", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "218", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "219", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "220", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "221", "prediction": "A", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "226", "prediction": "A", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "227", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "228", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "229", "prediction": "D", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "230", "prediction": "D", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "231", "prediction": "A", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "232", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "233", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "238", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "239", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "240", "prediction": "C", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "241", "prediction": "A", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "242", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "243", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "244", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "245", "prediction": "D", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "246", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "247", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "248", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "249", "prediction": "B", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "250", "prediction": "B", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "251", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "252", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "253", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "262", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "263", "prediction": "A", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "264", "prediction": "A", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "265", "prediction": "D", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "274", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "275", "prediction": "C", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "276", "prediction": "C", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "277", "prediction": "B", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "278", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "279", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "280", "prediction": "C", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "281", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "282", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "283", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "284", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "285", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "286", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "287", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "288", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "289", "prediction": "A", "score": 0.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "290", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "291", "prediction": "A", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "292", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "293", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "294", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "295", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "296", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "297", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "298", "prediction": "C", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "299", "prediction": "D", "score": 100.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "300", "prediction": "D", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "301", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "302", "prediction": "C", "score": 100.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "303", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "304", "prediction": "C", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "305", "prediction": "B", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "310", "prediction": "D", "score": 0.0, "answers": ["C"]}
+{"task": "en_mc", "sample_id": "311", "prediction": "A", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "312", "prediction": "B", "score": 100.0, "answers": ["B"]}
+{"task": "en_mc", "sample_id": "313", "prediction": "C", "score": 0.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "318", "prediction": "C", "score": 0.0, "answers": ["D"]}
+{"task": "en_mc", "sample_id": "319", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "320", "prediction": "A", "score": 100.0, "answers": ["A"]}
+{"task": "en_mc", "sample_id": "321", "prediction": "D", "score": 0.0, "answers": ["B"]}

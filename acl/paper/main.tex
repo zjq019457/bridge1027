@@ -20,8 +20,9 @@
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
 
 \newcommand{\spk}{\textsc{SentPack}}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
-\title{Whole Sentences, Exact Budgets: Retriever-Agnostic Evidence Packing\\for Long-Context Question Answering}
+\title{A Quarter of the Budget Is Spent Twice: Duplicated Evidence in\\Budgeted Context Packing and a Simple Fix}
 
 \author{Anonymous ACL submission}
 
@@ -29,7 +30,7 @@
 \maketitle
 
 \begin{abstract}
-When a long document must be answered from under a hard token budget, most systems rank chunks or spans and concatenate the top ones until the budget runs out. We show that \emph{how} the selected evidence is packed matters as much as \emph{which} evidence is selected. We present \spk{}, a training-free packer that sits behind any span ranker: it extends every selected span to the nearest sentence boundaries, merges overlapping extensions so that no text is paid for twice, admits evidence under the exact token count of the downstream model's tokenizer, keeps filling the budget with later spans after an earlier one does not fit, and emits the result in document order. We freeze every design choice on a development split and run the LongBench test set (1,150 single- and multi-document QA instances) once, with three instruction models (Qwen2.5-7B, Llama-3.1-8B, Qwen2.5-14B) and three budgets (512, 1,024, 2,048 tokens). \spk{} outperforms dense BGE chunk packing in all nine model--budget settings, by 1.9--3.7 F1 when pooled over models ($p\le0.001$ at every budget), and outperforms a structured lexical pair packer by 2.5--3.1 F1. The gain is retriever-agnostic: with BGE alone as the ranker it is 2.5--2.8 F1. At 2,048 tokens, \spk{} is statistically indistinguishable from reading the full context on all three models, and it exceeds LLMLingua-2 at the same budget by 15.3 F1.
+When a long document must be answered from under a hard token budget, the standard recipe ranks chunks with a retriever, pads each with neighbouring text, and concatenates the top ones until the budget runs out. Research has focused on the ranking step; we look at the packing step and find that it is surprisingly wasteful. On LongBench, standard dense chunk packing spends 23\% of a 1,024-token budget, and 29\% of a 2,048-token budget, on text that already appears elsewhere in the same context, because neighbouring top-ranked chunks are padded into each other; almost every packed piece also ends mid-sentence. We present \spk{}, a training-free packer that removes this waste behind any ranker: it extends each selected span to sentence boundaries, merges overlapping extensions so that no text is paid for twice, admits evidence under the exact token count of the downstream tokenizer with backfilling, and emits it in document order. Duplication drops to 1.4\%, and the recovered budget raises answer coverage by 3--4 points. We freeze every design choice on a development split and run the LongBench test set (1,150 single- and multi-document QA instances) once, with three instruction models (Qwen2.5-7B, Llama-3.1-8B, Qwen2.5-14B) and three budgets (512, 1,024, 2,048 tokens). \spk{} outperforms dense BGE chunk packing in all nine model--budget settings, by 1.9--3.7 F1 when pooled over models ($p\le0.001$ at every budget), and outperforms a structured lexical pair packer by 2.5--3.1 F1. The gain does not shrink with better rankers: holding the ranking fixed, \spk{} improves chunk packing by 2.8, 3.8 and 2.0 F1 with BGE-small, BGE-large and a cross-encoder reranker, and it outperforms LlamaIndex's sentence-window and auto-merging retrievers and LongLLMLingua. At 2,048 tokens, \spk{} is statistically indistinguishable from reading the full context on all three models, and it exceeds LLMLingua-2 at the same budget by 15.3 F1.
 \end{abstract}
 
 % =====================================================================
@@ -37,14 +38,18 @@ When a long document must be answered from under a hard token budget, most syste
 
 Large language models (LLMs) are routinely asked to answer questions about long documents and document collections. Even when the context window is long enough, there are reasons to send the model less text: prefill cost and latency grow with prompt length, many deployed models have short windows, and long inputs dilute the few passages that matter \citep{liu2024lost}. In practice a long context is therefore often reduced to a \emph{hard} budget of a few hundred to a few thousand tokens, measured in the tokenizer of the model that will read it.
 
-Two families of methods do this. \emph{Prompt compressors} \citep{li2023selectivecontext,jiang2023llmlingua,jiang2024longllmlingua,pan2024llmlingua2} delete tokens or phrases judged uninformative. \emph{Retrieval-style packers} split the context into chunks or spans, rank them with BM25 or a dense encoder \citep{robertson2009probabilistic,karpukhin2020dense,xiao2023cpack}, and concatenate the top-ranked units, each padded with a fixed window of neighbouring tokens, until the budget is exhausted. Research effort has concentrated on the ranking step. The packing step is usually treated as bookkeeping, and it has three habits that are costly under a tight budget: fixed windows cut sentences, and frequently the answer phrase, at arbitrary positions; adjacent or overlapping units repeat the same text and pay for it twice; and greedy admission stops filling, or leaves holes, as soon as one long unit does not fit.
+Two families of methods do this. \emph{Prompt compressors} \citep{li2023selectivecontext,jiang2023llmlingua,jiang2024longllmlingua,pan2024llmlingua2} delete tokens or phrases judged uninformative. \emph{Retrieval-style packers} split the context into chunks or spans, rank them with BM25 or a dense encoder \citep{robertson2009probabilistic,karpukhin2020dense,xiao2023cpack}, and concatenate the top-ranked units, each padded with a fixed window of neighbouring tokens, until the budget is exhausted. Research effort has concentrated on the ranking step; the packing step is treated as bookkeeping.
 
-We argue that under an exact budget the packer deserves the same care as the ranker, and we present \spk{}, a packer that can be placed behind any span ranker (Figure~\ref{fig:overview}). \spk{} (i)~extends each selected span to the nearest sentence boundaries within a small radius, (ii)~merges extensions that touch or overlap into a single passage, (iii)~admits spans in rank order under the exact downstream token count and \emph{backfills}, i.e., keeps admitting later spans after one does not fit, and (iv)~emits the merged passages verbatim in document order. None of these operations requires training, and all of them run on the CPU before the model is called.
+We start from a simple question: \emph{where does the budget go?} Measuring the contexts produced by standard dense chunk packing on LongBench (Section~\ref{sec:diag}), we find that relevant chunks cluster---the passage that answers a question tends to contain several top-ranked chunks---so their padded windows overlap, and the same sentences are rendered and paid for several times. At a 1,024-token budget, 23\% of the packed text duplicates text elsewhere in the same context, and the share grows with the budget (15\%, 23\% and 29\% at 512, 1,024 and 2,048 tokens). In addition, 94\% of packed pieces end in the middle of a sentence, and greedy admission leaves part of the budget unused. Under a hard budget, every duplicated or broken token is a token not spent on evidence.
+
+We then show that this waste can be removed without touching the ranker. \spk{} is a packer that can be placed behind any span ranker (Figure~\ref{fig:overview}). \spk{} (i)~extends each selected span to the nearest sentence boundaries within a small radius, (ii)~merges extensions that touch or overlap into a single passage, (iii)~admits spans in rank order under the exact downstream token count and \emph{backfills}, i.e., keeps admitting later spans after one does not fit, and (iv)~emits the merged passages verbatim in document order. None of these operations requires training, and all of them run on the CPU before the model is called.
 
 We evaluate \spk{} under a protocol designed to leave little room for doubt. Every design choice, including the ranker, was fixed on a development split built from LongBench-E with all LongBench test questions removed; the LongBench test set was then run once. All methods share the candidate spans, the prompt wrapper, the model, greedy decoding, the scorer, and a budget counted with the downstream tokenizer. We test three instruction models and three budgets and report paired bootstrap tests. Our findings are:
 
 \begin{itemize}
-\item \textbf{Packing beats ranking-only improvements.} \spk{} outperforms dense BGE chunk packing in all nine model--budget settings, by +3.68, +1.92 and +2.26 F1 at 512, 1,024 and 2,048 tokens (pooled over models, all $p\le0.001$), and outperforms a structured lexical pair packer by 2.5--3.1 F1 (Tables~\ref{tab:main} and~\ref{tab:sig}).
+\item \textbf{Standard packing wastes a quarter of the budget.} Dense chunk packing duplicates 15--30\% of its context; \spk{} reduces this to about 1.5\% and raises answer coverage by 3--4 points at every budget (Section~\ref{sec:diag}).
+\item \textbf{Removing the waste beats ranking-only improvements.} \spk{} outperforms dense BGE chunk packing in all nine model--budget settings, by +3.68, +1.92 and +2.26 F1 at 512, 1,024 and 2,048 tokens (pooled over models, all $p\le0.001$), and outperforms a structured lexical pair packer by 2.5--3.1 F1 (Tables~\ref{tab:main} and~\ref{tab:sig}).
+\item \textbf{Better rankers do not remove the waste.} With BGE-large and with a cross-encoder reranker, swapping only the packer improves F1 by 3.8 and 2.0 ($p\le0.001$); \spk{} with the reranker is the best compressed configuration and outperforms LlamaIndex's sentence-window and auto-merging retrievers, Provence and LongLLMLingua (Section~\ref{sec:external}). The direction carries over to book-length InfiniteBench contexts (Section~\ref{sec:infbench}).
 \item \textbf{The gain is retriever-agnostic.} Holding the BGE ranking fixed and changing only the packer improves F1 by 2.5--2.8 at every budget; with a purely lexical ranker \spk{} still outperforms the pair packer that uses the same lexical signals (Section~\ref{sec:agnostic}).
 \item \textbf{A 2,048-token \spk{} context is as good as the full context} on all three models (paired differences $+0.56$, $-0.35$ and $-0.10$ F1, none significant), while sending about one sixth of the prompt.
 \item \textbf{Evidence-level packing dominates token deletion.} At the same exact budget, \spk{} exceeds LLMLingua-2 by 15.3 F1.
@@ -88,6 +93,46 @@ Retrieval-augmented generation ranks passages with sparse \citep{robertson2009pr
 LongBench \citep{bai2023longbench} evaluates QA over long inputs, and models under-use evidence in the middle of long contexts \citep{liu2024lost}. KV-cache methods evict, merge or quantise cached states during generation \citep{xiao2023streamingllm,zhang2023h2o,li2024snapkv,liu2024kivi}. \spk{} instead shortens the input before prefill, so the full context is never encoded.
 
 % =====================================================================
+\section{Where Does the Budget Go?}
+\label{sec:diag}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+$B$ & Packer & Dup.\,$\downarrow$ & Sent.\,end\,$\uparrow$ & Tokens & Ans.\,cov.\,$\uparrow$ \\
+\midrule
+\multirow{3}{*}{512} & BGE chunks & 14.7 & 6.7 & 473 & 30.4 \\
+ & Pair packing & 3.0 & 6.2 & 439 & 30.0 \\
+ & \spk{} & \textbf{1.1} & \textbf{70.6} & 500 & \textbf{33.9} \\
+\midrule
+\multirow{3}{*}{1,024} & BGE chunks & 22.8 & 6.3 & 985 & 39.0 \\
+ & Pair packing & 5.4 & 6.0 & 920 & 36.9 \\
+ & \spk{} & \textbf{1.4} & \textbf{68.1} & 1,014 & \textbf{41.9} \\
+\midrule
+\multirow{3}{*}{2,048} & BGE chunks & 29.1 & 6.2 & 2,010 & 45.0 \\
+ & Pair packing & 7.3 & 6.1 & 1,502 & 41.2 \\
+ & \spk{} & \textbf{1.6} & \textbf{62.8} & 2,032 & \textbf{49.0} \\
+\bottomrule
+\end{tabular}}
+\caption{Where the budget goes (LongBench test, 1,150 instances, Qwen tokenizer; Llama-3.1 is within one point on every column). Dup.: share of packed words that start an 8-word sequence already present earlier in the same context. Sent.\ end: share of packed pieces ending with sentence punctuation. Tokens: mean context length. Ans.\ cov.: share of instances whose normalised gold answer appears verbatim in the context.}
+\label{tab:diag}
+\end{table}
+
+We measure three kinds of waste in the contexts produced by standard packers on the LongBench test set (Section~\ref{sec:setup}), before any model reads them (Table~\ref{tab:diag}).
+
+\paragraph{Duplication.} We count a packed word as duplicated if the 8-word sequence it starts already appeared earlier in the same packed context. Dense chunk packing duplicates 14.7\%, 22.8\% and 29.1\% of its text at 512, 1,024 and 2,048 tokens. The cause is structural: the top-ranked candidate spans for a question are rarely spread evenly over the document; they cluster in the passages that are actually relevant, and adjacent spans overlap by construction (64-token spans with stride 32). Padding each span by $\pm$32 tokens then makes neighbouring windows overlap almost completely. The larger the budget, the more neighbours are admitted, and the larger the duplicated share. A structured pair packer that penalises redundancy at selection time reduces duplication but does not remove it (3--7\%), because overlap is created by the padding, not by the selection.
+
+\paragraph{Broken sentences.} Only about 6\% of the pieces produced by fixed-window packing end with sentence punctuation; the remaining 94\% stop mid-sentence, often inside the phrase that answers the question.
+
+\paragraph{Unused budget.} Greedy admission that stops or skips on long units leaves part of the budget unfilled: on average 39 of 1,024 tokens for chunk packing and 104 for pair packing.
+
+\paragraph{Consequence.} The three effects combine into lower answer coverage: at every budget, the gold answer is less often present in the packed context than it could be. The packer we describe next removes all three: duplication drops to 1.1--1.6\%, two thirds of pieces end on a sentence boundary, the budget is filled to within 10 tokens, and answer coverage rises by 2.9--4.0 points over dense chunk packing with the same budget.
+
+% =====================================================================
 \section{Method}
 \label{sec:method}
 
@@ -114,6 +159,7 @@ All choices---the ranker, sentence rather than fixed repair, $r$, the list lengt
 
 % =====================================================================
 \section{Experimental Setup}
+\label{sec:setup}
 
 \paragraph{Data.} All English single- and multi-document QA tasks of LongBench \citep{bai2023longbench}: Qasper \citep{dasigi2021qasper} (200), MultiFieldQA-en (150), HotpotQA \citep{yang2018hotpotqa} (200), 2WikiMultihopQA \citep{ho2020constructing} (200), MuSiQue \citep{trivedi2022musique} (200) and NarrativeQA \citep{kocisky2018narrativeqa} (200), 1,150 instances. We report LongBench's F1 and the macro average over the six tasks; ``MH'' averages the three multi-hop tasks.
 
@@ -126,7 +172,8 @@ All choices---the ranker, sentence rather than fixed repair, $r$, the list lengt
 \emph{Pair packing}: a structured lexical packer that selects query--support span pairs with the lexical ranker, a lexical bridge score and a redundancy penalty, repairs each span with a fixed $\pm$32 window, admits pairs until the first one that does not fit and emits them in document order. It represents structured, multi-hop-aware selection with conventional packing.
 \emph{LLMLingua-2} \citep{pan2024llmlingua2} (\texttt{xlm-roberta-large-meetingbank}), asked to compress the context to the budget; its output is placed after the same prefix and truncated to $B$ downstream tokens if needed.
 \emph{Full context}: the whole context, middle-truncated to 30K tokens as in LongBench (a 32K window for all models), as a reference.
-Appendix~\ref{app:extra} compares the pair packer with truncation, Selective Context, LongLLMLingua and BM25/TF-IDF chunk packing.
+Section~\ref{sec:external} adds stronger rankers (BGE-large; \texttt{bge-reranker-v2-m3} over the top 100 BGE spans) and published systems: LlamaIndex's sentence-window and auto-merging retrievers \citep{liu2022llamaindex} (official node parsers, default window 3 and hierarchy 2048/512/128, merge threshold 0.5, BGE-small retrieval), sentence-aligned chunks of up to 64 words ranked by BGE, Provence \citep{chirkova2025provence} applied to the top 60 BGE chunks, and LongLLMLingua \citep{jiang2024longllmlingua} with its recommended question-aware settings. For LongLLMLingua we use Llama-3.1-8B-Instruct as the compressor LM; it failed on 26 of 1,150 instances (2.3\%), for which we fall back to the head of the context. All of these are packed into the same exact budget; units are admitted in their own rank order while they fit.
+Appendix~\ref{app:extra} compares the pair packer with truncation, Selective Context and BM25/TF-IDF chunk packing in an earlier environment.
 
 \paragraph{Statistics.} Comparisons are paired on instances. We use a task-stratified paired bootstrap \citep{efron1993bootstrap} with 10,000 resamples and seed 20260701; the statistic is the macro average of per-task mean differences. Pooled results resample within the eighteen model--task strata. We report 95\% percentile intervals and two-sided $p$-values.
 
@@ -190,6 +237,72 @@ Table~\ref{tab:main} gives macro F1 for every model and budget, and Table~\ref{t
 The most direct test of the packer is to keep the ranking fixed. BGE chunk packing and \spk{} with the BGE ranker use the same BGE similarities over the same spans and differ only in how the top spans are turned into a context. Changing the packer improves F1 by +2.81, +2.48 and +2.57 at the three budgets (Table~\ref{tab:sig}), and per model it is significant in all nine settings (Appendix~\ref{app:permodel}).
 
 Conversely, the choice of ranker inside \spk{} matters little. The hybrid ranker selected on the development split and the BGE ranker are within 0.6 F1 of each other on average and their difference is not significant ($-0.56$, $[-1.49, 0.40]$ at 1,024 tokens); each is best in some settings. With a purely lexical ranker, \spk{} outperforms the pair packer, which uses the same lexical signals, by 1.54 F1 [0.68, 2.43] ($p<0.001$) at 1,024 tokens. In short, the improvement comes from the packing operations and transfers across lexical, dense and hybrid rankers.
+
+\subsection{Stronger rankers and external systems}
+\label{sec:external}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llccc}
+\toprule
+Ranker & Packing / system & Qwen-14B & Llama-8B & $\Delta$ (pooled) \\
+\midrule
+\multirow{2}{*}{BGE-small} & chunks & 42.34 & 38.99 & \\
+ & \spk{} & 45.18 & 41.67 & \textbf{+2.76}$^{***}$ \\
+\multirow{2}{*}{BGE-large} & chunks & 42.55 & 40.12 & \\
+ & \spk{} & 46.23 & 43.98 & \textbf{+3.77}$^{***}$ \\
+\multirow{2}{*}{\shortstack[l]{BGE + bge-\\reranker-v2-m3}} & chunks & 44.37 & 42.21 & \\
+ & \spk{} & \textbf{46.45} & \textbf{44.12} & \textbf{+2.00}$^{***}$ \\
+\midrule
+\multicolumn{2}{l}{LlamaIndex sentence window} & 39.99 & 36.96 & \\
+\multicolumn{2}{l}{LlamaIndex auto-merging} & 41.50 & 39.13 & \\
+\multicolumn{2}{l}{Sentence chunks + BGE} & 44.24 & 39.98 & \\
+\multicolumn{2}{l}{Provence (BGE + pruning)} & 44.27 & 40.69 & \\
+\multicolumn{2}{l}{LongLLMLingua} & 40.66 & 39.67 & \\
+\multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & \\
+\midrule
+\multicolumn{2}{l}{Full context (30K)} & 47.59 & 43.13 & \\
+\bottomrule
+\end{tabular}}
+\caption{Stronger rankers and external context-construction systems (LongBench, 1,024 tokens, macro F1). $\Delta$: \spk{} minus chunk packing \emph{with the same ranking}, pooled over the two models ($^{***}$: $p\le0.001$; significant for each model separately as well).}
+\label{tab:external}
+\end{table}
+
+A natural question is whether the waste we identify matters only for weak rankers. Table~\ref{tab:external} repeats the packer swap with two stronger rankers on Qwen2.5-14B and Llama-3.1-8B. With BGE-large, \spk{} improves on chunk packing by 3.77 F1 [2.67, 4.88]; with a cross-encoder reranker (\texttt{bge-reranker-v2-m3} over the top 100 BGE spans) by 2.00 [0.85, 3.12]. Both gains are significant on each model separately. A better ranker therefore does not remove the packing waste: the gain from better packing is at least as large as the gain from replacing BGE-small with BGE-large or with a reranker, and the two add up. \spk{} with the reranker is the best compressed configuration on both models, and on Llama-3.1-8B it scores above the 30K-token full context (44.12 vs.\ 43.13).
+
+We also compare with published context-construction systems under the same budget and wrapper. LlamaIndex's sentence-window retrieval \citep{liu2022llamaindex}, which retrieves single sentences and replaces each with its $\pm$3-sentence window, trails the frozen \spk{} configuration by 4.18 F1 [2.76, 5.65]; its windows of neighbouring top sentences overlap heavily, which is exactly the duplication of Section~\ref{sec:diag}. LlamaIndex's auto-merging retriever, which replaces retrieved leaf chunks by their parent when most of the parent's children are retrieved, trails it by 2.33 [0.94, 3.79]: merging at fixed hierarchy levels removes some duplication but admits whole parents that are mostly irrelevant. LongLLMLingua \citep{jiang2024longllmlingua} trails it by 2.48 [1.02, 3.98]. Provence \citep{chirkova2025provence}, a trained pruner that removes irrelevant sentences from each retrieved chunk, is close to the frozen configuration (+0.17, n.s.) and is clearly below \spk{} given a reranker (+2.80 [1.49, 4.16]); \spk{} needs no trained pruner. Finally, packing non-overlapping sentence-aligned chunks with BGE, which avoids duplication by construction, recovers part of the gain, as our diagnosis predicts; \spk{} with the same BGE ranker remains 1.31 F1 higher [$-$0.03, 2.67].
+
+\subsection{A second benchmark: book-length contexts}
+\label{sec:infbench}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{Qwen2.5-14B} & \multicolumn{2}{c}{Llama-3.1-8B} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Method & 1,024 & 2,048 & 1,024 & 2,048 \\
+\midrule
+Pair packing & 33.71 & 34.61 & 32.80 & 36.55 \\
+BGE chunks & 36.58 & 37.44 & 36.81 & 40.15 \\
+Sentence chunks + BGE & 36.36 & 37.69 & 36.09 & 39.99 \\
+\spk{} (hybrid, frozen) & \textbf{38.03} & \textbf{38.45} & \textbf{38.36} & 40.98 \\
+\spk{} (BGE) & 36.76 & 37.63 & 36.56 & \textbf{41.49} \\
+\midrule
+Full context (30K) & \multicolumn{2}{c}{--} & \multicolumn{2}{c}{38.16} \\
+\bottomrule
+\end{tabular}}
+\caption{InfiniteBench En.QA and En.MC \citep{zhang2024infinitebench} (580 questions over novels of 150K+ tokens), mean of QA F1 and MC accuracy. No setting was tuned on this benchmark.}
+\label{tab:infbench}
+\end{table}
+
+To test whether the findings transfer beyond LongBench, we run the frozen configuration on InfiniteBench's English novel QA and multiple-choice tasks \citep{zhang2024infinitebench}, whose contexts are about ten times longer (Table~\ref{tab:infbench}). No parameter was changed. The frozen \spk{} is the best method in three of the four model--budget settings and outperforms the pair packer by 4.54 F1 [3.02, 6.02] pooled ($p<0.001$). Its advantage over dense chunk packing points in the same direction as on LongBench (+1.21 pooled, between +0.84 and +1.56 per setting) but, with 580 questions, is not significant. With only 1,024 tokens, \spk{} matches Llama-3.1-8B reading 30K tokens of the book (38.36 vs.\ 38.16).
 
 \subsection{How close to the full context?}
 At 2,048 tokens, \spk{} is statistically indistinguishable from reading the full context on all three models: the paired differences are $+0.56$ [$-1.46$, 2.56] for Qwen2.5-7B, $-0.35$ [$-2.39$, 1.65] for Llama-3.1-8B and $-0.10$ [$-2.04$, 1.82] for Qwen2.5-14B. The packed context is about one sixth of the mean prompt (2,048 vs.\ 12.5K tokens). On the multi-hop tasks it exceeds the full context on all three models (49.2 vs.\ 44.4, 45.8 vs.\ 43.7 and 56.0 vs.\ 52.6 MH F1), consistent with the observation that long inputs dilute the evidence that matters \citep{liu2024lost}. At 1,024 tokens, \spk{} recovers 93--95\% of full-context F1.
