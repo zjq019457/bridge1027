@@ -260,3 +260,111 @@ def final_abl(s, tok, budget=1024, seed_mode=2, sent=1, merge=1, docorder=1, bac
     if not chosen:
         return _emit(tok, q, [], budget)
     return _emit(tok, q, [render(chosen)[len(prefix):].strip()], budget)
+
+
+# ---------------------------------------------------------------------------------------------
+# Marginal-cost packing: budgeted maximum coverage over merged token intervals.
+# gain(s) = shifted seed score; cost(s | S) = new (not yet covered) regex tokens that s's repaired
+# range adds to the selection. Greedy by gain / marginal cost (cost-benefit greedy), each pick
+# verified against the exact rendered budget; compared with the best single span (Khuller et al.).
+def _ivl_new(rngs, p, a, b):
+    """Tokens of [a, b) on page p not covered by the ranges already selected."""
+    cov = 0
+    for q, x, y in rngs:
+        if q == p:
+            lo, hi = max(a, x), min(b, y)
+            if hi > lo:
+                cov += hi - lo
+    return max(0, (b - a) - cov)
+
+
+def density_pack(s, tok, budget=1024, seed_mode=2, sent=1, radius=32, alpha=1.0, pool=60):
+    q = s["question"]
+    cands, page_map = etp.build_candidate_spans(s["sample_id"], s["task"], q, s["context"])
+    if not cands:
+        return _emit(tok, q, [], budget)
+    seed = _seed(s, cands, seed_mode)
+    pri = sorted(cands, key=lambda c: (-seed[c.span_id], c.source_order_index))[:pool]
+    lo = min(seed[c.span_id] for c in pri)
+    gain = {c.span_id: seed[c.span_id] - lo + 0.1 for c in pri}
+    rep = {}
+    for c in pri:
+        page = page_map[c.page_id]; ps, toks = int(page["start_token"]), page["tokens"]
+        rep[c.span_id] = (c.page_id,) + (_sentence_range(toks, ps, c.start_token, c.end_token, radius) if sent
+                                         else (max(ps, c.start_token - radius), min(ps + len(toks), c.end_token + radius)))
+    prefix = etp._prefix(q, False)
+
+    def render(sel):
+        return "\n\n".join([prefix] + [_range_text(page_map, *r) for r in _merge_pieces(sel, page_map, radius, sent)])
+    chosen, rngs, left = [], [], list(pri)
+    while left:
+        best = max(left, key=lambda c: gain[c.span_id] / (max(1, _ivl_new(rngs, *rep[c.span_id])) ** alpha))
+        left.remove(best)
+        if len(tok(render(chosen + [best])).input_ids) <= budget:
+            chosen.append(best); rngs.append(rep[best.span_id])
+    if not chosen:
+        return _emit(tok, q, [], budget)
+    return _emit(tok, q, [render(chosen)[len(prefix):].strip()], budget)
+
+
+# ---------------------------------------------------------------------------------------------
+# Controls for the merge ablation (reviewer question: is the gain from removing duplication or
+# from longer contiguous pieces?).
+def dedup_skip(s, tok, budget=1024, seed_mode=1, radius=32):
+    """Deduplicate WITHOUT merging: chunk packing in rank order, but a candidate whose padded range
+    overlaps an already selected range on the same page is skipped. Pieces stay separate and short."""
+    q = s["question"]
+    cands, page_map = etp.build_candidate_spans(s["sample_id"], s["task"], q, s["context"])
+    if not cands:
+        return _emit(tok, q, [], budget)
+    seed = _seed(s, cands, seed_mode)
+    priority = sorted(cands, key=lambda c: (-seed[c.span_id], c.source_order_index))[:60]
+    prefix = etp._prefix(q, False)
+
+    def rng(c):
+        page = page_map[c.page_id]; ps, toks = int(page["start_token"]), page["tokens"]
+        return c.page_id, max(ps, c.start_token - radius), min(ps + len(toks), c.end_token + radius)
+
+    def render(sel):
+        return "\n\n".join([prefix] + [_range_text(page_map, *rng(c)) for c in sel])
+    chosen, taken = [], []
+    for c in priority:
+        p, a, b = rng(c)
+        if any(p == p2 and a < b2 and a2 < b for p2, a2, b2 in taken):
+            continue
+        if len(tok(render(chosen + [c])).input_ids) <= budget:
+            chosen.append(c); taken.append((p, a, b))
+    if not chosen:
+        return _emit(tok, q, [], budget)
+    return _emit(tok, q, [render(chosen)[len(prefix):].strip()], budget)
+
+
+def mmr_pack(s, tok, budget=1024, seed_mode=1, radius=32, lam=0.7, pool=60):
+    """MMR re-ranking (Carbonell & Goldstein, 1998) followed by ordinary chunk packing.
+    relevance = min-max normalised ranker score; redundancy = max TF-IDF cosine to selected pieces."""
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    q = s["question"]
+    cands, page_map = etp.build_candidate_spans(s["sample_id"], s["task"], q, s["context"])
+    if not cands:
+        return _emit(tok, q, [], budget)
+    seed = _seed(s, cands, seed_mode)
+    pri = sorted(cands, key=lambda c: (-seed[c.span_id], c.source_order_index))[:pool]
+
+    def rng(c):
+        page = page_map[c.page_id]; ps, toks = int(page["start_token"]), page["tokens"]
+        return c.page_id, max(ps, c.start_token - radius), min(ps + len(toks), c.end_token + radius)
+    texts = [_range_text(page_map, *rng(c)) for c in pri]
+    X = TfidfVectorizer().fit_transform(texts); Sm = (X @ X.T).toarray()
+    v = [seed[c.span_id] for c in pri]; lo, hi = min(v), max(v)
+    rel = [(x - lo) / (hi - lo + 1e-9) for x in v]
+    prefix = etp._prefix(q, False)
+    chosen, left = [], list(range(len(pri)))
+    while left:
+        best = max(left, key=lambda i: lam * rel[i] - (1 - lam) * max([Sm[i, j] for j in chosen], default=0.0))
+        left.remove(best)
+        cand = chosen + [best]
+        if len(tok("\n\n".join([prefix] + [texts[i] for i in cand])).input_ids) <= budget:
+            chosen = cand
+    if not chosen:
+        return _emit(tok, q, [], budget)
+    return _emit(tok, q, ["\n\n".join(texts[i] for i in chosen)], budget)
