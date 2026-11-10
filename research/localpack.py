@@ -94,3 +94,16 @@ def load_inf(tasks=("en_qa", "en_mc")):
                 ans = ["ABCD"[opts.index(ans[0])]] if ans[0] in opts else ans
             out.append({"task": t, "sample_id": str(r.get("id", i)), "question": q, "context": r["context"], "answers": ans})
     return out
+
+
+EXTRA = ("qmsum", "triviaqa", "trec", "samsum", "passage_retrieval_en")
+
+
+def load_extra(tasks=EXTRA):
+    """LongBench query-bearing tasks beyond QA (query-based summarisation, few-shot, retrieval)."""
+    out = []
+    for t in tasks:
+        for i, r in enumerate(map(json.loads, (DATA / f"{t}.jsonl").open(encoding="utf-8"))):
+            out.append({"task": t, "sample_id": str(r.get("_id", i)), "question": r["input"], "context": r["context"],
+                        "answers": r.get("answers", []), "all_classes": r.get("all_classes")})
+    return out

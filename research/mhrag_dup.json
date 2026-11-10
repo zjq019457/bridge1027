@@ -1,0 +1,26 @@
+{
+ "LlamaIndex sentence window (3) | B=1024": {
+  "std": {
+   "dup": 8.8,
+   "evidence_recall": 22.4,
+   "answer_cov": 87.5
+  },
+  "dedup": {
+   "dup": 2.6,
+   "evidence_recall": 26.5,
+   "answer_cov": 87.5
+  }
+ },
+ "LlamaIndex sentence window (3) | B=2048": {
+  "std": {
+   "dup": 12.5,
+   "evidence_recall": 34.7,
+   "answer_cov": 87.5
+  },
+  "dedup": {
+   "dup": 2.6,
+   "evidence_recall": 39.4,
+   "answer_cov": 87.5
+  }
+ }
+}

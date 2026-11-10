@@ -1,0 +1,8 @@
+[02:40:34] start
+[02:45:55] emb done
+[02:45:55] llama at /root/autodl-tmp/models/models/LLM-Research--Meta-Llama-3.1-8B-Instruct/snapshots/master
+[02:53:44] llama gen done
+[02:53:44] q32 at /root/autodl-tmp/models/models/Qwen--Qwen2.5-32B-Instruct-AWQ/snapshots/master
+[04:05:27] q32 packed gen done
+[04:05:27] ALL7_DONE
+FULL_DONE

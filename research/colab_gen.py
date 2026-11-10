@@ -39,7 +39,7 @@ def main():
 
     from vllm import LLM, SamplingParams
 
-    llm = LLM(model=a.model, dtype="float16", max_model_len=a.max_model_len, gpu_memory_utilization=0.9, enforce_eager=False)
+    llm = LLM(model=a.model, dtype="auto", max_model_len=a.max_model_len, gpu_memory_utilization=0.9, enforce_eager=False)
     tok = llm.get_tokenizer()
     qs = {}
     if a.questions:
@@ -48,9 +48,6 @@ def main():
             qs[(r["task"], str(r["sample_id"]))] = r
     Path(a.out).mkdir(parents=True, exist_ok=True)
     for tr in a.traces:
-        name = Path(tr).stem
-        if (Path(a.out) / f"{name}.preds.jsonl").exists():
-            print("skip", name, flush=True); continue
         rows = [json.loads(line) for line in open(tr, encoding="utf-8")]
         for x in rows:  # older traces carry only the packed text
             meta = qs.get((x["task"], str(x["sample_id"])), {})

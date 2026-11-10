@@ -23,7 +23,7 @@ def _one(args):
     import packers
     text = getattr(packers, name)(s, _tok, **{k: float(v) if "." in v else int(v) for k, v in kw.items()})
     cov = any(norm(a) and norm(a) in norm(text) for a in s["answers"])
-    return s["task"], s["sample_id"], cov, len(_tok(text).input_ids), text, s["question"], s["answers"]
+    return s["task"], s["sample_id"], cov, len(_tok(text).input_ids), text, s["question"], s["answers"], s.get("all_classes")
 
 
 if __name__ == "__main__":
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     kw = dict(a.split("=") for a in sys.argv[4:])
     tasks = sys.argv[2].split(",") if len(sys.argv) > 2 else ["hotpotqa", "2wikimqa", "musique"]
     limit = int(sys.argv[3]) if len(sys.argv) > 3 else 10**9
-    samples = L.load_dev() if tasks == ["dev"] else L.load_inf() if set(tasks) <= {"en_qa", "en_mc"} else [s for s in L.load_samples() if s["task"] in tasks]
+    samples = L.load_dev() if tasks == ["dev"] else L.load_inf() if set(tasks) <= {"en_qa", "en_mc"} else L.load_extra(tasks) if set(tasks) <= set(L.EXTRA) else [s for s in L.load_samples() if s["task"] in tasks]
     tasks = sorted({s["task"] for s in samples})
     per = {}
     samples = [s for s in samples if per.setdefault(s["task"], []).append(1) or len(per[s["task"]]) <= limit]
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         res = p.map(_one, [(name, s, kw) for s in samples], chunksize=4)
     out = Path("out"); out.mkdir(exist_ok=True)
     with (out / f"{name}{'_' + '_'.join(sys.argv[4:]) if len(sys.argv) > 4 else ''}_{'-'.join(tasks)}.jsonl").open("w", encoding="utf-8") as f:
-        for t, sid, c, n, text, q, ans in res:
+        for t, sid, c, n, text, q, ans, ac in res:
             f.write(json.dumps({"task": t, "sample_id": sid, "cov": c, "ntok": n, "packed_text": text,
                                 "question": q, "answers": ans}) + "\n")
     for t in tasks:

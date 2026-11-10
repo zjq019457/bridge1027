@@ -1,0 +1,12 @@
+dedup_skip 2wikimqa: cov=68.0 maxtok=1024 n=200
+dedup_skip hotpotqa: cov=66.0 maxtok=1024 n=200
+dedup_skip multifieldqa_en: cov=26.7 maxtok=1024 n=150
+dedup_skip musique: cov=44.5 maxtok=1024 n=200
+dedup_skip narrativeqa: cov=16.0 maxtok=1024 n=200
+dedup_skip qasper: cov=24.5 maxtok=1024 n=200
+mmr_pack 2wikimqa: cov=66.5 maxtok=1024 n=200
+mmr_pack hotpotqa: cov=66.0 maxtok=1024 n=200
+mmr_pack multifieldqa_en: cov=26.7 maxtok=1024 n=150
+mmr_pack musique: cov=44.5 maxtok=1024 n=200
+mmr_pack narrativeqa: cov=15.5 maxtok=1024 n=200
+mmr_pack qasper: cov=25.0 maxtok=1024 n=200

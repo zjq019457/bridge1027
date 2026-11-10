@@ -35,7 +35,7 @@ def enc(texts):
 
 
 which = sys.argv[1]
-samples = L.load_dev() if which == "dev" else L.load_inf() if which == "inf" else L.load_samples()
+samples = L.load_dev() if which == "dev" else L.load_inf() if which == "inf" else L.load_extra() if which == "extra" else L.load_samples()
 path = OUT / f"{os.environ.get('BP_ENC', 'bge')}_{which}.jsonl"
 done = set()
 if path.exists():
