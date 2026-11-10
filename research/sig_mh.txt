@@ -1,0 +1,6 @@
+qwen7: dedup=49.20 full=44.35 diff +4.86 [1.51, 8.32] p=0.0044
+llama8: dedup=45.78 full=43.73 diff +2.05 [-1.31, 5.43] p=0.2230
+qwen14: dedup=56.01 full=52.58 diff +3.43 [0.25, 6.64] p=0.0336
+qwen32: dedup=57.54 full=53.15 diff +4.39 [1.14, 7.69] p=0.0070
+pooled 3 (7B/8B/14B): diff +3.45 [1.15, 5.77] p=0.0030
+pooled 4: diff +3.68 [1.50, 5.91] p=0.0012
