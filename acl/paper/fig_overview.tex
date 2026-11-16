@@ -1,0 +1,95 @@
+% Figure 2: where DedupPack runs, standard chunk packing vs DedupPack under the same budget.
+\usetikzlibrary{patterns}
+\definecolor{rkB}{HTML}{2F6FD0}\definecolor{rkBl}{HTML}{E6EFFC}
+\definecolor{bad}{HTML}{D7332A}\definecolor{badl}{HTML}{FDECEB}
+\definecolor{ok}{HTML}{2E8B3E}\definecolor{okl}{HTML}{EEF8EC}\definecolor{okm}{HTML}{BFE6B5}\definecolor{okn}{HTML}{4CCB6A}
+\definecolor{sA}{HTML}{C9E8BE}\definecolor{sB}{HTML}{CFE0F7}\definecolor{sC}{HTML}{FBE3B5}\definecolor{sD}{HTML}{E2CCF4}
+\definecolor{gr}{HTML}{DADADA}\definecolor{grd}{HTML}{8A8A8A}
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[font=\sffamily, >={Stealth[length=2.2mm]},
+  seg/.style={draw=black!70, line width=0.5pt, minimum height=0.6cm, inner sep=0pt, font=\sffamily\small\bfseries},
+  stp/.style={draw=ok!70, rounded corners=3pt, fill=white, minimum width=2.25cm, minimum height=1.05cm, align=left, font=\sffamily\scriptsize\bfseries, text width=2.05cm},
+  tag/.style={rounded corners=3pt, font=\sffamily\scriptsize\bfseries, inner sep=2.5pt}]
+% ---------------- headers and CPU/GPU split ----------------
+\node[font=\sffamily\large\bfseries] at (9.6,8.55) {Before the LLM call (context construction)};
+\node[font=\sffamily\large\bfseries] at (17.8,8.55) {Inside the LLM};
+\draw[dashed, line width=0.8pt] (15.35,-0.3) -- (15.35,8.8);
+% ---------------- input ----------------
+\foreach \d in {0.3,0.15,0}{
+  \draw[fill=white, line width=0.6pt] (0.2+\d,2.9+\d) rectangle (1.5+\d,4.5+\d);}
+\foreach \y in {3.25,3.55,3.85,4.15} \draw[grd, line width=1pt] (0.4,\y) -- (1.3,\y);
+\node[align=center, font=\sffamily\small\bfseries] at (0.9,1.85) {Long\\document\\(\textasciitilde12.5K\\tokens)};
+\node[draw, rounded corners=4pt, line width=0.6pt, font=\sffamily\small\bfseries, inner sep=4pt] (q) at (0.95,6.3) {Question};
+\draw[line width=0.6pt] (0.75,5.98) -- (0.6,5.5) -- (1.05,5.98);
+% ---------------- ranker ----------------
+\draw[rkB, line width=1.2pt, fill=rkBl, rounded corners=4pt] (2.2,2.6) rectangle (4.4,5.1);
+\fill[rkB, rounded corners=4pt] (2.2,4.55) rectangle (4.4,5.1);
+\node[white, font=\sffamily\small\bfseries] at (3.3,4.82) {Any ranker};
+\foreach \t/\y in {{BM25 / Hybrid}/4.15, BGE/3.6, Reranker/3.05}
+  \node[draw=rkB, fill=rkBl!60!white, rounded corners=3pt, minimum width=1.75cm, minimum height=0.45cm, font=\sffamily\scriptsize\bfseries] at (3.3,\y) {\t};
+\node[rkB, font=\sffamily\tiny\bfseries] at (3.3,2.72) {swappable};
+\draw[->, line width=0.8pt] (1.85,3.75) -- (2.2,3.75);
+% fork
+\draw[line width=0.8pt] (4.4,3.75) -- (4.75,3.75);
+\draw[->, line width=0.8pt] (4.75,3.75) |- (5.0,5.75);
+\draw[->, line width=0.8pt] (4.75,3.75) |- (5.0,2.0);
+% ---------------- full-context path ----------------
+\draw[->, grd, line width=1.2pt] (1.1,6.62) -- (1.1,7.75) -- (16.9,7.75) -- (16.9,6.45);
+\node[draw=grd, fill=gr!50, rounded corners=4pt, font=\sffamily\small\bfseries, inner sep=3.5pt] at (9.6,7.75) {Full context (12.5K tokens)};
+% ---------------- standard chunk packing ----------------
+\draw[bad!80, fill=badl, rounded corners=5pt, line width=0.8pt] (5.0,4.55) rectangle (15.0,7.2);
+\node[anchor=west, font=\sffamily\normalsize\bfseries] at (5.15,6.9) {Standard chunk packing};
+\def\yb{5.6}
+\node[seg, fill=sA, minimum width=1.2cm, anchor=west] at (5.4,\yb) {A};
+\node[seg, pattern=north east lines, pattern color=bad!70, minimum width=1.5cm, anchor=west, font=\sffamily\scriptsize\bfseries, align=center] at (6.6,\yb) {A\\[-2pt](dup.)};
+\node[seg, fill=sB, minimum width=1.3cm, anchor=west] at (8.1,\yb) {B};
+\node[seg, pattern=north east lines, pattern color=bad!70, minimum width=1.6cm, anchor=west, font=\sffamily\scriptsize\bfseries, align=center] at (9.4,\yb) {B\\[-2pt](dup.)};
+\node[seg, fill=sC, minimum width=1.15cm, anchor=west] at (11.0,\yb) {C};
+\node[seg, fill=sD, minimum width=1.15cm, anchor=west] at (12.15,\yb) {D};
+\node[seg, fill=gr!60, minimum width=1.25cm, anchor=west, font=\sffamily\scriptsize\bfseries] at (13.3,\yb) {unused};
+% jagged (mid-sentence) cuts
+\foreach \x in {9.4,12.15,13.3} \draw[bad, line width=1pt] (\x,5.3) -- ++(0.08,0.1) -- ++(-0.08,0.1) -- ++(0.08,0.1) -- ++(-0.08,0.1) -- ++(0.08,0.1) -- ++(-0.08,0.1);
+\node[tag, draw=bad, fill=white, text=bad] (dup) at (7.6,6.55) {duplicate (23\%)};
+\draw[->, bad, line width=0.7pt] (dup.south west) ++(0.3,0) -- (7.2,5.92);
+\draw[->, bad, line width=0.7pt] (dup.south east) ++(-0.3,0) -- (9.9,5.92);
+\node[tag, draw=bad, fill=white, text=bad] (cut) at (12.3,6.55) {cut mid-sentence};
+\draw[->, bad, line width=0.7pt] (cut.south) -- (12.15,5.92);
+\draw[->, bad, line width=0.7pt] (cut.south) -- (13.3,5.92);
+\draw[|-|, line width=0.6pt] (5.4,4.95) -- (14.55,4.95);
+\node[fill=badl, font=\sffamily\scriptsize\bfseries, inner sep=1pt] at (9.97,4.95) {1,024 tokens (fixed budget)};
+% ---------------- DedupPack ----------------
+\draw[ok!80, fill=okl, rounded corners=5pt, line width=0.8pt] (5.0,-0.25) rectangle (15.0,4.3);
+\node[anchor=west, font=\sffamily\normalsize\bfseries] at (5.15,4.0) {DedupPack (ours)};
+\node[tag, fill=ok, text=white, anchor=west] at (9.0,4.0) {training-free \;|\; CPU, 0.4\,s \;|\; plug-and-play};
+\node[stp] (s1) at (6.6,3.0) {1. pad to\\sentence boundaries};
+\node[stp] (s2) at (9.0,3.0) {2. merge\\overlapping ranges};
+\node[stp] (s3) at (11.4,3.0) {3. exact-budget\\fill + backfill};
+\node[stp] (s4) at (13.8,3.0) {4. emit in\\document order};
+\foreach \a/\b in {s1/s2,s2/s3,s3/s4} \draw[->, ok, line width=0.7pt] (\a) -- (\b);
+\draw[->, ok, line width=1pt] (9.97,2.42) -- (9.97,2.0);
+\def\yg{0.95}
+\foreach \l/\x/\w in {A/5.4/1.25, B/6.65/1.25, C/7.9/1.25, D/9.15/1.25}
+  \node[seg, fill=okm, minimum width=\w cm, anchor=west] at (\x,\yg) {\l};
+\node[seg, fill=okn, draw=ok, line width=1.2pt, minimum width=2.075cm, anchor=west] at (10.4,\yg) {E};
+\node[seg, fill=okn, draw=ok, line width=1.2pt, minimum width=2.075cm, anchor=west] at (12.475,\yg) {F};
+\node[tag, draw=ok, fill=white, text=ok] (rec) at (12.475,1.75) {recovered budget $\rightarrow$ new evidence};
+\draw[->, ok, line width=0.7pt] (rec.south) ++(-0.5,0) -- (11.44,1.27);
+\draw[->, ok, line width=0.7pt] (rec.south) ++(0.5,0) -- (13.5,1.27);
+\draw[|-|, line width=0.6pt] (5.4,0.3) -- (14.55,0.3);
+\node[fill=okl, font=\sffamily\scriptsize\bfseries, text=ok!70!black, inner sep=1pt] at (9.97,0.3) {1,024 tokens, no duplicates, more evidence};
+% ---------------- LLM ----------------
+\draw[grd, fill=gr!45, rounded corners=6pt, line width=1pt] (15.9,1.3) rectangle (17.9,6.45);
+\node[font=\sffamily\Large\bfseries] at (16.9,5.8) {LLM};
+\node[align=center, font=\sffamily\scriptsize\bfseries] at (16.9,5.05) {Qwen / Llama\\7B--32B};
+\node[draw=grd, fill=white, rounded corners=3pt, minimum width=1.6cm, font=\sffamily\small\bfseries] (pf) at (16.9,3.9) {prefill};
+\node[draw=grd, fill=grd!60, rounded corners=3pt, minimum width=1.6cm, font=\sffamily\small\bfseries] (kv) at (16.9,2.6) {KV cache};
+\draw[->, line width=0.7pt] (pf) -- (kv);
+\draw[->, line width=0.8pt] (15.0,5.75) -- (15.9,5.75);
+\draw[->, line width=0.8pt] (15.0,2.0) -- (15.9,2.0);
+\node[tag, draw=ok, fill=okl, text=ok!70!black, align=center] at (16.9,0.55) {6$\times$ smaller KV cache\\than full context};
+% ---------------- answers ----------------
+\node[draw, rounded corners=4pt, line width=0.7pt, font=\sffamily\small\bfseries, minimum width=1.7cm, minimum height=0.7cm] (a1) at (19.2,5.75) {Answer \textcolor{grd}{?}};
+\node[draw, rounded corners=4pt, line width=0.7pt, font=\sffamily\small\bfseries, minimum width=1.7cm, minimum height=0.7cm] (a2) at (19.2,2.0) {Answer \textcolor{ok}{$\checkmark$}};
+\draw[->, line width=0.8pt] (17.9,5.75) -- (a1);
+\draw[->, line width=0.8pt] (17.9,2.0) -- (a2);
+\end{tikzpicture}}

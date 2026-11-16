@@ -65,25 +65,8 @@
 
 \begin{figure*}[t]
 \centering
-\resizebox{\textwidth}{!}{\begin{tikzpicture}[
-  font=\small,
-  box/.style={draw, rounded corners=3pt, thick, align=center, minimum height=1.6cm, text width=2.6cm, inner sep=3pt},
-  arr/.style={-{Stealth[length=2.2mm]}, thick}
-]
-\node[box, fill=blue!6, draw=blue!60] (rank) {\textbf{任意片段排序器}\\[2pt] 词法、稠密（BGE）\\或混合；排名前 60\\的片段};
-\node[box, fill=teal!8, draw=teal!70, right=0.45cm of rank] (sent) {\textbf{1. 补全}\\[2pt] 每个片段向两侧\\扩展 $\le$32 token，\\止于最近的句末};
-\node[box, fill=violet!15, draw=violet!80, very thick, right=0.45cm of sent] (merge) {\textbf{2. 去重}\\[2pt] 合并重叠或相接\\的区间：每个 token\\只付费一次};
-\node[box, fill=orange!8, draw=orange!70, right=0.45cm of merge] (fill) {\textbf{3. 精确回填}\\[2pt] 渲染后的上下文\\不超过 $B$ 个 token\\则纳入，否则跳过};
-\node[box, fill=green!7, draw=green!55!black, right=0.45cm of fill] (emit) {\textbf{4. 输出}\\[2pt] 按原文顺序\\逐字输出段落，\\$|\hat C|_\tau\le B$};
-\draw[arr] (rank) -- (sent);
-\draw[arr] (sent) -- (merge);
-\draw[arr] (merge) -- (fill);
-\draw[arr] (fill) -- (emit);
-\node[below=0.3cm of rank, align=center, font=\scriptsize, text width=2.8cm] {问题 $q$、长上下文 $C$\\（平均 1.25 万 Qwen token）};
-\node[below=0.3cm of merge, align=center, font=\scriptsize, text width=6.2cm] {标准打包：相邻窗口互相重叠，\\15--30\% 的预算用在了已打包过的文字上};
-\node[below=0.3cm of emit, align=center, font=\scriptsize, text width=2.8cm] {压缩后的上下文\\$\hat C$ 输入 LLM};
-\end{tikzpicture}}
-\caption{\spk{} 打包任意排序器返回的片段。每个片段补全到句子边界，重叠的补全区间被合并，使任何文字都不会付费两次；片段按排名顺序、在下游模型的精确 token 预算内以回填方式纳入，结果按原文顺序逐字输出。\spk{} 在预填充之前运行，不修改模型。}
+\input{fig_overview}
+\caption{\spk{} 的运行位置。在调用 LLM 之前，任意排序器为长文档的片段打分；标准切块打包会为重叠的补全窗口重复付费（LongBench 上 1,024 token 预算的 23\%），在句子中间截断片段，并留下未用完的预算。\spk{} 把片段补全到句子边界、合并重叠区间、以回填方式精确填满 token 预算，并按原文顺序输出，因此同样的预算能装下更多不同的证据。它在 CPU 上运行，无需训练，也不修改模型；与完整上下文相比，LLM 只需预填充约六分之一的 token。}
 \label{fig:overview}
 \end{figure*}
 

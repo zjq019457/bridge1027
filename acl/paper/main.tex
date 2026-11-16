@@ -63,25 +63,8 @@ We evaluate \spk{} under a protocol designed to leave little room for doubt. Eve
 
 \begin{figure*}[t]
 \centering
-\resizebox{\textwidth}{!}{\begin{tikzpicture}[
-  font=\small,
-  box/.style={draw, rounded corners=3pt, thick, align=center, minimum height=1.6cm, text width=2.6cm, inner sep=3pt},
-  arr/.style={-{Stealth[length=2.2mm]}, thick}
-]
-\node[box, fill=blue!6, draw=blue!60] (rank) {\textbf{Any span ranker}\\[2pt] lexical, dense (BGE)\\or hybrid; top-60 spans\\in rank order};
-\node[box, fill=teal!8, draw=teal!70, right=0.45cm of rank] (sent) {\textbf{1. Pad}\\[2pt] extend each span by\\$\le$32 tokens, to the\\nearest sentence end};
-\node[box, fill=violet!15, draw=violet!80, very thick, right=0.45cm of sent] (merge) {\textbf{2. Deduplicate}\\[2pt] merge overlapping or\\touching ranges: every\\token is paid for once};
-\node[box, fill=orange!8, draw=orange!70, right=0.45cm of merge] (fill) {\textbf{3. Exact backfill}\\[2pt] admit if the rendered\\context fits $B$ model\\tokens; else skip, go on};
-\node[box, fill=green!7, draw=green!55!black, right=0.45cm of fill] (emit) {\textbf{4. Emit}\\[2pt] verbatim passages\\in document order,\\$|\hat C|_\tau\le B$};
-\draw[arr] (rank) -- (sent);
-\draw[arr] (sent) -- (merge);
-\draw[arr] (merge) -- (fill);
-\draw[arr] (fill) -- (emit);
-\node[below=0.3cm of rank, align=center, font=\scriptsize, text width=2.8cm] {question $q$, long context $C$\\(mean 12.5K Qwen tokens)};
-\node[below=0.3cm of merge, align=center, font=\scriptsize, text width=6.2cm] {standard packing: neighbouring windows overlap, and\\15--30\% of the budget repeats text already packed};
-\node[below=0.3cm of emit, align=center, font=\scriptsize, text width=2.8cm] {compressed context\\$\hat C$ fed to the LLM};
-\end{tikzpicture}}
-\caption{\spk{} packs the spans returned by any ranker. Each span is padded up to a sentence boundary, overlapping padded ranges are merged so that no text is paid for twice, spans are admitted in rank order under the exact downstream token budget with backfilling, and the result is emitted verbatim in document order. \spk{} runs before prefill and does not modify the model.}
+\input{fig_overview}
+\caption{Where \spk{} runs. Before the LLM call, any ranker scores spans of the long document; standard chunk packing then pays for overlapping padded windows twice (23\% of a 1,024-token budget on LongBench), cuts pieces mid-sentence and leaves budget unused. \spk{} pads spans to sentence boundaries, merges overlapping ranges, fills the exact token budget with backfilling and emits the result in document order, so the same budget carries more distinct evidence. It runs on the CPU, needs no training and does not modify the model; compared with the full context, the LLM prefills about one sixth of the tokens.}
 \label{fig:overview}
 \end{figure*}
 
