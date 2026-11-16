@@ -35,6 +35,13 @@ When a long document must be answered from under a hard token budget, the standa
 
 % =====================================================================
 \section{Introduction}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_summary.pdf}
+\caption{Macro F1 on LongBench QA (1,150 instances) under exact token budgets. \spk{} outperforms BGE chunk packing at every budget on every model, and at 2,048 tokens, one sixth of the average 12.5K-token document, it matches the full context (left) or exceeds it (right, Qwen2.5-32B).}
+\label{fig:summary}
+\end{figure}
+
 
 Large language models (LLMs) are routinely asked to answer questions about long documents and document collections. Even when the context window is long enough, there are reasons to send the model less text: prefill cost and latency grow with prompt length, many deployed models have short windows, and long inputs dilute the few passages that matter \citep{liu2024lost}. In practice a long context is therefore often reduced to a \emph{hard} budget of a few hundred to a few thousand tokens, measured in the tokenizer of the model that will read it.
 
@@ -195,6 +202,7 @@ Method & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & Avg.\
 Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & & \multicolumn{3}{c}{47.79} \\
 \midrule
 LLMLingua-2 & -- & 24.60 & -- & -- & 28.43 & -- & -- & 27.10 & -- & -- & -- & -- & -- \\
+LongLLMLingua & -- & -- & -- & -- & 39.67 & -- & -- & 40.66 & -- & -- & -- & -- & -- \\
 Pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 38.64 & -- & -- & -- \\
 BGE chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 38.88 & 37.52 & 42.40 & 46.08 \\
 \midrule
