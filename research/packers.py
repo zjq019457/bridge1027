@@ -368,3 +368,25 @@ def mmr_pack(s, tok, budget=1024, seed_mode=1, radius=32, lam=0.7, pool=60):
     if not chosen:
         return _emit(tok, q, [], budget)
     return _emit(tok, q, ["\n\n".join(texts[i] for i in chosen)], budget)
+
+
+def lcr_chunk(s, tok, budget=1024, neighbor=32, top_k=64):
+    """BGE chunk packing followed by LangChain LongContextReorder ("lost in the middle"):
+    the most relevant chunks go to the two ends of the context, the least relevant to the middle."""
+    q = s["question"]
+    cands, page_map = etp.build_candidate_spans(s["sample_id"], s["task"], q, s["context"])
+    sims = _bge_sims(s) or {}
+    ranked = sorted(cands, key=lambda c: -sims.get(c.span_id, 0.0))[:top_k]
+    prefix = etp._prefix(q, False)
+    pieces = []
+    for c in ranked:
+        piece, _ = etp._expanded_piece(c, page_map, neighbor, role="support", use_tags=False)
+        if len(tok("\n\n".join([prefix, *pieces, piece]).strip()).input_ids) <= budget:
+            pieces.append(piece)
+    reordered = []
+    for i, p in enumerate(reversed(pieces)):  # same rule as langchain LongContextReorder
+        if i % 2 == 1:
+            reordered.append(p)
+        else:
+            reordered.insert(0, p)
+    return _emit(tok, q, reordered, budget)
