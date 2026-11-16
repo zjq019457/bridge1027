@@ -230,22 +230,38 @@ Ranker & Packing / system & Qwen-14B & Llama-8B & Avg. & $\Delta$ \\
 \small
 \setlength{\tabcolsep}{3pt}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{l ccc ccc ccc c ccc}
+\begin{tabular}{l ccc ccc ccc ccc}
 \toprule
-& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & & \multicolumn{3}{c}{Qwen2.5-32B (AWQ)} \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){12-14}
-Method & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & Avg.\textsuperscript{a} & 512 & 1,024 & 2,048 \\
+& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & \multicolumn{3}{c}{Qwen2.5-32B (AWQ)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+Method & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 \\
 \midrule
-Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & & \multicolumn{3}{c}{47.79} \\
+Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & \multicolumn{3}{c}{47.79} \\
 \midrule
-Pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 38.64 & -- & -- & -- \\
-BGE chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 38.88 & 37.52 & 42.40 & 46.08 \\
+\multicolumn{13}{l}{\textit{Prompt compression}} \\
+LLMLingua-2 & -- & 24.60 & -- & -- & 28.43 & -- & -- & 27.10 & -- & -- & -- & -- \\
+LongLLMLingua & -- & -- & -- & -- & 39.67 & -- & -- & 40.66 & -- & -- & -- & -- \\
 \midrule
-\spk{} (BGE ranker) & 35.64 & \textbf{40.76} & 43.14 & 36.16 & \textbf{41.67} & \textbf{43.58} & 39.21 & \textbf{45.18} & \textbf{48.10} & \textbf{41.49} & -- & -- & -- \\
-\spk{} (hybrid ranker, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{41.49} & \textbf{40.88} & \textbf{45.07} & \textbf{49.15} \\
+\multicolumn{13}{l}{\textit{Published context construction}} \\
+LlamaIndex sentence window & -- & -- & -- & -- & 36.96 & -- & -- & 39.99 & -- & -- & -- & -- \\
+LlamaIndex auto-merging & -- & -- & -- & -- & 39.13 & -- & -- & 41.50 & -- & -- & -- & -- \\
+Provence (BGE + pruning) & -- & -- & -- & -- & 40.69 & -- & -- & 44.27 & -- & -- & -- & -- \\
+Sentence chunks + BGE & -- & -- & -- & -- & 39.98 & -- & -- & 44.24 & -- & -- & -- & -- \\
+Lexical pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & -- & -- & -- \\
+\midrule
+\multicolumn{13}{l}{\textit{Chunk packing}} \\
+BGE-small chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
+BGE-large chunks & -- & -- & -- & -- & 40.12 & -- & -- & 42.55 & -- & -- & -- & -- \\
+Reranker chunks & -- & -- & -- & -- & 42.21 & -- & -- & 44.37 & -- & -- & -- & -- \\
+\midrule
+\multicolumn{13}{l}{\textit{\spk{}}} \\
+BGE-small ranker & 35.64 & \textbf{40.76} & 43.14 & 36.16 & 41.67 & \textbf{43.58} & 39.21 & 45.18 & \textbf{48.10} & -- & -- & -- \\
+BGE-large ranker & -- & -- & -- & -- & 43.98 & -- & -- & 46.23 & -- & -- & -- & -- \\
+Reranker & -- & -- & -- & -- & \textbf{44.12} & -- & -- & \textbf{46.45} & -- & -- & -- & -- \\
+Hybrid ranker (frozen, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{40.88} & \textbf{45.07} & \textbf{49.15} \\
 \bottomrule
 \end{tabular}}
-\caption{Budget and model sweep. Macro F1 on the 1,150 LongBench QA instances under exact budgets of 512, 1,024 and 2,048 downstream tokens. The full-context reference reads up to 30K tokens. Bold marks the best compressed result in each column. Per-task scores are in Appendix~\ref{app:pertask}. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). \textsuperscript{a}Average over the 7B, 8B and 14B models. Prompt compressors and other published systems are compared at 1,024 tokens in Table~\ref{tab:external}.}
+\caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column. --: not run. Per-task scores are in Appendix~\ref{app:pertask}.}
 \label{tab:main}
 \end{table*}
 
