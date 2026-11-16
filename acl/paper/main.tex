@@ -222,7 +222,7 @@ Ranker & Packing / system & Qwen-14B & Llama-8B & Qwen-32B & Avg.\textsuperscrip
 \multicolumn{2}{l}{\spk{} (frozen hybrid configuration)} & 44.32 & 40.98 & 45.07 & 42.65 & \\
 \bottomrule
 \end{tabular}}
-\caption{All methods at 1,024 tokens on LongBench QA (1,150 instances, macro F1). $\Delta$: \spk{} minus chunk packing \emph{with the same ranking}, pooled over Qwen-14B and Llama-8B ($^{***}$: $p\le0.001$; significant for each model separately as well). With a reranker, \spk{} reaches 45.29 F1, on par with the 30K-token full context (45.36), from 1/12 of the input. Table~\ref{tab:main} varies the budget and the model. \textsuperscript{b}Average over Qwen-14B and Llama-8B. $\circ$: running, to be filled in.}
+\caption{All methods at 1,024 tokens on LongBench QA (1,150 instances, macro F1). $\Delta$: \spk{} minus chunk packing \emph{with the same ranking}, pooled over Qwen-14B and Llama-8B ($^{***}$: $p\le0.001$; significant for each model separately as well). With a reranker, \spk{} reaches 45.29 F1, on par with the 30K-token full context (45.36), from 1/12 of the input. \spk{} is a packer and can follow any ranker: the frozen hybrid configuration was fixed on the development split before testing; the other rows pair it with the ranker of the chunk-packing row above. Table~\ref{tab:main} varies the budget and the model. \textsuperscript{b}Average over Qwen-14B and Llama-8B. $\circ$: running, to be filled in.}
 \label{tab:external}
 \end{table}
 
@@ -256,13 +256,13 @@ BGE-large chunks & -- & -- & -- & \pend{} & 40.12 & \pend{} & \pend{} & 42.55 & 
 Reranker chunks & -- & -- & -- & \pend{} & 42.21 & \pend{} & \pend{} & 44.37 & \pend{} & -- & \pend{} & -- \\
 \midrule
 \multicolumn{13}{l}{\textit{\spk{}}} \\
-BGE-small ranker & 35.64 & \textbf{40.76} & 43.14 & 36.16 & 41.67 & \textbf{43.58} & 39.21 & 45.18 & \textbf{48.10} & \pend{} & \textbf{46.28} & \pend{} \\
-BGE-large ranker & -- & -- & -- & \pend{} & 43.98 & \pend{} & \pend{} & 46.23 & \pend{} & -- & \pend{} & -- \\
-Reranker & -- & -- & -- & \pend{} & \textbf{44.12} & \pend{} & \pend{} & \textbf{46.45} & \pend{} & -- & \pend{} & -- \\
-Hybrid ranker (frozen, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{40.88} & 45.07 & \textbf{49.15} \\
+BGE-small + \spk{} & 35.64 & \textbf{40.76} & 43.14 & 36.16 & 41.67 & \textbf{43.58} & 39.21 & 45.18 & \textbf{48.10} & \pend{} & \textbf{46.28} & \pend{} \\
+BGE-large + \spk{} & -- & -- & -- & \pend{} & 43.98 & \pend{} & \pend{} & 46.23 & \pend{} & -- & \pend{} & -- \\
+Reranker + \spk{} & -- & -- & -- & \pend{} & \textbf{44.12} & \pend{} & \pend{} & \textbf{46.45} & \pend{} & -- & \pend{} & -- \\
+Hybrid + \spk{} (frozen, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{40.88} & 45.07 & \textbf{49.15} \\
 \bottomrule
 \end{tabular}}
-\caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column. --: not run. $\circ$: running, to be filled in. Per-task scores are in Appendix~\ref{app:pertask}.}
+\caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column. \spk{} is a packer and can follow any ranker: the hybrid configuration was fixed on the development split before testing, and the other \spk{} rows pair it with the rankers of the chunk-packing rows. --: not run. $\circ$: running, to be filled in. Per-task scores are in Appendix~\ref{app:pertask}.}
 \label{tab:main}
 \end{table*}
 
