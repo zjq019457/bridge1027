@@ -201,8 +201,6 @@ Method & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & Avg.\
 \midrule
 Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & & \multicolumn{3}{c}{47.79} \\
 \midrule
-LLMLingua-2 & -- & 24.60 & -- & -- & 28.43 & -- & -- & 27.10 & -- & -- & -- & -- & -- \\
-LongLLMLingua & -- & -- & -- & -- & 39.67 & -- & -- & 40.66 & -- & -- & -- & -- & -- \\
 Pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 38.64 & -- & -- & -- \\
 BGE chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 38.88 & 37.52 & 42.40 & 46.08 \\
 \midrule
@@ -210,7 +208,7 @@ BGE chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.
 \spk{} (hybrid ranker, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{41.49} & \textbf{40.88} & \textbf{45.07} & \textbf{49.15} \\
 \bottomrule
 \end{tabular}}
-\caption{Macro F1 on the 1,150 LongBench QA instances under exact budgets of 512, 1,024 and 2,048 downstream tokens. The full-context reference reads up to 30K tokens. Bold marks the best compressed result in each column. Per-task scores are in Appendix~\ref{app:pertask}. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). \textsuperscript{a}Average over the 7B, 8B and 14B models.}
+\caption{Macro F1 on the 1,150 LongBench QA instances under exact budgets of 512, 1,024 and 2,048 downstream tokens. The full-context reference reads up to 30K tokens. Bold marks the best compressed result in each column. Per-task scores are in Appendix~\ref{app:pertask}. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). \textsuperscript{a}Average over the 7B, 8B and 14B models. Prompt compressors and other published systems are compared at 1,024 tokens in Table~\ref{tab:external}.}
 \label{tab:main}
 \end{table*}
 

@@ -203,8 +203,6 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \midrule
 完整上下文（参考） & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & & \multicolumn{3}{c}{47.79} \\
 \midrule
-LLMLingua-2 & -- & 24.60 & -- & -- & 28.43 & -- & -- & 27.10 & -- & -- & -- & -- & -- \\
-LongLLMLingua & -- & -- & -- & -- & 39.67 & -- & -- & 40.66 & -- & -- & -- & -- & -- \\
 配对打包 & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 38.64 & -- & -- & -- \\
 BGE 切块 & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 38.88 & 37.52 & 42.40 & 46.08 \\
 \midrule
@@ -212,7 +210,7 @@ BGE 切块 & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.
 \spk{}（混合排序器，主配置） & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{41.49} & \textbf{40.88} & \textbf{45.07} & \textbf{49.15} \\
 \bottomrule
 \end{tabular}}
-\caption{LongBench 1,150 个问答样本在 512、1,024 和 2,048 个下游 token 的精确预算下的宏平均 F1。完整上下文参考最多读取 3 万个 token。加粗表示每列中最好的压缩结果。各任务分数见附录~\ref{app:pertask}。Qwen2.5-32B 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节）。\textsuperscript{a}7B、8B 和 14B 三个模型的平均。}
+\caption{LongBench 1,150 个问答样本在 512、1,024 和 2,048 个下游 token 的精确预算下的宏平均 F1。完整上下文参考最多读取 3 万个 token。加粗表示每列中最好的压缩结果。各任务分数见附录~\ref{app:pertask}。Qwen2.5-32B 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节）。\textsuperscript{a}7B、8B 和 14B 三个模型的平均。提示压缩方法和其他已发表系统在 1,024 token 下的比较见表~\ref{tab:external}。}
 \label{tab:main}
 \end{table*}
 
