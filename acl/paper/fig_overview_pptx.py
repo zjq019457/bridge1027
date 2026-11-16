@@ -14,6 +14,7 @@ from lxml import etree
 
 HERE = Path(__file__).parent
 F = "Arial"
+SCALE = 1.15  # global text scale
 C = dict(ink="222222", mute="6B6B6B", line="8A8A8A", panel="F3F4F6", panel2="E6E8EC",
          org="D55E00", orgl="FDF0E7", orgm="F6C7A6",              # waste (orange)
          blu="0072B2", blul="EAF3FA", blum="9CC7E4", blud="005A8C",  # DedupPack (blue)
@@ -54,7 +55,7 @@ def write(p, runs, size=14, bold=True, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.
         para.alignment = align
         for t, c in ln:
             r = para.add_run(); r.text = t
-            r.font.name = F; r.font.size = Pt(size); r.font.bold = bold; r.font.color.rgb = rgb(c)
+            r.font.name = F; r.font.size = Pt(round(size * SCALE)); r.font.bold = bold; r.font.color.rgb = rgb(c)
     return p
 
 
@@ -85,14 +86,14 @@ def bar(x, y, segs, h=0.42):
 def budget(x1, x2, y, label, color, bg):
     line(x1, y, x2, y, color=C["line"], head=False, lw=0.75)
     for xx in (x1, x2): line(xx, y - 0.07, xx, y + 0.07, color=C["line"], head=False, lw=0.75)
-    text(label, (x1 + x2) / 2 - 1.9, y - 0.14, 3.8, 0.28, size=12, color=color, fill=bg)
+    text(label, (x1 + x2) / 2 - 2.5, y - 0.14, 5.0, 0.28, size=12, color=color, fill=bg)
 
 
 # ------------------------------------------------------------------ grid
 LX0, LX1 = 3.95, 10.95          # lanes
 BX0, BW = 4.25, 6.4             # bars (1,024 tokens)
 LLX, LLW = 11.45, 1.45          # LLM column
-AX = 13.08                      # answers
+AX = 13.0                      # answers
 YA, YB = 2.45, 5.25             # bar centres of the two lanes
 
 # headers and divider
@@ -111,10 +112,15 @@ line(1.6, 3.45, 1.95, 3.45)
 
 # ranker
 box(1.95, 2.6, 1.7, 1.75, fill=C["panel"], line=C["mute"], lw=1.25, kind=RRECT, radius=0.08, name="Ranker")
-text("Any ranker", 1.95, 2.65, 1.7, 0.36, size=15)
+text("Any ranker", 1.97, 2.65, 1.3, 0.36, size=14)
 for i, t in enumerate(("BM25 / Hybrid", "BGE", "Reranker")):
     pill(t, 2.08, 3.05 + 0.4 * i, 1.44, 0.32, C["ink"], line=C["line"], size=11)
 line(3.65, 3.45, 3.8, 3.45, head=False)
+# plug icon: the ranker is swappable
+px, py = 3.36, 2.73
+box(px, py, 0.16, 0.2, fill=C["mute"], kind=RRECT, radius=0.25, name="plug body")
+for dy in (0.04, 0.12): box(px + 0.16, py + dy, 0.09, 0.04, fill=C["mute"])
+line(px - 0.08, py + 0.1, px, py + 0.1, color=C["mute"], head=False, lw=2)
 line(3.8, YA, 3.8, YB, head=False)
 line(3.8, YA, LX0, YA); line(3.8, YB, LX0, YB)
 
@@ -130,12 +136,20 @@ text("Standard chunk packing", LX0 + 0.15, 1.3, 3.6, 0.36, size=16, align=PP_ALI
 bar(BX0, YA - 0.21, [("A", 0.9, C["seg"], C["line"], False, 15), ("A (dup.)", 1.0, C["orgm"], C["org"], True, 12),
                      ("B", 0.9, C["seg"], C["line"], False, 15), ("B (dup.)", 1.0, C["orgm"], C["org"], True, 12),
                      ("C", 0.9, C["seg"], C["line"], False, 15), ("D", 0.9, C["seg"], C["line"], False, 15),
-                     ("unused", 0.8, C["w"], C["line"], True, 12)])
+                     ("unused", 0.8, C["w"], C["line"], True, 10.5)])
 pill("duplicate (23%)", 6.0, 1.72, 1.9, 0.3, C["org"], line=C["org"], size=12)
 line(6.6, 2.02, BX0 + 1.4, YA - 0.21, color=C["org"]); line(7.3, 2.02, BX0 + 3.3, YA - 0.21, color=C["org"])
 pill("cut mid-sentence", 8.35, 1.72, 2.0, 0.3, C["org"], line=C["org"], size=12)
 line(8.95, 2.02, BX0 + 4.7, YA - 0.21, color=C["org"]); line(9.6, 2.02, BX0 + 5.6, YA - 0.21, color=C["org"])
 budget(BX0, BX0 + BW, 2.92, "1,024 tokens (fixed budget)", C["ink"], C["orgl"])
+# jagged edges where pieces are cut mid-sentence
+for cx in (BX0 + 4.7, BX0 + 5.6):
+    zz = sh.build_freeform(Inches(cx), Inches(YA - 0.21))
+    pts, yy = [], YA - 0.21
+    for k in range(6):
+        yy += 0.07; pts.append((Inches(cx + (0.06 if k % 2 == 0 else 0)), Inches(yy)))
+    zz.add_line_segments(pts, close=False)
+    z = zz.convert_to_shape(); z.fill.background(); z.line.color.rgb = rgb(C["org"]); z.line.width = Pt(2); z.shadow.inherit = False
 
 # lane 2: DedupPack
 box(LX0, 3.4, LX1 - LX0, 2.7, fill=C["blul"], line=C["blu"], lw=1.25, kind=RRECT, radius=0.04, name="DedupPack lane")
@@ -145,7 +159,7 @@ caps = ("sentence padding", "merge overlaps", "exact fill + backfill", "document
 xs = [BX0 + i * (SW + SG) for i in range(4)]
 for x, cap in zip(xs, caps):
     box(x, SY, SW, SH, fill=C["w"], line=C["blu"], kind=RRECT, radius=0.1, name="Step: " + cap)
-    text(cap, x, SY + 0.53, SW, 0.24, size=11, color=C["blud"])
+    text(cap, x - 0.03, SY + 0.53, SW + 0.06, 0.24, size=9.5, color=C["blud"])
 for i in range(3):
     line(xs[i] + SW, SY + 0.3, xs[i + 1], SY + 0.3, color=C["blu"], lw=1)
 iy = SY + 0.27   # icon centre line
@@ -179,7 +193,7 @@ line(x + 0.7, iy, x + 0.84, iy, color=C["blu"])
 for i, l in enumerate("123"):
     write(box(x + 0.9 + 0.2 * i, iy - 0.09, 0.18, 0.18, fill=C["blum"], line=C["blu"], lw=0.5), l, 9)
 
-text("recovered budget → new evidence", BX0 + 3.6, 4.74, 2.8, 0.28, size=11, color=C["blud"])
+text("recovered budget → new evidence", BX0 + 2.9, 4.74, 3.5, 0.28, size=11, color=C["blud"])
 bar(BX0, YB - 0.21, [("A", 0.9, C["seg"], C["line"], False, 15), ("B", 0.9, C["seg"], C["line"], False, 15),
                      ("C", 0.9, C["seg"], C["line"], False, 15), ("D", 0.9, C["seg"], C["line"], False, 15),
                      ("E", 1.4, C["blum"], C["blu"], False, 15), ("F", 1.4, C["blum"], C["blu"], False, 15)])
@@ -191,7 +205,7 @@ lg = 0.36
 for i, f in enumerate(("qwen_t.png", "meta_t.png", "mistral_t.png")):
     sh.add_picture(str(HERE / "logos" / f), Inches(LLX + 0.1 + i * (lg + 0.065)), Inches(1.45), Inches(lg), Inches(lg))
 text("LLM", LLX, 1.9, LLW, 0.45, size=22)
-text("Qwen2.5 / Llama-3.1\n/ Mistral, 7B–32B", LLX, 2.35, LLW, 0.45, size=9, color=C["mute"])
+text("Qwen2.5 / Llama-3.1\n/ Mistral, 7B–32B", LLX, 2.35, LLW, 0.45, size=8, color=C["mute"])
 pill("prefill", LLX + 0.15, 3.15, LLW - 0.3, 0.38, C["ink"], line=C["line"], size=13)
 line(LLX + LLW / 2, 3.53, LLX + LLW / 2, 3.9)
 pill("KV cache", LLX + 0.15, 3.9, LLW - 0.3, 0.38, C["ink"], line=C["line"], fill=C["panel2"], size=13)
@@ -199,8 +213,8 @@ pill("6× smaller KV cache\nthan full context", LLX + 0.06, 4.55, LLW - 0.12, 0.
 line(LX1, YA, LLX, YA); line(LX1, YB, LLX, YB)
 
 # answers
-pill([("Answer ", C["ink"]), ("?", C["mute"])], AX, YA - 0.22, 0.87, 0.44, None, line=C["ink"], size=12)
-pill([("Answer ", C["ink"]), ("✓", C["blu"])], AX, YB - 0.22, 0.87, 0.44, None, line=C["ink"], size=12)
+pill([("Answer ", C["ink"]), ("?", C["mute"])], AX, YA - 0.22, 0.97, 0.44, None, line=C["ink"], size=11)
+pill([("Answer ", C["ink"]), ("✓", C["blu"])], AX, YB - 0.22, 0.97, 0.44, None, line=C["ink"], size=11)
 line(LLX + LLW, YA, AX, YA); line(LLX + LLW, YB, AX, YB)
 
 prs.save(sys.argv[1])
