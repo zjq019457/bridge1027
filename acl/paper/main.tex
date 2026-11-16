@@ -184,24 +184,25 @@ Appendix~\ref{app:extra} compares the pair packer with truncation, Selective Con
 \begin{table*}[t]
 \centering
 \small
-\setlength{\tabcolsep}{4.5pt}
-\begin{tabular}{l ccc ccc ccc c}
+\setlength{\tabcolsep}{3pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l ccc ccc ccc c ccc}
 \toprule
-& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
-Method & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & Avg. \\
+& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & & \multicolumn{3}{c}{Qwen2.5-32B (AWQ)} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){12-14}
+Method & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & Avg.\textsuperscript{a} & 512 & 1,024 & 2,048 \\
 \midrule
-Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & \\
+Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & & \multicolumn{3}{c}{47.79} \\
 \midrule
-LLMLingua-2 & -- & 24.60 & -- & -- & 28.43 & -- & -- & 27.10 & -- & -- \\
-Pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 38.64 \\
-BGE chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 38.88 \\
+LLMLingua-2 & -- & 24.60 & -- & -- & 28.43 & -- & -- & 27.10 & -- & -- & -- & -- & -- \\
+Pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 38.64 & -- & -- & -- \\
+BGE chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 38.88 & 37.52 & 42.40 & 46.08 \\
 \midrule
-\spk{} (BGE ranker) & 35.64 & \textbf{40.76} & 43.14 & 36.16 & \textbf{41.67} & \textbf{43.58} & 39.21 & \textbf{45.18} & \textbf{48.10} & \textbf{41.49} \\
-\spk{} (hybrid ranker, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{41.49} \\
+\spk{} (BGE ranker) & 35.64 & \textbf{40.76} & 43.14 & 36.16 & \textbf{41.67} & \textbf{43.58} & 39.21 & \textbf{45.18} & \textbf{48.10} & \textbf{41.49} & -- & -- & -- \\
+\spk{} (hybrid ranker, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{41.49} & \textbf{40.88} & \textbf{45.07} & \textbf{49.15} \\
 \bottomrule
-\end{tabular}
-\caption{Macro F1 on the 1,150 LongBench QA instances under exact budgets of 512, 1,024 and 2,048 downstream tokens. The full-context reference reads up to 30K tokens. Bold marks the best compressed result in each column. Per-task scores are in Appendix~\ref{app:pertask}.}
+\end{tabular}}
+\caption{Macro F1 on the 1,150 LongBench QA instances under exact budgets of 512, 1,024 and 2,048 downstream tokens. The full-context reference reads up to 30K tokens. Bold marks the best compressed result in each column. Per-task scores are in Appendix~\ref{app:pertask}. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). \textsuperscript{a}Average over the 7B, 8B and 14B models.}
 \label{tab:main}
 \end{table*}
 
@@ -229,7 +230,8 @@ Pair packing & \textbf{+2.99} & \textbf{+2.45} & \textbf{+3.12} \\
 \end{table}
 
 \subsection{\spk{} versus standard packing}
-Table~\ref{tab:main} gives macro F1 for every model and budget, and Table~\ref{tab:sig} the pooled paired tests. \spk{} outperforms BGE chunk packing in all nine model--budget settings. Pooled over models, the gain is +3.68 F1 at 512 tokens, +1.92 at 1,024 and +2.26 at 2,048, and every interval excludes zero. Per model, eight of the nine differences are significant at $p<0.05$ (the ninth, Qwen2.5-7B at 1,024 tokens, is +1.79 with $p=0.06$; Appendix~\ref{app:permodel}). The gain is largest at the smallest budget, where every wasted token is most costly.
+Table~\ref{tab:main} gives macro F1 for every model and budget, and Table~\ref{tab:sig} the pooled paired tests. \spk{} outperforms BGE chunk packing in all nine model--budget settings. Pooled over models, the gain is +3.68 F1 at 512 tokens, +1.92 at 1,024 and +2.26 at 2,048, and every interval excludes zero. Per model, eight of the nine differences are significant at $p<0.05$ (the ninth, Qwen2.5-7B at 1,024 tokens, is +1.79 with $p=0.06$; Appendix~\ref{app:permodel}). With Qwen2.5-32B (last three columns) \spk{} again outperforms chunk packing at every budget, by +3.36, +2.67 and +3.07 F1 (all $p<0.005$; Section~
+ef{sec:scale}). The gain is largest at the smallest budget, where every wasted token is most costly.
 
 \spk{} also outperforms the structured pair packer by 2.5--3.1 F1 at every budget ($p<0.001$), in all nine settings. The pair packer was designed for multi-hop questions and selects evidence in pairs, yet a packer that ranks spans one at a time but packs them carefully is better on the multi-hop tasks as well: at 1,024 tokens \spk{} reaches 46.3, 43.9 and 50.3 MH F1 on the three models, against 42.4, 39.6 and 47.0 for pair packing and 42.7, 41.3 and 48.0 for BGE chunks (Appendix~\ref{app:pertask}).
 
@@ -344,6 +346,7 @@ A stronger reader might be less disturbed by repeated text, which would make pac
 \centering
 \small
 \setlength{\tabcolsep}{4pt}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lccc}
 \toprule
 Gain over BGE chunks & 512 & 1,024 & 2,048 \\
@@ -354,7 +357,7 @@ Qwen2.5-32B (AWQ) & +3.36 & \textbf{+2.67} & \textbf{+3.07} \\
 \midrule
 32B: \spk{} / chunks & 40.88 / 37.52 & 45.07 / 42.40 & 49.15 / 46.08 \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \caption{The gain of \spk{} (frozen hybrid configuration) over BGE chunk packing does not shrink as the reader grows from 7B to 32B parameters. Bottom row: macro F1 with Qwen2.5-32B; its full-context reference scores 47.79.}
 \label{tab:scale}
 \end{table}
