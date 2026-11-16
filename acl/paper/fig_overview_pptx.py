@@ -1,5 +1,8 @@
-"""Editable PowerPoint version of Figure 2 (same layout as fig_overview.tex). usage: python fig2.py OUT.pptx"""
+"""Figure 2 (master copy): editable PowerPoint, exported to PDF for the paper.
+Colour-blind-safe palette: orange = waste in standard packing, blue = DedupPack, grey = shared parts.
+usage: python fig_overview_pptx.py OUT.pptx"""
 import sys
+from pathlib import Path
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
@@ -9,22 +12,22 @@ from pptx.enum.dml import MSO_LINE_DASH_STYLE
 from pptx.oxml.ns import qn
 from lxml import etree
 
-K = 0.65  # inches per TikZ unit
-X = lambda x: 0.1 + x * K
-Y = lambda y: 0.1 + (8.95 - y) * K
+HERE = Path(__file__).parent
 F = "Arial"
-C = dict(rk="2F6FD0", rkl="E6EFFC", bad="D7332A", badl="FDECEB", dupl="F7C9C6", ok="2E8B3E", okd="1F6A2C", okl="EEF8EC",
-         okm="BFE6B5", okn="4CCB6A", A="C9E8BE", B="CFE0F7", Cc="FBE3B5", D="E2CCF4", grd="8A8A8A", blk="222222", w="FFFFFF")
+C = dict(ink="222222", mute="6B6B6B", line="8A8A8A", panel="F3F4F6", panel2="E6E8EC",
+         org="D55E00", orgl="FDF0E7", orgm="F6C7A6",              # waste (orange)
+         blu="0072B2", blul="EAF3FA", blum="9CC7E4", blud="005A8C",  # DedupPack (blue)
+         seg="DCE1E8", w="FFFFFF")
 rgb = lambda h: RGBColor.from_string(h)
-
 prs = Presentation()
-prs.slide_width, prs.slide_height = Inches(13.5), Inches(6.25)
+prs.slide_width, prs.slide_height = Inches(14.0), Inches(6.2)
 s = prs.slides.add_slide(prs.slide_layouts[6])
 sh = s.shapes
+RECT, RRECT = MSO_SHAPE.RECTANGLE, MSO_SHAPE.ROUNDED_RECTANGLE
 
 
-def shape(kind, x1, y1, x2, y2, fill=None, line=None, lw=1.0, dash=False, radius=None, name=None):
-    p = sh.add_shape(kind, Inches(X(x1)), Inches(Y(y2)), Inches((x2 - x1) * K), Inches((y2 - y1) * K))
+def box(x, y, w, h, fill=None, line=None, lw=1.0, dash=False, kind=RECT, radius=0.08, name=None):
+    p = sh.add_shape(kind, Inches(x), Inches(y), Inches(w), Inches(h))
     p.shadow.inherit = False
     if fill: p.fill.solid(); p.fill.fore_color.rgb = rgb(fill)
     else: p.fill.background()
@@ -32,19 +35,18 @@ def shape(kind, x1, y1, x2, y2, fill=None, line=None, lw=1.0, dash=False, radius
         p.line.color.rgb = rgb(line); p.line.width = Pt(lw)
         if dash: p.line.dash_style = MSO_LINE_DASH_STYLE.DASH
     else: p.line.fill.background()
-    if radius is not None and kind == MSO_SHAPE.ROUNDED_RECTANGLE: p.adjustments[0] = radius
+    if kind == RRECT: p.adjustments[0] = radius
     if name: p.name = name
     return p
 
 
-def put_text(p, runs, size=14, bold=True, align=PP_ALIGN.CENTER, margin=0.0):
-    tf = p.text_frame; tf.word_wrap = True; tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-    tf.margin_left = tf.margin_right = Inches(margin); tf.margin_top = tf.margin_bottom = 0
-    if isinstance(runs, str): runs = [(runs, C["blk"])]
+def write(p, runs, size=14, bold=True, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, ml=0.0):
+    tf = p.text_frame; tf.word_wrap = True; tf.vertical_anchor = anchor
+    tf.margin_left = Inches(ml); tf.margin_right = 0; tf.margin_top = tf.margin_bottom = 0
+    if isinstance(runs, str): runs = [(runs, C["ink"])]
     lines = [[]]
-    for t, c in runs:  # split runs on newlines into paragraphs
-        parts = t.split("\n")
-        for i, part in enumerate(parts):
+    for t, c in runs:
+        for i, part in enumerate(t.split("\n")):
             if i: lines.append([])
             if part: lines[-1].append((part, c))
     for i, ln in enumerate(lines):
@@ -53,139 +55,153 @@ def put_text(p, runs, size=14, bold=True, align=PP_ALIGN.CENTER, margin=0.0):
         for t, c in ln:
             r = para.add_run(); r.text = t
             r.font.name = F; r.font.size = Pt(size); r.font.bold = bold; r.font.color.rgb = rgb(c)
-
-
-def txt(t, cx, cy, w, h, size=14, color=None, fill=None, bold=True, name=None):
-    p = shape(MSO_SHAPE.RECTANGLE, cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2, fill=fill, name=name)
-    put_text(p, [(t, color or C["blk"])] if isinstance(t, str) else t, size=size, bold=bold)
     return p
 
 
-def tag(t, cx, cy, w, h, color, line=None, fill="FFFFFF", size=12, name=None):
-    p = shape(MSO_SHAPE.ROUNDED_RECTANGLE, cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2, fill=fill, line=line, radius=0.25, name=name)
-    put_text(p, [(t, color)] if isinstance(t, str) else t, size=size)
-    return p
+def text(t, x, y, w, h, size=14, color=None, bold=True, align=PP_ALIGN.CENTER, fill=None):
+    return write(box(x, y, w, h, fill=fill), [(t, color or C["ink"])] if isinstance(t, str) else t, size, bold, align)
 
 
-def arrow(x1, y1, x2, y2, color=None, lw=1.25, head=True, dash=False):
-    c = sh.add_connector(MSO_CONNECTOR.STRAIGHT, Inches(X(x1)), Inches(Y(y1)), Inches(X(x2)), Inches(Y(y2)))
-    c.line.color.rgb = rgb(color or C["blk"]); c.line.width = Pt(lw)
+def pill(t, x, y, w, h, color, line=None, fill="FFFFFF", size=12, radius=0.3):
+    return write(box(x, y, w, h, fill=fill, line=line, kind=RRECT, radius=radius), [(t, color)] if isinstance(t, str) else t, size)
+
+
+def line(x1, y1, x2, y2, color=None, lw=1.25, head=True, dash=False):
+    c = sh.add_connector(MSO_CONNECTOR.STRAIGHT, Inches(x1), Inches(y1), Inches(x2), Inches(y2))
+    c.line.color.rgb = rgb(color or C["ink"]); c.line.width = Pt(lw)
     if dash: c.line.dash_style = MSO_LINE_DASH_STYLE.DASH
     if head:
-        ln = c.line._get_or_add_ln()
-        tail = etree.SubElement(ln, qn("a:tailEnd")); tail.set("type", "triangle"); tail.set("w", "med"); tail.set("len", "med")
+        e = etree.SubElement(c.line._get_or_add_ln(), qn("a:tailEnd")); e.set("type", "triangle"); e.set("w", "med"); e.set("len", "med")
     return c
 
 
-def seg(t, x1, x2, yc, fill, line="555555", lw=0.75, dash=False, size=15):
-    p = shape(MSO_SHAPE.RECTANGLE, x1, yc - 0.3, x2, yc + 0.3, fill=fill, line=line, lw=lw, dash=dash, name="segment " + t)
-    put_text(p, t, size=size)
+def bar(x, y, segs, h=0.42):
+    """segs: (label, width, fill, border, dashed, size)"""
+    for lab, w, fill, bd, dash, size in segs:
+        write(box(x, y, w, h, fill=fill, line=bd, lw=1.75 if dash else 0.75, dash=dash, name="segment " + lab), lab, size)
+        x += w
 
 
-# headers and split
-txt("Before the LLM call (context construction)", 9.6, 8.55, 11, 0.5, size=20)
-txt("Inside the LLM", 17.9, 8.55, 4, 0.5, size=20)
-arrow(15.35, -0.3, 15.35, 8.8, head=False, dash=True, lw=1)
+def budget(x1, x2, y, label, color, bg):
+    line(x1, y, x2, y, color=C["line"], head=False, lw=0.75)
+    for xx in (x1, x2): line(xx, y - 0.07, xx, y + 0.07, color=C["line"], head=False, lw=0.75)
+    text(label, (x1 + x2) / 2 - 1.9, y - 0.14, 3.8, 0.28, size=12, color=color, fill=bg)
 
-# input document and question
-for d in (0.3, 0.15, 0):
-    shape(MSO_SHAPE.RECTANGLE, 0.2 + d, 2.9 + d, 1.5 + d, 4.5 + d, fill=C["w"], line=C["blk"], lw=0.75)
-for y in (3.25, 3.55, 3.85, 4.15):
-    arrow(0.4, y, 1.3, y, color=C["grd"], head=False)
-txt("Long\ndocument\n(~12.5K\ntokens)", 0.9, 1.85, 1.9, 1.5, size=14)
-tag("Question", 0.95, 6.3, 1.6, 0.55, C["blk"], line=C["blk"], size=14)
+
+# ------------------------------------------------------------------ grid
+LX0, LX1 = 3.95, 10.95          # lanes
+BX0, BW = 4.25, 6.4             # bars (1,024 tokens)
+LLX, LLW = 11.45, 1.45          # LLM column
+AX = 13.08                      # answers
+YA, YB = 2.45, 5.25             # bar centres of the two lanes
+
+# headers and divider
+text("Before the LLM call (context construction)", 0.3, 0.12, 10.7, 0.42, size=20)
+text("Inside the LLM", 11.3, 0.12, 2.6, 0.42, size=20)
+line(11.25, 0.15, 11.25, 6.1, color=C["line"], head=False, dash=True, lw=1)
+
+# input column
+pill("Question", 0.35, 2.05, 1.3, 0.42, C["ink"], line=C["ink"], size=14)
+for d in (0.16, 0.08, 0):
+    box(0.45 + d, 2.85 - d, 0.95, 1.2, fill=C["w"], line=C["ink"], lw=0.75)
+for i in range(4):
+    line(0.6, 3.07 + 0.22 * i, 1.25, 3.07 + 0.22 * i, color=C["line"], head=False)
+text("Long document\n(~12.5K tokens)", 0.15, 4.2, 1.7, 0.6, size=13)
+line(1.6, 3.45, 1.95, 3.45)
 
 # ranker
-shape(MSO_SHAPE.ROUNDED_RECTANGLE, 2.2, 2.35, 4.4, 5.1, fill=C["rkl"], line=C["rk"], lw=2, radius=0.06, name="Ranker box")
-shape(MSO_SHAPE.ROUNDED_RECTANGLE, 2.2, 4.55, 4.4, 5.1, fill=C["rk"], radius=0.2, name="Ranker title bar")
-txt("Any ranker", 3.3, 4.82, 2.2, 0.5, size=15, color=C["w"])
-for t, y in (("BM25 / Hybrid", 4.15), ("BGE", 3.6), ("Reranker", 3.05)):
-    tag(t, 3.3, y, 1.95, 0.45, C["blk"], line=C["rk"], fill="F3F7FD", size=11)
-txt("swappable", 3.3, 2.57, 1.5, 0.25, size=10, color=C["rk"])
-arrow(1.85, 3.75, 2.2, 3.75)
-arrow(4.4, 3.75, 4.75, 3.75, head=False)
-arrow(4.75, 2.0, 4.75, 5.75, head=False)
-arrow(4.75, 5.75, 5.0, 5.75); arrow(4.75, 2.0, 5.0, 2.0)
+box(1.95, 2.6, 1.7, 1.75, fill=C["panel"], line=C["mute"], lw=1.25, kind=RRECT, radius=0.08, name="Ranker")
+text("Any ranker", 1.95, 2.65, 1.7, 0.36, size=15)
+for i, t in enumerate(("BM25 / Hybrid", "BGE", "Reranker")):
+    pill(t, 2.08, 3.05 + 0.4 * i, 1.44, 0.32, C["ink"], line=C["line"], size=11)
+line(3.65, 3.45, 3.8, 3.45, head=False)
+line(3.8, YA, 3.8, YB, head=False)
+line(3.8, YA, LX0, YA); line(3.8, YB, LX0, YB)
 
-# full-context path
-arrow(1.1, 6.62, 1.1, 7.75, color=C["grd"], lw=2, head=False)
-arrow(1.1, 7.75, 16.9, 7.75, color=C["grd"], lw=2, head=False)
-arrow(16.9, 7.75, 16.9, 6.45, color=C["grd"], lw=2)
-tag("Full context (12.5K tokens)", 9.6, 7.75, 4.6, 0.5, C["blk"], line=C["grd"], fill="EDEDED", size=14)
+# full-context path (question -> LLM)
+line(1.0, 2.05, 1.0, 0.85, color=C["line"], lw=2, head=False)
+line(1.0, 0.85, LLX + LLW / 2, 0.85, color=C["line"], lw=2, head=False)
+line(LLX + LLW / 2, 0.85, LLX + LLW / 2, 1.3, color=C["line"], lw=2)
+pill("Full context (12.5K tokens)", 5.15, 0.66, 3.8, 0.38, C["ink"], line=C["line"], fill=C["panel2"], size=13)
 
-# standard chunk packing
-shape(MSO_SHAPE.ROUNDED_RECTANGLE, 5.0, 4.55, 15.0, 7.2, fill=C["badl"], line=C["bad"], lw=1.25, radius=0.05, name="Chunk packing lane")
-txt("Standard chunk packing", 7.6, 6.95, 5, 0.45, size=17)
-seg("A", 5.4, 6.6, 5.6, C["A"])
-seg("A (dup.)", 6.6, 8.1, 5.6, C["dupl"], line=C["bad"], dash=True, size=12)
-seg("B", 8.1, 9.4, 5.6, C["B"])
-seg("B (dup.)", 9.4, 11.0, 5.6, C["dupl"], line=C["bad"], dash=True, size=12)
-seg("C", 11.0, 12.15, 5.6, C["Cc"])
-seg("D", 12.15, 13.3, 5.6, C["D"])
-seg("unused", 13.3, 14.55, 5.6, "E8E8E8", size=12)
-tag("duplicate (23%)", 9.6, 6.45, 2.3, 0.4, C["bad"], line=C["bad"])
-arrow(9.0, 6.25, 7.35, 5.92, color=C["bad"]); arrow(10.0, 6.25, 10.2, 5.92, color=C["bad"])
-tag("cut mid-sentence", 12.6, 6.45, 2.4, 0.4, C["bad"], line=C["bad"])
-arrow(12.3, 6.25, 12.15, 5.92, color=C["bad"]); arrow(12.9, 6.25, 13.3, 5.92, color=C["bad"])
-arrow(5.4, 4.95, 14.55, 4.95, head=False, lw=0.75)
-txt("1,024 tokens (fixed budget)", 9.97, 4.95, 3.8, 0.35, size=12, fill=C["badl"])
+# lane 1: standard chunk packing
+box(LX0, 1.25, LX1 - LX0, 1.95, fill=C["orgl"], line=C["org"], lw=1.25, kind=RRECT, radius=0.05, name="Chunk packing lane")
+text("Standard chunk packing", LX0 + 0.15, 1.3, 3.6, 0.36, size=16, align=PP_ALIGN.LEFT)
+bar(BX0, YA - 0.21, [("A", 0.9, C["seg"], C["line"], False, 15), ("A (dup.)", 1.0, C["orgm"], C["org"], True, 12),
+                     ("B", 0.9, C["seg"], C["line"], False, 15), ("B (dup.)", 1.0, C["orgm"], C["org"], True, 12),
+                     ("C", 0.9, C["seg"], C["line"], False, 15), ("D", 0.9, C["seg"], C["line"], False, 15),
+                     ("unused", 0.8, C["w"], C["line"], True, 12)])
+pill("duplicate (23%)", 6.0, 1.72, 1.9, 0.3, C["org"], line=C["org"], size=12)
+line(6.6, 2.02, BX0 + 1.4, YA - 0.21, color=C["org"]); line(7.3, 2.02, BX0 + 3.3, YA - 0.21, color=C["org"])
+pill("cut mid-sentence", 8.35, 1.72, 2.0, 0.3, C["org"], line=C["org"], size=12)
+line(8.95, 2.02, BX0 + 4.7, YA - 0.21, color=C["org"]); line(9.6, 2.02, BX0 + 5.6, YA - 0.21, color=C["org"])
+budget(BX0, BX0 + BW, 2.92, "1,024 tokens (fixed budget)", C["ink"], C["orgl"])
 
-# DedupPack lane
-shape(MSO_SHAPE.ROUNDED_RECTANGLE, 5.0, -0.25, 15.0, 4.3, fill=C["okl"], line=C["ok"], lw=1.25, radius=0.04, name="DedupPack lane")
-txt("DedupPack (ours)", 6.9, 4.0, 3.6, 0.45, size=17)
-R = MSO_SHAPE.RECTANGLE
-steps = ((6.6, "sentence padding"), (9.0, "merge overlaps"), (11.4, "exact fill + backfill"), (13.8, "document order"))
-for x, lab in steps:
-    shape(MSO_SHAPE.ROUNDED_RECTANGLE, x - 1.12, 2.4, x + 1.13, 3.6, fill=C["w"], line=C["ok"], radius=0.12, name="Step " + lab)
-    txt(lab, x, 2.62, 2.1, 0.3, size=10, color=C["okd"])
+# lane 2: DedupPack
+box(LX0, 3.4, LX1 - LX0, 2.7, fill=C["blul"], line=C["blu"], lw=1.25, kind=RRECT, radius=0.04, name="DedupPack lane")
+text("DedupPack (ours)", LX0 + 0.15, 3.45, 3.6, 0.36, size=16, align=PP_ALIGN.LEFT)
+SW, SG, SY, SH = (BW - 3 * 0.12) / 4, 0.12, 3.88, 0.82
+caps = ("sentence padding", "merge overlaps", "exact fill + backfill", "document order")
+xs = [BX0 + i * (SW + SG) for i in range(4)]
+for x, cap in zip(xs, caps):
+    box(x, SY, SW, SH, fill=C["w"], line=C["blu"], kind=RRECT, radius=0.1, name="Step: " + cap)
+    text(cap, x, SY + 0.53, SW, 0.24, size=11, color=C["blud"])
 for i in range(3):
-    arrow(steps[i][0] + 1.13, 3.0, steps[i + 1][0] - 1.12, 3.0, color=C["ok"])
-# (1) a short span grows to the sentence boundaries
-arrow(5.65, 3.2, 7.55, 3.2, color=C["grd"], head=False, lw=0.75)
-for t in (5.75, 7.45): arrow(t, 2.98, t, 3.42, head=False, lw=2)
-shape(R, 6.35, 3.1, 6.85, 3.3, fill=C["okn"])
-arrow(6.33, 3.2, 5.82, 3.2, color=C["ok"], dash=True); arrow(6.87, 3.2, 7.38, 3.2, color=C["ok"], dash=True)
+    line(xs[i] + SW, SY + 0.3, xs[i + 1], SY + 0.3, color=C["blu"], lw=1)
+iy = SY + 0.27   # icon centre line
+# (1) a span is padded out to the sentence boundaries
+x = xs[0]
+line(x + 0.15, iy, x + SW - 0.15, iy, color=C["line"], head=False, lw=0.75)
+for t in (x + 0.15, x + SW - 0.15): line(t, iy - 0.14, t, iy + 0.14, head=False, lw=2)
+box(x + SW / 2 - 0.2, iy - 0.07, 0.4, 0.14, fill=C["blu"])
+line(x + SW / 2 - 0.22, iy, x + 0.2, iy, color=C["blu"], dash=True); line(x + SW / 2 + 0.22, iy, x + SW - 0.2, iy, color=C["blu"], dash=True)
 # (2) two overlapping ranges become one
-shape(R, 8.0, 3.27, 8.75, 3.45, fill=C["okm"], line=C["ok"], lw=0.75)
-shape(R, 8.45, 3.03, 9.1, 3.21, fill=C["okm"], line=C["ok"], lw=0.75)
-shape(R, 8.45, 3.21, 8.75, 3.27, fill="F0A39E")
-arrow(9.17, 3.24, 9.43, 3.24, color=C["ok"])
-shape(R, 9.48, 3.14, 9.98, 3.34, fill=C["okn"], line=C["ok"], lw=0.75)
-# (3) budget bar filled exactly; a block that does not fit is skipped
-shape(R, 10.45, 3.02, 11.55, 3.24, fill=C["okm"])
-shape(R, 11.55, 3.02, 12.35, 3.24, fill=C["okn"])
-shape(R, 10.45, 3.02, 12.35, 3.24, line=C["blk"], lw=0.75)
-arrow(12.35, 2.95, 12.35, 3.32, head=False, lw=2)
-shape(R, 11.0, 3.32, 12.1, 3.47, fill="DFF2DA", line=C["grd"], lw=0.75)
-arrow(11.45, 3.27, 11.65, 3.52, color=C["bad"], head=False, lw=1.5); arrow(11.45, 3.52, 11.65, 3.27, color=C["bad"], head=False, lw=1.5)
+x = xs[1]
+box(x + 0.12, iy - 0.15, 0.55, 0.12, fill=C["seg"], line=C["mute"], lw=0.75)
+box(x + 0.42, iy + 0.03, 0.5, 0.12, fill=C["seg"], line=C["mute"], lw=0.75)
+box(x + 0.42, iy - 0.03, 0.25, 0.06, fill=C["orgm"])
+line(x + 0.98, iy, x + 1.13, iy, color=C["blu"])
+box(x + 1.17, iy - 0.07, 0.2, 0.14, fill=C["blu"])
+# (3) exact fill: a piece that does not fit is skipped, a later one backfills
+x = xs[2]
+box(x + 0.12, iy + 0.02, 0.75, 0.14, fill=C["seg"])
+box(x + 0.87, iy + 0.02, 0.38, 0.14, fill=C["blu"])
+box(x + 0.12, iy + 0.02, 1.13, 0.14, line=C["ink"], lw=0.75)
+line(x + 1.25, iy - 0.05, x + 1.25, iy + 0.23, head=False, lw=2)
+box(x + 0.5, iy - 0.17, 0.6, 0.11, fill=C["w"], line=C["mute"], lw=0.75)
+line(x + 0.72, iy - 0.2, x + 0.88, iy - 0.03, color=C["org"], head=False, lw=1.5)
+line(x + 0.72, iy - 0.03, x + 0.88, iy - 0.2, color=C["org"], head=False, lw=1.5)
 # (4) rank order -> document order
-for l, x, fl in (("3", 12.85, "okm"), ("1", 13.15, "okm"), ("2", 13.45, "okm"), ("1", 14.15, "okn"), ("2", 14.45, "okn"), ("3", 14.75, "okn")):
-    p = shape(R, x - 0.13, 3.09, x + 0.13, 3.35, fill=C[fl], line=C["ok"], lw=0.75); put_text(p, l, size=10)
-arrow(13.65, 3.22, 13.95, 3.22, color=C["ok"])
-arrow(9.97, 2.42, 9.97, 2.0, color=C["ok"], lw=1.5)
-for t, x in (("A", 5.4), ("B", 6.65), ("C", 7.9), ("D", 9.15)):
-    seg(t, x, x + 1.25, 0.95, C["okm"])
-seg("E", 10.4, 12.475, 0.95, C["okn"], line=C["ok"], lw=2)
-seg("F", 12.475, 14.55, 0.95, C["okn"], line=C["ok"], lw=2)
-tag("recovered budget → new evidence", 12.2, 1.75, 4.9, 0.4, C["ok"], line=C["ok"])
-arrow(11.9, 1.55, 11.44, 1.27, color=C["ok"]); arrow(13.0, 1.55, 13.5, 1.27, color=C["ok"])
-arrow(5.4, 0.3, 14.55, 0.3, head=False, lw=0.75)
-txt("1,024 tokens, no duplicates, more evidence", 9.97, 0.3, 5.4, 0.35, size=12, color=C["okd"], fill=C["okl"])
+x = xs[3]
+for i, (l, fl) in enumerate((("3", "seg"), ("1", "seg"), ("2", "seg"))):
+    write(box(x + 0.08 + 0.2 * i, iy - 0.09, 0.18, 0.18, fill=C[fl], line=C["mute"], lw=0.5), l, 9)
+line(x + 0.7, iy, x + 0.84, iy, color=C["blu"])
+for i, l in enumerate("123"):
+    write(box(x + 0.9 + 0.2 * i, iy - 0.09, 0.18, 0.18, fill=C["blum"], line=C["blu"], lw=0.5), l, 9)
 
-# LLM
-shape(MSO_SHAPE.ROUNDED_RECTANGLE, 15.9, 1.3, 17.9, 6.45, fill="E9E9E9", line=C["grd"], lw=1.5, radius=0.08, name="LLM box")
-txt("LLM", 16.9, 5.8, 1.8, 0.6, size=24)
-txt("Qwen / Llama\n7B–32B", 16.9, 5.05, 1.9, 0.6, size=11)
-tag("prefill", 16.9, 3.9, 1.6, 0.45, C["blk"], line=C["grd"], size=14)
-tag("KV cache", 16.9, 2.6, 1.6, 0.45, C["blk"], line=C["grd"], fill="C4C4C4", size=14)
-arrow(16.9, 3.67, 16.9, 2.83)
-arrow(15.0, 5.75, 15.9, 5.75); arrow(15.0, 2.0, 15.9, 2.0)
-tag("6× smaller KV cache\nthan full context", 16.9, 0.55, 2.5, 0.65, C["okd"], line=C["ok"], fill=C["okl"], size=11)
+text("recovered budget → new evidence", BX0 + 3.6, 4.74, 2.8, 0.28, size=11, color=C["blud"])
+bar(BX0, YB - 0.21, [("A", 0.9, C["seg"], C["line"], False, 15), ("B", 0.9, C["seg"], C["line"], False, 15),
+                     ("C", 0.9, C["seg"], C["line"], False, 15), ("D", 0.9, C["seg"], C["line"], False, 15),
+                     ("E", 1.4, C["blum"], C["blu"], False, 15), ("F", 1.4, C["blum"], C["blu"], False, 15)])
+budget(BX0, BX0 + BW, 5.78, "1,024 tokens, no duplicates, more evidence", C["blud"], C["blul"])
+
+# LLM column
+box(LLX, 1.3, LLW, 4.8, fill=C["panel"], line=C["mute"], lw=1.25, kind=RRECT, radius=0.08, name="LLM")
+lg = 0.36
+for i, f in enumerate(("qwen_t.png", "meta_t.png", "mistral_t.png")):
+    sh.add_picture(str(HERE / "logos" / f), Inches(LLX + 0.1 + i * (lg + 0.065)), Inches(1.45), Inches(lg), Inches(lg))
+text("LLM", LLX, 1.9, LLW, 0.45, size=22)
+text("Qwen2.5 / Llama-3.1\n/ Mistral, 7B–32B", LLX, 2.35, LLW, 0.45, size=9, color=C["mute"])
+pill("prefill", LLX + 0.15, 3.15, LLW - 0.3, 0.38, C["ink"], line=C["line"], size=13)
+line(LLX + LLW / 2, 3.53, LLX + LLW / 2, 3.9)
+pill("KV cache", LLX + 0.15, 3.9, LLW - 0.3, 0.38, C["ink"], line=C["line"], fill=C["panel2"], size=13)
+pill("6× smaller KV cache\nthan full context", LLX + 0.06, 4.55, LLW - 0.12, 0.5, C["blud"], line=C["blu"], fill=C["blul"], size=8, radius=0.2)
+line(LX1, YA, LLX, YA); line(LX1, YB, LLX, YB)
 
 # answers
-tag([("Answer ", C["blk"]), ("?", C["grd"])], 19.2, 5.75, 1.7, 0.7, None, line=C["blk"], size=14)
-tag([("Answer ", C["blk"]), ("✓", C["ok"])], 19.2, 2.0, 1.7, 0.7, None, line=C["blk"], size=14)
-arrow(17.9, 5.75, 18.35, 5.75); arrow(17.9, 2.0, 18.35, 2.0)
+pill([("Answer ", C["ink"]), ("?", C["mute"])], AX, YA - 0.22, 0.87, 0.44, None, line=C["ink"], size=12)
+pill([("Answer ", C["ink"]), ("✓", C["blu"])], AX, YB - 0.22, 0.87, 0.44, None, line=C["ink"], size=12)
+line(LLX + LLW, YA, AX, YA); line(LLX + LLW, YB, AX, YB)
 
 prs.save(sys.argv[1])
 print("saved", sys.argv[1])

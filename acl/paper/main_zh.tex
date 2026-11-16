@@ -65,7 +65,7 @@
 
 \begin{figure*}[t]
 \centering
-\input{fig_overview}
+\includegraphics[width=\textwidth]{fig_overview.pdf}
 \caption{\spk{} 的运行位置。在调用 LLM 之前，任意排序器为长文档的片段打分；标准切块打包会为重叠的补全窗口重复付费（LongBench 上 1,024 token 预算的 23\%），在句子中间截断片段，并留下未用完的预算。\spk{} 把片段补全到句子边界、合并重叠区间、以回填方式精确填满 token 预算，并按原文顺序输出，因此同样的预算能装下更多不同的证据。它在 CPU 上运行，无需训练，也不修改模型；与完整上下文相比，LLM 只需预填充约六分之一的 token。}
 \label{fig:overview}
 \end{figure*}
