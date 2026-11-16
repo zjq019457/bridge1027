@@ -188,6 +188,43 @@ Appendix~\ref{app:extra} compares the pair packer with truncation, Selective Con
 % =====================================================================
 \section{Results}
 
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llcccc}
+\toprule
+Ranker & Packing / system & Qwen-14B & Llama-8B & Avg. & $\Delta$ \\
+\midrule
+\multicolumn{2}{l}{Full context (30K, reference)} & 47.59 & 43.13 & 45.36 & \\
+\midrule
+\multicolumn{6}{l}{\textit{Prompt compression}} \\
+\multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & 27.77 & \\
+\multicolumn{2}{l}{LongLLMLingua} & 40.66 & 39.67 & 40.17 & \\
+\midrule
+\multicolumn{6}{l}{\textit{Published context construction}} \\
+\multicolumn{2}{l}{LlamaIndex sentence window} & 39.99 & 36.96 & 38.48 & \\
+\multicolumn{2}{l}{LlamaIndex auto-merging} & 41.50 & 39.13 & 40.32 & \\
+\multicolumn{2}{l}{Lexical pair packing} & 41.69 & 37.79 & 39.74 & \\
+\multicolumn{2}{l}{Sentence chunks + BGE} & 44.24 & 39.98 & 42.11 & \\
+\multicolumn{2}{l}{Provence (BGE + pruning)} & 44.27 & 40.69 & 42.48 & \\
+\midrule
+\multicolumn{6}{l}{\textit{Same ranking, chunk packing vs.\ \spk{}}} \\
+\multirow{2}{*}{BGE-small} & chunks & 42.34 & 38.99 & 40.67 & \\
+ & \spk{} & 45.18 & 41.67 & 43.43 & \textbf{+2.76}$^{***}$ \\
+\multirow{2}{*}{BGE-large} & chunks & 42.55 & 40.12 & 41.34 & \\
+ & \spk{} & 46.23 & 43.98 & 45.11 & \textbf{+3.77}$^{***}$ \\
+\multirow{2}{*}{\shortstack[l]{BGE + bge-\\reranker-v2-m3}} & chunks & 44.37 & 42.21 & 43.29 & \\
+ & \spk{} & \textbf{46.45} & \textbf{44.12} & \textbf{45.29} & \textbf{+2.00}$^{***}$ \\
+\midrule
+\multicolumn{2}{l}{\spk{} (frozen hybrid configuration)} & 44.32 & 40.98 & 42.65 & \\
+\bottomrule
+\end{tabular}}
+\caption{All methods at 1,024 tokens on LongBench QA (1,150 instances, macro F1). $\Delta$: \spk{} minus chunk packing \emph{with the same ranking}, pooled over the two models ($^{***}$: $p\le0.001$; significant for each model separately as well). With a reranker, \spk{} reaches 45.29 F1, on par with the 30K-token full context (45.36), from 1/12 of the input. Table~\ref{tab:main} varies the budget and the model.}
+\label{tab:external}
+\end{table}
+
 \begin{table*}[t]
 \centering
 \small
@@ -208,7 +245,7 @@ BGE chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.
 \spk{} (hybrid ranker, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{41.49} & \textbf{40.88} & \textbf{45.07} & \textbf{49.15} \\
 \bottomrule
 \end{tabular}}
-\caption{Macro F1 on the 1,150 LongBench QA instances under exact budgets of 512, 1,024 and 2,048 downstream tokens. The full-context reference reads up to 30K tokens. Bold marks the best compressed result in each column. Per-task scores are in Appendix~\ref{app:pertask}. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). \textsuperscript{a}Average over the 7B, 8B and 14B models. Prompt compressors and other published systems are compared at 1,024 tokens in Table~\ref{tab:external}.}
+\caption{Budget and model sweep. Macro F1 on the 1,150 LongBench QA instances under exact budgets of 512, 1,024 and 2,048 downstream tokens. The full-context reference reads up to 30K tokens. Bold marks the best compressed result in each column. Per-task scores are in Appendix~\ref{app:pertask}. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). \textsuperscript{a}Average over the 7B, 8B and 14B models. Prompt compressors and other published systems are compared at 1,024 tokens in Table~\ref{tab:external}.}
 \label{tab:main}
 \end{table*}
 
@@ -236,8 +273,7 @@ Pair packing & \textbf{+2.99} & \textbf{+2.45} & \textbf{+3.12} \\
 \end{table}
 
 \subsection{\spk{} versus standard packing}
-Table~\ref{tab:main} gives macro F1 for every model and budget, and Table~\ref{tab:sig} the pooled paired tests. \spk{} outperforms BGE chunk packing in all nine model--budget settings. Pooled over models, the gain is +3.68 F1 at 512 tokens, +1.92 at 1,024 and +2.26 at 2,048, and every interval excludes zero. Per model, eight of the nine differences are significant at $p<0.05$ (the ninth, Qwen2.5-7B at 1,024 tokens, is +1.79 with $p=0.06$; Appendix~\ref{app:permodel}). With Qwen2.5-32B (last three columns) \spk{} again outperforms chunk packing at every budget, by +3.36, +2.67 and +3.07 F1 (all $p<0.005$; Section~
-ef{sec:scale}). The gain is largest at the smallest budget, where every wasted token is most costly.
+Table~\ref{tab:external} compares all methods at 1,024 tokens: \spk{} is above every prompt compressor and published context-construction system, and with each of three rankers it improves over chunk packing with the same ranking by 2.0--3.8 F1 ($p\le0.001$); Section~\ref{sec:external} discusses these comparisons. Table~\ref{tab:main} gives macro F1 for every model and budget, and Table~\ref{tab:sig} the pooled paired tests. \spk{} outperforms BGE chunk packing in all nine model--budget settings. Pooled over models, the gain is +3.68 F1 at 512 tokens, +1.92 at 1,024 and +2.26 at 2,048, and every interval excludes zero. Per model, eight of the nine differences are significant at $p<0.05$ (the ninth, Qwen2.5-7B at 1,024 tokens, is +1.79 with $p=0.06$; Appendix~\ref{app:permodel}). With Qwen2.5-32B (last three columns) \spk{} again outperforms chunk packing at every budget, by +3.36, +2.67 and +3.07 F1 (all $p<0.005$; Section~\ref{sec:scale}). The gain is largest at the smallest budget, where every wasted token is most costly.
 
 \spk{} also outperforms the structured pair packer by 2.5--3.1 F1 at every budget ($p<0.001$), in all nine settings. The pair packer was designed for multi-hop questions and selects evidence in pairs, yet a packer that ranks spans one at a time but packs them carefully is better on the multi-hop tasks as well: at 1,024 tokens \spk{} reaches 46.3, 43.9 and 50.3 MH F1 on the three models, against 42.4, 39.6 and 47.0 for pair packing and 42.7, 41.3 and 48.0 for BGE chunks (Appendix~\ref{app:pertask}).
 
@@ -249,36 +285,6 @@ Conversely, the choice of ranker inside \spk{} matters little. The hybrid ranker
 
 \subsection{Stronger rankers and external systems}
 \label{sec:external}
-
-\begin{table}[t]
-\centering
-\small
-\setlength{\tabcolsep}{3pt}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{llccc}
-\toprule
-Ranker & Packing / system & Qwen-14B & Llama-8B & $\Delta$ (pooled) \\
-\midrule
-\multirow{2}{*}{BGE-small} & chunks & 42.34 & 38.99 & \\
- & \spk{} & 45.18 & 41.67 & \textbf{+2.76}$^{***}$ \\
-\multirow{2}{*}{BGE-large} & chunks & 42.55 & 40.12 & \\
- & \spk{} & 46.23 & 43.98 & \textbf{+3.77}$^{***}$ \\
-\multirow{2}{*}{\shortstack[l]{BGE + bge-\\reranker-v2-m3}} & chunks & 44.37 & 42.21 & \\
- & \spk{} & \textbf{46.45} & \textbf{44.12} & \textbf{+2.00}$^{***}$ \\
-\midrule
-\multicolumn{2}{l}{LlamaIndex sentence window} & 39.99 & 36.96 & \\
-\multicolumn{2}{l}{LlamaIndex auto-merging} & 41.50 & 39.13 & \\
-\multicolumn{2}{l}{Sentence chunks + BGE} & 44.24 & 39.98 & \\
-\multicolumn{2}{l}{Provence (BGE + pruning)} & 44.27 & 40.69 & \\
-\multicolumn{2}{l}{LongLLMLingua} & 40.66 & 39.67 & \\
-\multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & \\
-\midrule
-\multicolumn{2}{l}{Full context (30K)} & 47.59 & 43.13 & \\
-\bottomrule
-\end{tabular}}
-\caption{Stronger rankers and external context-construction systems (LongBench, 1,024 tokens, macro F1). $\Delta$: \spk{} minus chunk packing \emph{with the same ranking}, pooled over the two models ($^{***}$: $p\le0.001$; significant for each model separately as well).}
-\label{tab:external}
-\end{table}
 
 A natural question is whether the waste we identify matters only for weak rankers. Table~\ref{tab:external} repeats the packer swap with two stronger rankers on Qwen2.5-14B and Llama-3.1-8B. With BGE-large, \spk{} improves on chunk packing by 3.77 F1 [2.67, 4.88]; with a cross-encoder reranker (\texttt{bge-reranker-v2-m3} over the top 100 BGE spans) by 2.00 [0.85, 3.12]. Both gains are significant on each model separately. A better ranker therefore does not remove the packing waste: the gain from better packing is at least as large as the gain from replacing BGE-small with BGE-large or with a reranker, and the two add up. \spk{} with the reranker is the best compressed configuration on both models, and on Llama-3.1-8B it scores above the 30K-token full context (44.12 vs.\ 43.13).
 
