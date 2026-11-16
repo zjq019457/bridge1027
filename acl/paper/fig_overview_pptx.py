@@ -133,13 +133,35 @@ txt("1,024 tokens (fixed budget)", 9.97, 4.95, 3.8, 0.35, size=12, fill=C["badl"
 # DedupPack lane
 shape(MSO_SHAPE.ROUNDED_RECTANGLE, 5.0, -0.25, 15.0, 4.3, fill=C["okl"], line=C["ok"], lw=1.25, radius=0.04, name="DedupPack lane")
 txt("DedupPack (ours)", 6.9, 4.0, 3.6, 0.45, size=17)
-tag("training-free  |  CPU, 0.4 s  |  plug-and-play", 11.6, 4.0, 5.4, 0.42, C["w"], fill=C["ok"])
-steps = (("1. pad to\nsentence boundaries", 6.6), ("2. merge\noverlapping ranges", 9.0), ("3. exact-budget\nfill + backfill", 11.4), ("4. emit in\ndocument order", 13.8))
-for t, x in steps:
-    p = shape(MSO_SHAPE.ROUNDED_RECTANGLE, x - 1.12, 2.48, x + 1.13, 3.52, fill=C["w"], line=C["ok"], radius=0.12, name="Step " + t[0])
-    put_text(p, t, size=12, align=PP_ALIGN.LEFT, margin=0.06)
+R = MSO_SHAPE.RECTANGLE
+steps = ((6.6, "sentence padding"), (9.0, "merge overlaps"), (11.4, "exact fill + backfill"), (13.8, "document order"))
+for x, lab in steps:
+    shape(MSO_SHAPE.ROUNDED_RECTANGLE, x - 1.12, 2.4, x + 1.13, 3.6, fill=C["w"], line=C["ok"], radius=0.12, name="Step " + lab)
+    txt(lab, x, 2.62, 2.1, 0.3, size=10, color=C["okd"])
 for i in range(3):
-    arrow(steps[i][1] + 1.13, 3.0, steps[i + 1][1] - 1.12, 3.0, color=C["ok"])
+    arrow(steps[i][0] + 1.13, 3.0, steps[i + 1][0] - 1.12, 3.0, color=C["ok"])
+# (1) a short span grows to the sentence boundaries
+arrow(5.65, 3.2, 7.55, 3.2, color=C["grd"], head=False, lw=0.75)
+for t in (5.75, 7.45): arrow(t, 2.98, t, 3.42, head=False, lw=2)
+shape(R, 6.35, 3.1, 6.85, 3.3, fill=C["okn"])
+arrow(6.33, 3.2, 5.82, 3.2, color=C["ok"], dash=True); arrow(6.87, 3.2, 7.38, 3.2, color=C["ok"], dash=True)
+# (2) two overlapping ranges become one
+shape(R, 8.0, 3.27, 8.75, 3.45, fill=C["okm"], line=C["ok"], lw=0.75)
+shape(R, 8.45, 3.03, 9.1, 3.21, fill=C["okm"], line=C["ok"], lw=0.75)
+shape(R, 8.45, 3.21, 8.75, 3.27, fill="F0A39E")
+arrow(9.17, 3.24, 9.43, 3.24, color=C["ok"])
+shape(R, 9.48, 3.14, 9.98, 3.34, fill=C["okn"], line=C["ok"], lw=0.75)
+# (3) budget bar filled exactly; a block that does not fit is skipped
+shape(R, 10.45, 3.02, 11.55, 3.24, fill=C["okm"])
+shape(R, 11.55, 3.02, 12.35, 3.24, fill=C["okn"])
+shape(R, 10.45, 3.02, 12.35, 3.24, line=C["blk"], lw=0.75)
+arrow(12.35, 2.95, 12.35, 3.32, head=False, lw=2)
+shape(R, 11.0, 3.32, 12.1, 3.47, fill="DFF2DA", line=C["grd"], lw=0.75)
+arrow(11.45, 3.27, 11.65, 3.52, color=C["bad"], head=False, lw=1.5); arrow(11.45, 3.52, 11.65, 3.27, color=C["bad"], head=False, lw=1.5)
+# (4) rank order -> document order
+for l, x, fl in (("3", 12.85, "okm"), ("1", 13.15, "okm"), ("2", 13.45, "okm"), ("1", 14.15, "okn"), ("2", 14.45, "okn"), ("3", 14.75, "okn")):
+    p = shape(R, x - 0.13, 3.09, x + 0.13, 3.35, fill=C[fl], line=C["ok"], lw=0.75); put_text(p, l, size=10)
+arrow(13.65, 3.22, 13.95, 3.22, color=C["ok"])
 arrow(9.97, 2.42, 9.97, 2.0, color=C["ok"], lw=1.5)
 for t, x in (("A", 5.4), ("B", 6.65), ("C", 7.9), ("D", 9.15)):
     seg(t, x, x + 1.25, 0.95, C["okm"])

@@ -60,11 +60,33 @@
 % ---------------- DedupPack ----------------
 \draw[ok!80, fill=okl, rounded corners=5pt, line width=0.8pt] (5.0,-0.25) rectangle (15.0,4.3);
 \node[anchor=west, font=\sffamily\normalsize\bfseries] at (5.15,4.0) {DedupPack (ours)};
-\node[tag, fill=ok, text=white, anchor=west] at (9.0,4.0) {training-free \;|\; CPU, 0.4\,s \;|\; plug-and-play};
-\node[stp] (s1) at (6.6,3.0) {1. pad to\\sentence boundaries};
-\node[stp] (s2) at (9.0,3.0) {2. merge\\overlapping ranges};
-\node[stp] (s3) at (11.4,3.0) {3. exact-budget\\fill + backfill};
-\node[stp] (s4) at (13.8,3.0) {4. emit in\\document order};
+% four steps drawn as pictograms (box, icon, short caption)
+\foreach \n/\x/\lab in {s1/6.6/sentence padding, s2/9.0/merge overlaps, s3/11.4/exact fill + backfill, s4/13.8/document order}{
+  \node[draw=ok!70, rounded corners=3pt, fill=white, minimum width=2.25cm, minimum height=1.05cm] (\n) at (\x,3.0) {};
+  \node[font=\sffamily\tiny\bfseries, text=ok!60!black] at (\x,2.62) {\lab};}
+% (1) a short span grows to the sentence boundaries
+\draw[grd, line width=0.5pt] (5.65,3.2) -- (7.55,3.2);
+\foreach \t in {5.75,7.45} \draw[black, line width=1pt] (\t,3.02) -- (\t,3.38);
+\fill[okn] (6.35,3.11) rectangle (6.85,3.29);
+\draw[->, ok, densely dashed, line width=0.6pt] (6.33,3.2) -- (5.8,3.2);
+\draw[->, ok, densely dashed, line width=0.6pt] (6.87,3.2) -- (7.4,3.2);
+% (2) two overlapping ranges become one
+\fill[okm, draw=ok, line width=0.4pt] (8.05,3.27) rectangle (8.75,3.43);
+\fill[okm, draw=ok, line width=0.4pt, opacity=0.85] (8.45,3.05) rectangle (9.1,3.21);
+\fill[bad!45] (8.45,3.27) rectangle (8.75,3.21);
+\draw[->, ok, line width=0.7pt] (9.18,3.24) -- (9.42,3.24);
+\fill[okn, draw=ok, line width=0.4pt] (9.48,3.15) rectangle (9.95,3.33);
+% (3) budget bar filled exactly; a block that does not fit is skipped, a later one backfills
+\draw[black, line width=0.5pt] (10.45,3.04) rectangle (12.35,3.24);
+\fill[okm] (10.46,3.05) rectangle (11.55,3.23);
+\fill[okn] (11.55,3.05) rectangle (12.34,3.23);
+\draw[black, line width=1pt] (12.35,2.98) -- (12.35,3.3);
+\fill[okm!60, draw=grd, line width=0.4pt] (11.0,3.32) rectangle (12.1,3.45);
+\draw[bad, line width=0.9pt] (11.45,3.28) -- (11.65,3.49) (11.45,3.49) -- (11.65,3.28);
+% (4) pieces in rank order -> document order
+\foreach \l/\x in {3/12.85, 1/13.15, 2/13.45} \node[draw=ok, fill=okm, minimum size=0.25cm, inner sep=0pt, font=\sffamily\tiny\bfseries] at (\x,3.22) {\l};
+\draw[->, ok, line width=0.7pt] (13.65,3.22) -- (13.95,3.22);
+\foreach \l/\x in {1/14.15, 2/14.45, 3/14.75} \node[draw=ok, fill=okn, minimum size=0.25cm, inner sep=0pt, font=\sffamily\tiny\bfseries] at (\x,3.22) {\l};
 \foreach \a/\b in {s1/s2,s2/s3,s3/s4} \draw[->, ok, line width=0.7pt] (\a) -- (\b);
 \draw[->, ok, line width=1pt] (9.97,2.42) -- (9.97,2.0);
 \def\yg{0.95}
