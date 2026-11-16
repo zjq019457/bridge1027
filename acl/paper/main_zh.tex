@@ -28,6 +28,7 @@
 
 \author{匿名 ACL 投稿}
 
+\newcommand{\pend}{{\color{gray}$\circ$}}
 \begin{document}
 \maketitle
 
@@ -195,35 +196,35 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \small
 \setlength{\tabcolsep}{3pt}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{llcccc}
+\begin{tabular}{llccccc}
 \toprule
-排序器 & 打包方式 / 系统 & Qwen-14B & Llama-8B & 平均 & $\Delta$ \\
+排序器 & 打包方式 / 系统 & Qwen-14B & Llama-8B & Qwen-32B & 平均\textsuperscript{b} & $\Delta$ \\
 \midrule
-\multicolumn{2}{l}{完整上下文（30K，参考）} & 47.59 & 43.13 & 45.36 & \\
+\multicolumn{2}{l}{完整上下文（30K，参考）} & 47.59 & 43.13 & 47.79 & 45.36 & \\
 \midrule
-\multicolumn{6}{l}{\textit{提示压缩}} \\
-\multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & 27.77 & \\
-\multicolumn{2}{l}{LongLLMLingua} & 40.66 & 39.67 & 40.17 & \\
+\multicolumn{7}{l}{\textit{提示压缩}} \\
+\multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & -- & 27.77 & \\
+\multicolumn{2}{l}{LongLLMLingua} & 40.66 & 39.67 & \pend{} & 40.17 & \\
 \midrule
-\multicolumn{6}{l}{\textit{已发表的上下文构建方法}} \\
-\multicolumn{2}{l}{LlamaIndex 句子窗口} & 39.99 & 36.96 & 38.48 & \\
-\multicolumn{2}{l}{LlamaIndex 自动合并} & 41.50 & 39.13 & 40.32 & \\
-\multicolumn{2}{l}{词法配对打包} & 41.69 & 37.79 & 39.74 & \\
-\multicolumn{2}{l}{句子切块 + BGE} & 44.24 & 39.98 & 42.11 & \\
-\multicolumn{2}{l}{Provence（BGE + 剪枝）} & 44.27 & 40.69 & 42.48 & \\
+\multicolumn{7}{l}{\textit{已发表的上下文构建方法}} \\
+\multicolumn{2}{l}{LlamaIndex 句子窗口} & 39.99 & 36.96 & \pend{} & 38.48 & \\
+\multicolumn{2}{l}{LlamaIndex 自动合并} & 41.50 & 39.13 & \pend{} & 40.32 & \\
+\multicolumn{2}{l}{词法配对打包} & 41.69 & 37.79 & 42.57 & 39.74 & \\
+\multicolumn{2}{l}{句子切块 + BGE} & 44.24 & 39.98 & \pend{} & 42.11 & \\
+\multicolumn{2}{l}{Provence（BGE + 剪枝）} & 44.27 & 40.69 & \pend{} & 42.48 & \\
 \midrule
-\multicolumn{6}{l}{\textit{相同排序下，切块打包与 \spk{} 对比}} \\
-\multirow{2}{*}{BGE-small} & 切块 & 42.34 & 38.99 & 40.67 & \\
- & \spk{} & 45.18 & 41.67 & 43.43 & \textbf{+2.76}$^{***}$ \\
-\multirow{2}{*}{BGE-large} & 切块 & 42.55 & 40.12 & 41.34 & \\
- & \spk{} & 46.23 & 43.98 & 45.11 & \textbf{+3.77}$^{***}$ \\
-\multirow{2}{*}{\shortstack[l]{BGE + bge-\\reranker-v2-m3}} & 切块 & 44.37 & 42.21 & 43.29 & \\
- & \spk{} & \textbf{46.45} & \textbf{44.12} & \textbf{45.29} & \textbf{+2.00}$^{***}$ \\
+\multicolumn{7}{l}{\textit{相同排序下，切块打包与 \spk{} 对比}} \\
+\multirow{2}{*}{BGE-small} & 切块 & 42.34 & 38.99 & 42.40 & 40.67 & \\
+ & \spk{} & 45.18 & 41.67 & 46.28 & 43.43 & \textbf{+2.76}$^{***}$ \\
+\multirow{2}{*}{BGE-large} & 切块 & 42.55 & 40.12 & \pend{} & 41.34 & \\
+ & \spk{} & 46.23 & 43.98 & \pend{} & 45.11 & \textbf{+3.77}$^{***}$ \\
+\multirow{2}{*}{\shortstack[l]{BGE + bge-\\reranker-v2-m3}} & 切块 & 44.37 & 42.21 & \pend{} & 43.29 & \\
+ & \spk{} & \textbf{46.45} & \textbf{44.12} & \pend{} & \textbf{45.29} & \textbf{+2.00}$^{***}$ \\
 \midrule
-\multicolumn{2}{l}{\spk{}（冻结的混合配置）} & 44.32 & 40.98 & 42.65 & \\
+\multicolumn{2}{l}{\spk{}（冻结的混合配置）} & 44.32 & 40.98 & 45.07 & 42.65 & \\
 \bottomrule
 \end{tabular}}
-\caption{1,024 token 下全部方法的比较（LongBench 问答，1,150 个样本，宏平均 F1）。$\Delta$：在\emph{相同排序}下 \spk{} 减去切块打包，两个模型合并（$^{***}$：$p\le0.001$；每个模型单独也显著）。配合重排序器时，\spk{} 达到 45.29 F1，与 3 万 token 的完整上下文（45.36）持平，而输入只有其十二分之一。表~\ref{tab:main} 改变预算和模型。}
+\caption{1,024 token 下全部方法的比较（LongBench 问答，1,150 个样本，宏平均 F1）。$\Delta$：在\emph{相同排序}下 \spk{} 减去切块打包，Qwen-14B 与 Llama-8B 合并（$^{***}$：$p\le0.001$；每个模型单独也显著）。配合重排序器时，\spk{} 达到 45.29 F1，与 3 万 token 的完整上下文（45.36）持平，而输入只有其十二分之一。表~\ref{tab:main} 改变预算和模型。\textsuperscript{b}Qwen-14B 与 Llama-8B 的平均。$\circ$：正在运行，稍后填入。}
 \label{tab:external}
 \end{table}
 
@@ -242,28 +243,28 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \midrule
 \multicolumn{13}{l}{\textit{提示压缩}} \\
 LLMLingua-2 & -- & 24.60 & -- & -- & 28.43 & -- & -- & 27.10 & -- & -- & -- & -- \\
-LongLLMLingua & -- & -- & -- & -- & 39.67 & -- & -- & 40.66 & -- & -- & -- & -- \\
+LongLLMLingua & -- & -- & -- & \pend{} & 39.67 & \pend{} & \pend{} & 40.66 & \pend{} & -- & \pend{} & -- \\
 \midrule
 \multicolumn{13}{l}{\textit{已发表的上下文构建方法}} \\
-LlamaIndex 句子窗口 & -- & -- & -- & -- & 36.96 & -- & -- & 39.99 & -- & -- & -- & -- \\
-LlamaIndex 自动合并 & -- & -- & -- & -- & 39.13 & -- & -- & 41.50 & -- & -- & -- & -- \\
-Provence（BGE + 剪枝） & -- & -- & -- & -- & 40.69 & -- & -- & 44.27 & -- & -- & -- & -- \\
-句子切块 + BGE & -- & -- & -- & -- & 39.98 & -- & -- & 44.24 & -- & -- & -- & -- \\
-词法配对打包 & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & -- & -- & -- \\
+LlamaIndex 句子窗口 & -- & -- & -- & \pend{} & 36.96 & \pend{} & \pend{} & 39.99 & \pend{} & -- & \pend{} & -- \\
+LlamaIndex 自动合并 & -- & -- & -- & \pend{} & 39.13 & \pend{} & \pend{} & 41.50 & \pend{} & -- & \pend{} & -- \\
+Provence（BGE + 剪枝） & -- & -- & -- & \pend{} & 40.69 & \pend{} & \pend{} & 44.27 & \pend{} & -- & \pend{} & -- \\
+句子切块 + BGE & -- & -- & -- & \pend{} & 39.98 & \pend{} & \pend{} & 44.24 & \pend{} & -- & \pend{} & -- \\
+词法配对打包 & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 37.51 & 42.57 & 44.77 \\
 \midrule
 \multicolumn{13}{l}{\textit{切块打包}} \\
 BGE-small 切块 & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
-BGE-large 切块 & -- & -- & -- & -- & 40.12 & -- & -- & 42.55 & -- & -- & -- & -- \\
-重排序切块 & -- & -- & -- & -- & 42.21 & -- & -- & 44.37 & -- & -- & -- & -- \\
+BGE-large 切块 & -- & -- & -- & \pend{} & 40.12 & \pend{} & \pend{} & 42.55 & \pend{} & -- & \pend{} & -- \\
+重排序切块 & -- & -- & -- & \pend{} & 42.21 & \pend{} & \pend{} & 44.37 & \pend{} & -- & \pend{} & -- \\
 \midrule
 \multicolumn{13}{l}{\textit{\spk{}}} \\
-BGE-small 排序器 & 35.64 & \textbf{40.76} & 43.14 & 36.16 & 41.67 & \textbf{43.58} & 39.21 & 45.18 & \textbf{48.10} & -- & -- & -- \\
-BGE-large 排序器 & -- & -- & -- & -- & 43.98 & -- & -- & 46.23 & -- & -- & -- & -- \\
-重排序器 & -- & -- & -- & -- & \textbf{44.12} & -- & -- & \textbf{46.45} & -- & -- & -- & -- \\
-混合排序器（冻结，主配置） & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{40.88} & \textbf{45.07} & \textbf{49.15} \\
+BGE-small 排序器 & 35.64 & \textbf{40.76} & 43.14 & 36.16 & 41.67 & \textbf{43.58} & 39.21 & 45.18 & \textbf{48.10} & \pend{} & \textbf{46.28} & \pend{} \\
+BGE-large 排序器 & -- & -- & -- & \pend{} & 43.98 & \pend{} & \pend{} & 46.23 & \pend{} & -- & \pend{} & -- \\
+重排序器 & -- & -- & -- & \pend{} & \textbf{44.12} & \pend{} & \pend{} & \textbf{46.45} & \pend{} & -- & \pend{} & -- \\
+混合排序器（冻结，主配置） & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & \textbf{40.88} & 45.07 & \textbf{49.15} \\
 \bottomrule
 \end{tabular}}
-\caption{完整结果表：LongBench 1,150 个问答样本上，每种方法、每个模型、每个精确预算的宏平均 F1。完整上下文参考最多读取 3 万 token，与预算无关。Qwen2.5-32B 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节）。加粗：每列中最好的压缩结果。--：未运行。各任务分数见附录~\ref{app:pertask}。}
+\caption{完整结果表：LongBench 1,150 个问答样本上，每种方法、每个模型、每个精确预算的宏平均 F1。完整上下文参考最多读取 3 万 token，与预算无关。Qwen2.5-32B 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节）。加粗：每列中最好的压缩结果。--：未运行。$\circ$：正在运行，稍后填入。各任务分数见附录~\ref{app:pertask}。}
 \label{tab:main}
 \end{table*}
 
