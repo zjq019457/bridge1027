@@ -182,7 +182,7 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \multicolumn{2}{l}{完整上下文（30K，参考）} & 47.59 & 43.13 & 47.79 & 45.36 & \\
 \midrule
 \multicolumn{7}{l}{\textit{提示压缩}} \\
-\multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & -- & 27.77 & \\
+\multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & \pend{} & 27.77 & \\
 \multicolumn{2}{l}{LongLLMLingua} & 40.66 & 39.67 & 41.88 & 40.17 & \\
 \midrule
 \multicolumn{7}{l}{\textit{已发表的上下文构建方法}} \\
@@ -222,30 +222,30 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 完整上下文（参考） & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & \multicolumn{3}{c}{47.79} \\
 \midrule
 \multicolumn{13}{l}{\textit{提示压缩}} \\
-LLMLingua-2 & -- & 24.60 & -- & -- & 28.43 & -- & -- & 27.10 & -- & -- & -- & -- \\
-LongLLMLingua & -- & -- & -- & \pend{} & 39.67 & \pend{} & \pend{} & 40.66 & \pend{} & -- & 41.88 & -- \\
+LLMLingua-2 & \pend{} & 24.60 & \pend{} & \pend{} & 28.43 & \pend{} & \pend{} & 27.10 & \pend{} & \pend{} & \pend{} & \pend{} \\
+LongLLMLingua & \pend{} & \pend{} & \pend{} & \pend{} & 39.67 & \pend{} & \pend{} & 40.66 & \pend{} & \pend{} & 41.88 & \pend{} \\
 \midrule
 \multicolumn{13}{l}{\textit{已发表的上下文构建方法}} \\
-LlamaIndex 句子窗口 & -- & -- & -- & \pend{} & 36.96 & \pend{} & \pend{} & 39.99 & \pend{} & -- & 41.49 & -- \\
-LlamaIndex 自动合并 & -- & -- & -- & \pend{} & 39.13 & \pend{} & \pend{} & 41.50 & \pend{} & -- & 42.52 & -- \\
-Provence（BGE + 剪枝） & -- & -- & -- & \pend{} & 40.69 & \pend{} & \pend{} & 44.27 & \pend{} & -- & 45.66 & -- \\
-句子切块 + BGE & -- & -- & -- & \pend{} & 39.98 & \pend{} & \pend{} & 44.24 & \pend{} & -- & 44.34 & -- \\
+LlamaIndex 句子窗口 & \pend{} & \pend{} & \pend{} & \pend{} & 36.96 & \pend{} & \pend{} & 39.99 & \pend{} & \pend{} & 41.49 & \pend{} \\
+LlamaIndex 自动合并 & \pend{} & \pend{} & \pend{} & \pend{} & 39.13 & \pend{} & \pend{} & 41.50 & \pend{} & \pend{} & 42.52 & \pend{} \\
+Provence（BGE + 剪枝） & \pend{} & \pend{} & \pend{} & \pend{} & 40.69 & \pend{} & \pend{} & 44.27 & \pend{} & \pend{} & 45.66 & \pend{} \\
+句子切块 + BGE & \pend{} & \pend{} & \pend{} & \pend{} & 39.98 & \pend{} & \pend{} & 44.24 & \pend{} & \pend{} & 44.34 & \pend{} \\
 词法配对打包 & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 37.51 & 42.57 & 44.77 \\
 \midrule
 \multicolumn{13}{l}{\textit{切块打包}} \\
 BGE-small 切块 & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
-BGE-small chunks + LongContextReorder & -- & -- & -- & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & 37.42 & 42.34 & 45.96 \\
-BGE-large 切块 & -- & -- & -- & \pend{} & 40.12 & \pend{} & \pend{} & 42.55 & \pend{} & 39.93 & 43.04 & 47.14 \\
-重排序切块 & -- & -- & -- & \pend{} & 42.21 & \pend{} & \pend{} & 44.37 & \pend{} & 41.74 & 45.09 & 48.15 \\
+BGE-small chunks + LongContextReorder & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & 37.42 & 42.34 & 45.96 \\
+BGE-large 切块 & \pend{} & \pend{} & \pend{} & \pend{} & 40.12 & \pend{} & \pend{} & 42.55 & \pend{} & 39.93 & 43.04 & 47.14 \\
+重排序切块 & \pend{} & \pend{} & \pend{} & \pend{} & 42.21 & \pend{} & \pend{} & 44.37 & \pend{} & 41.74 & 45.09 & 48.15 \\
 \midrule
 \multicolumn{13}{l}{\textit{\spk{}}} \\
 BGE-small + \spk{} & 35.64 & \textbf{40.76} & 43.14 & 36.16 & 41.67 & \textbf{43.58} & 39.21 & 45.18 & \textbf{48.10} & 40.34 & 46.28 & 49.01 \\
-BGE-large + \spk{} & -- & -- & -- & \pend{} & 43.98 & \pend{} & \pend{} & 46.23 & \pend{} & 41.05 & 46.52 & 49.25 \\
-重排序器 + \spk{} & -- & -- & -- & \pend{} & \textbf{44.12} & \pend{} & \pend{} & \textbf{46.45} & \pend{} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
+BGE-large + \spk{} & \pend{} & \pend{} & \pend{} & \pend{} & 43.98 & \pend{} & \pend{} & 46.23 & \pend{} & 41.05 & 46.52 & 49.25 \\
+重排序器 + \spk{} & \pend{} & \pend{} & \pend{} & \pend{} & \textbf{44.12} & \pend{} & \pend{} & \textbf{46.45} & \pend{} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
 混合 + \spk{}（冻结，主配置） & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 \\
 \bottomrule
 \end{tabular}}
-\caption{完整结果表：LongBench 1,150 个问答样本上，每种方法、每个模型、每个精确预算的宏平均 F1。完整上下文参考最多读取 3 万 token，与预算无关。Qwen2.5-32B 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节）。加粗：每列中最好的压缩结果。\spk{} 是打包器，可接在任何排序器之后：混合配置在测试前于开发集上固定，其余 \spk{} 各行把它与切块打包各行所用的排序器配对。--：未运行。$\circ$：正在运行，稍后填入。各任务分数见附录~\ref{app:pertask}。}
+\caption{完整结果表：LongBench 1,150 个问答样本上，每种方法、每个模型、每个精确预算的宏平均 F1。完整上下文参考最多读取 3 万 token，与预算无关。Qwen2.5-32B 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节）。加粗：每列中最好的压缩结果。\spk{} 是打包器，可接在任何排序器之后：混合配置在测试前于开发集上固定，其余 \spk{} 各行把它与切块打包各行所用的排序器配对。$\circ$：正在运行，稍后填入。各任务分数见附录~\ref{app:pertask}。}
 \label{tab:main}
 \end{table*}
 
