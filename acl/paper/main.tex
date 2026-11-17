@@ -181,7 +181,7 @@ Ranker & Packing / system & Qwen-14B & Llama-8B & Qwen-32B & Avg.\textsuperscrip
 \midrule
 \multicolumn{7}{l}{\textit{Prompt compression}} \\
 \multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & \pend{} & 27.77 & \\
-\multicolumn{2}{l}{LongLLMLingua} & 40.66 & 39.67 & 41.88 & 40.17 & \\
+\multicolumn{2}{l}{LongLLMLingua} & 40.77 & 39.58 & 41.88 & 40.18 & \\
 \midrule
 \multicolumn{7}{l}{\textit{Published context construction}} \\
 \multicolumn{2}{l}{LlamaIndex sentence window} & 39.99 & 36.96 & 41.49 & 38.48 & \\
@@ -222,13 +222,13 @@ Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13}
 \midrule
 \multicolumn{13}{l}{\textit{Prompt compression}} \\
 LLMLingua-2 & \pend{} & 24.60 & \pend{} & \pend{} & 28.43 & \pend{} & \pend{} & 27.10 & \pend{} & \pend{} & \pend{} & \pend{} \\
-LongLLMLingua & \pend{} & \pend{} & \pend{} & \pend{} & 39.67 & \pend{} & \pend{} & 40.66 & \pend{} & \pend{} & 41.88 & \pend{} \\
+LongLLMLingua & \pend{} & \pend{} & \pend{} & 32.06 & 39.58 & \pend{} & 34.68 & 40.77 & \pend{} & \pend{} & 41.88 & \pend{}  \\
 \midrule
 \multicolumn{13}{l}{\textit{Published context construction}} \\
-LlamaIndex sentence window & \pend{} & \pend{} & \pend{} & \pend{} & 36.96 & \pend{} & \pend{} & 39.99 & \pend{} & \pend{} & 41.49 & \pend{} \\
-LlamaIndex auto-merging & \pend{} & \pend{} & \pend{} & \pend{} & 39.13 & \pend{} & \pend{} & 41.50 & \pend{} & \pend{} & 42.52 & \pend{} \\
-Provence (BGE + pruning) & \pend{} & \pend{} & \pend{} & \pend{} & 40.69 & \pend{} & \pend{} & 44.27 & \pend{} & \pend{} & 45.66 & \pend{} \\
-Sentence chunks + BGE & \pend{} & \pend{} & \pend{} & \pend{} & 39.98 & \pend{} & \pend{} & 44.24 & \pend{} & \pend{} & 44.34 & \pend{} \\
+LlamaIndex sentence window & \pend{} & \pend{} & \pend{} & 32.65 & 36.96 & 41.35 & 35.86 & 39.99 & 45.50 & \pend{} & 41.49 & \pend{}  \\
+LlamaIndex auto-merging & \pend{} & \pend{} & \pend{} & 33.23 & 39.13 & 43.52 & 34.65 & 41.50 & 45.93 & \pend{} & 42.52 & \pend{}  \\
+Provence (BGE + pruning) & \pend{} & \pend{} & \pend{} & \textbf{39.62} & 40.69 & 41.36 & \textbf{42.70} & 44.27 & 44.36 & \pend{} & 45.66 & \pend{}  \\
+Sentence chunks + BGE & \pend{} & \pend{} & \pend{} & 35.73 & 39.98 & 43.11 & 40.04 & 44.24 & 47.79 & \pend{} & 44.34 & \pend{}  \\
 Lexical pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 37.51 & 42.57 & 44.77 \\
 \midrule
 \multicolumn{13}{l}{\textit{Chunk packing}} \\
@@ -242,7 +242,7 @@ Reranker chunks & \pend{} & \pend{} & \pend{} & \pend{} & 42.21 & \pend{} & \pen
 BGE-small + \spk{} & 35.64 & \textbf{40.76} & 43.14 & 36.16 & 41.67 & \textbf{43.58} & 39.21 & 45.18 & \textbf{48.10} & 40.34 & 46.28 & 49.01 \\
 BGE-large + \spk{} & \pend{} & \pend{} & \pend{} & \pend{} & 43.98 & \pend{} & \pend{} & 46.23 & \pend{} & 41.05 & 46.52 & 49.25 \\
 Reranker + \spk{} & \pend{} & \pend{} & \pend{} & \pend{} & \textbf{44.12} & \pend{} & \pend{} & \textbf{46.45} & \pend{} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
-Hybrid + \spk{} (frozen, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \textbf{36.44} & 40.98 & 42.78 & \textbf{40.44} & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 \\
+Hybrid + \spk{} (frozen, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15  \\
 \bottomrule
 \end{tabular}}
 \caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column. \spk{} is a packer and can follow any ranker: the hybrid configuration was fixed on the development split before testing, and the other \spk{} rows pair it with the rankers of the chunk-packing rows. $\circ$: running, to be filled in. Per-task scores are in Appendix~\ref{app:pertask}.}
