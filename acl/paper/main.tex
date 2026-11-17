@@ -190,7 +190,7 @@ Ranker & Packing / system & Qwen-14B & Llama-8B & Qwen-32B & Avg.\textsuperscrip
 \multicolumn{2}{l}{Sentence chunks + BGE} & 44.24 & 39.98 & 44.34 & 42.11 & \\
 \multicolumn{2}{l}{BGE chunks + LongContextReorder} & \pend{} & \pend{} & 42.34 & \pend{} & \\
 \multicolumn{2}{l}{BGE chunks + EmbeddingsRedundantFilter} & \pend{} & \pend{} & \pend{} & \pend{} & \\
-\multicolumn{2}{l}{Provence (BGE + pruning)} & 44.27 & 40.69 & 45.66 & 42.48 & \\
+\multicolumn{2}{l}{Provence (BGE + pruning)$^\dagger$} & 44.27 & 40.69 & 45.66 & 42.48 & \\
 \midrule
 \multicolumn{7}{l}{\textit{Same ranking, chunk packing vs.\ \spk{}}} \\
 \multirow{2}{*}{BGE-small} & chunks & 42.34 & 38.99 & 42.40 & 40.67 & \\
@@ -199,11 +199,12 @@ Ranker & Packing / system & Qwen-14B & Llama-8B & Qwen-32B & Avg.\textsuperscrip
  & \spk{} & 46.23 & 43.98 & 46.52 & 45.11 & \textbf{+3.77}$^{***}$ \\
 \multirow{2}{*}{\shortstack[l]{BGE + bge-\\reranker-v2-m3}} & chunks & 44.37 & 42.21 & 45.09 & 43.29 & \\
  & \spk{} & \textbf{46.45} & \textbf{44.12} & \textbf{47.32} & \textbf{45.29} & \textbf{+2.00}$^{***}$ \\
+\multicolumn{2}{l}{Provence + \spk{} (BGE)} & \pend{} & \pend{} & \pend{} & \pend{} & \\
 \midrule
 \multicolumn{2}{l}{\spk{} (frozen hybrid configuration)} & 44.32 & 40.98 & 45.07 & 42.65 & \\
 \bottomrule
 \end{tabular}}
-\caption{All methods at 1,024 tokens on LongBench QA (1,150 instances, macro F1). $\Delta$: \spk{} minus chunk packing \emph{with the same ranking}, pooled over Qwen-14B and Llama-8B ($^{***}$: $p\le0.001$; significant for each model separately as well). With a reranker, \spk{} reaches 45.29 F1, on par with the 30K-token full context (45.36), from 1/12 of the input. \spk{} is a packer and can follow any ranker: the frozen hybrid configuration was fixed on the development split before testing; the other rows pair it with the ranker of the chunk-packing row above. Table~\ref{tab:main} varies the budget and the model. \textsuperscript{b}Average over Qwen-14B and Llama-8B. $\circ$: running, to be filled in.}
+\caption{All methods at 1,024 tokens on LongBench QA (1,150 instances, macro F1). $\Delta$: \spk{} minus chunk packing \emph{with the same ranking}, pooled over Qwen-14B and Llama-8B ($^{***}$: $p\le0.001$; significant for each model separately as well). With a reranker, \spk{} reaches 45.29 F1, on par with the 30K-token full context (45.36), from 1/12 of the input. \spk{} is a packer and can follow any ranker: the frozen hybrid configuration was fixed on the development split before testing; the other rows pair it with the ranker of the chunk-packing row above. Table~\ref{tab:main} varies the budget and the model. \textsuperscript{b}Average over Qwen-14B and Llama-8B. $\circ$: running, to be filled in. $^\dagger$Uses a context pruner trained with supervision for this purpose; \spk{} needs no training. }
 \label{tab:external}
 \end{table}
 
@@ -227,7 +228,7 @@ LongLLMLingua & \pend{} & \pend{} & \pend{} & 32.06 & 39.58 & \pend{} & 34.68 & 
 \multicolumn{13}{l}{\textit{Published context construction}} \\
 LlamaIndex sentence window & \pend{} & \pend{} & \pend{} & 32.65 & 36.96 & 41.35 & 35.86 & 39.99 & 45.50 & \pend{} & 41.49 & \pend{}  \\
 LlamaIndex auto-merging & \pend{} & \pend{} & \pend{} & 33.23 & 39.13 & 43.52 & 34.65 & 41.50 & 45.93 & \pend{} & 42.52 & \pend{}  \\
-Provence (BGE + pruning) & \pend{} & \pend{} & \pend{} & \textbf{39.62} & 40.69 & 41.36 & \textbf{42.70} & 44.27 & 44.36 & \pend{} & 45.66 & \pend{}  \\
+Provence (BGE + pruning)$^\dagger$ & \pend{} & \pend{} & \pend{} & \textbf{39.62} & 40.69 & 41.36 & \textbf{42.70} & 44.27 & 44.36 & \pend{} & 45.66 & \pend{}  \\
 Sentence chunks + BGE & \pend{} & \pend{} & \pend{} & 35.73 & 39.98 & 43.11 & 40.04 & 44.24 & 47.79 & \pend{} & 44.34 & \pend{}  \\
 Lexical pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 37.51 & 42.57 & 44.77 \\
 \midrule
@@ -242,10 +243,11 @@ Reranker chunks & \pend{} & \pend{} & \pend{} & \pend{} & 42.21 & \pend{} & \pen
 BGE-small + \spk{} & 35.64 & \textbf{40.76} & 43.14 & 36.16 & 41.67 & \textbf{43.58} & 39.21 & 45.18 & \textbf{48.10} & 40.34 & 46.28 & 49.01 \\
 BGE-large + \spk{} & \pend{} & \pend{} & \pend{} & \pend{} & 43.98 & \pend{} & \pend{} & 46.23 & \pend{} & 41.05 & 46.52 & 49.25 \\
 Reranker + \spk{} & \pend{} & \pend{} & \pend{} & \pend{} & \textbf{44.12} & \pend{} & \pend{} & \textbf{46.45} & \pend{} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
+Provence + \spk{} (BGE) & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} \\
 Hybrid + \spk{} (frozen, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15  \\
 \bottomrule
 \end{tabular}}
-\caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column. \spk{} is a packer and can follow any ranker: the hybrid configuration was fixed on the development split before testing, and the other \spk{} rows pair it with the rankers of the chunk-packing rows. $\circ$: running, to be filled in. Per-task scores are in Appendix~\ref{app:pertask}.}
+\caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column. \spk{} is a packer and can follow any ranker: the hybrid configuration was fixed on the development split before testing, and the other \spk{} rows pair it with the rankers of the chunk-packing rows. $\circ$: running, to be filled in. Per-task scores are in Appendix~\ref{app:pertask}. $^\dagger$Uses a context pruner trained with supervision for this purpose; \spk{} needs no training. }
 \label{tab:main}
 \end{table*}
 
