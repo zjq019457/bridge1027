@@ -249,6 +249,7 @@ Hybrid + \spk{} (frozen, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & \text
 \label{tab:main}
 \end{table*}
 
+
 \begin{table}[t]
 \centering
 \small
@@ -798,6 +799,30 @@ Model & $B$ & Low dup. & Mid dup. & High dup. \\
 \end{table}
 
 Table~\ref{tab:terciles} gives the full tercile analysis summarised in Section~\ref{sec:components}. The largest F1 gain falls in the most redundant tercile in four of the six settings, and at 512 and 1,024 tokens the coverage gain grows monotonically with duplication on both models.
+
+\section{MultiHop-RAG: Duplication with Common Chunkers}
+\label{app:mhrag}
+To see how much duplication standard packing produces outside LongBench, we run the retrieval and packing stages (no LLM) on all 2,255 non-null queries of MultiHop-RAG \citep{tang2024multihoprag}, a corpus of 609 news articles, with four common chunkers, BGE-small ranking and a 1,024-token budget (Qwen tokenizer). For each chunker we pack the same ranked list either as standard top-$k$ chunks or with \spk{}, and report the share of duplicated tokens, gold-evidence recall and whether the gold answer string appears in the context (Table~\ref{tab:mhrag}). Duplication tracks the chunker: overlapping sentence windows duplicate 7.4\% of the context and \spk{} cuts this to 2.7\%, raising evidence recall by 1.5 points; with small overlapping chunks it halves duplication; with large chunks and little overlap there is almost nothing to remove and \spk{} returns the same context. The gain is therefore proportional to the waste the chunker creates, as in Section~\ref{sec:diag}.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{2}{c}{Dup.\ (\%)} & \multicolumn{2}{c}{Evid.\ rec.} & \multicolumn{2}{c}{Ans.\ cov.} \\
+Chunker & Std & \spk{} & Std & \spk{} & Std & \spk{} \\
+\midrule
+LlamaIndex sentence window (3) & 7.4 & 2.7 & 24.1 & 25.6 & 80.2 & 79.2 \\
+LlamaIndex 256/50 & 2.7 & 1.2 & 27.8 & 28.0 & 74.9 & 75.0 \\
+LangChain 1000/200 chars & 2.4 & 1.7 & 31.3 & 31.6 & 76.6 & 76.6 \\
+LlamaIndex 1024/200 (default) & 0.7 & 0.7 & 15.8 & 15.8 & 58.6 & 58.6 \\
+\bottomrule
+\end{tabular}}
+\caption{MultiHop-RAG (2,255 queries, BGE-small ranking, 1,024 tokens): duplicated tokens, gold-evidence recall and answer-string coverage for standard packing (Std) and \spk{} over the same ranked chunks. Results at 2,048 tokens are running.}
+\label{tab:mhrag}
+\end{table}
 
 \section{Additional Baselines}
 \label{app:extra}

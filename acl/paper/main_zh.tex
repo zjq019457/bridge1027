@@ -251,6 +251,7 @@ BGE-large + \spk{} & \pend{} & \pend{} & \pend{} & \pend{} & 43.98 & \pend{} & \
 \label{tab:main}
 \end{table*}
 
+
 \begin{table}[t]
 \centering
 \small
@@ -800,6 +801,30 @@ $B$ & 打包器 & 答案覆盖 & 重复（\%） & 句末（\%） & token 数 \\
 \end{table}
 
 表~\ref{tab:terciles} 给出第~\ref{sec:components} 节概括的完整三等分分析。六种设置中有四种的最大 F1 提升出现在重复最多的一组；在 512 和 1,024 token 下，两个模型的覆盖提升都随重复率单调增加。
+
+\section{MultiHop-RAG：常见切块器下的重复}
+\label{app:mhrag}
+为了检验 LongBench 之外标准打包会产生多少重复，我们在 MultiHop-RAG \citep{tang2024multihoprag}（609 篇新闻文章）的全部 2,255 个非空查询上运行检索与打包阶段（不调用 LLM），使用四种常见切块器、BGE-small 排序和 1,024 token 预算（Qwen 分词器）。对每种切块器，我们把同一排序列表分别按标准 top-$k$ 切块和 \spk{} 打包，报告重复 token 比例、金标证据召回率以及金标答案字符串是否出现在上下文中（表~\ref{tab:mhrag}）。重复程度取决于切块器：相互重叠的句子窗口使 7.4\% 的上下文重复，\spk{} 将其降到 2.7\%，证据召回提高 1.5 个点；对有重叠的小切块，重复减半；对重叠很少的大切块，几乎没有可去除的重复，\spk{} 给出相同的上下文。因此收益与切块器造成的浪费成正比，与第~\ref{sec:diag} 节一致。
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{2}{c}{Dup.\ (\%)} & \multicolumn{2}{c}{Evid.\ rec.} & \multicolumn{2}{c}{Ans.\ cov.} \\
+Chunker & Std & \spk{} & Std & \spk{} & Std & \spk{} \\
+\midrule
+LlamaIndex sentence window (3) & 7.4 & 2.7 & 24.1 & 25.6 & 80.2 & 79.2 \\
+LlamaIndex 256/50 & 2.7 & 1.2 & 27.8 & 28.0 & 74.9 & 75.0 \\
+LangChain 1000/200 chars & 2.4 & 1.7 & 31.3 & 31.6 & 76.6 & 76.6 \\
+LlamaIndex 1024/200 (default) & 0.7 & 0.7 & 15.8 & 15.8 & 58.6 & 58.6 \\
+\bottomrule
+\end{tabular}}
+\caption{MultiHop-RAG（2,255 个查询，BGE-small 排序，1,024 token）：在相同排序切块上，标准打包（Std）与 \spk{} 的重复 token 比例、金标证据召回率和答案字符串覆盖率。2,048 token 的结果正在运行。}
+\label{tab:mhrag}
+\end{table}
 
 \section{补充基线}
 \label{app:extra}
