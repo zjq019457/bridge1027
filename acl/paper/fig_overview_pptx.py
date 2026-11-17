@@ -202,10 +202,12 @@ budget(BX0, BX0 + BW, 5.78, "1,024 tokens, no duplicates, more evidence", C["blu
 # LLM column
 box(LLX, 1.3, LLW, 4.8, fill=C["panel"], line=C["mute"], lw=1.25, kind=RRECT, radius=0.08, name="LLM")
 lg = 0.36
-for i, f in enumerate(("qwen_t.png", "meta_t.png", "mistral_t.png")):
-    sh.add_picture(str(HERE / "logos" / f), Inches(LLX + 0.1 + i * (lg + 0.065)), Inches(1.45), Inches(lg), Inches(lg))
+logos = ("qwen_t.png", "meta_t.png")
+x0 = LLX + (LLW - (len(logos) * lg + (len(logos) - 1) * 0.12)) / 2  # centre the logos in the column
+for i, f in enumerate(logos):
+    sh.add_picture(str(HERE / "logos" / f), Inches(x0 + i * (lg + 0.12)), Inches(1.45), Inches(lg), Inches(lg))
 text("LLM", LLX, 1.9, LLW, 0.45, size=22)
-text("Qwen2.5 / Llama-3.1\n/ Mistral, 7B–32B", LLX, 2.35, LLW, 0.45, size=8, color=C["mute"])
+text("Qwen2.5 / Llama-3.1\n7B–32B", LLX, 2.35, LLW, 0.45, size=8, color=C["mute"])
 pill("prefill", LLX + 0.15, 3.15, LLW - 0.3, 0.38, C["ink"], line=C["line"], size=13)
 line(LLX + LLW / 2, 3.53, LLX + LLW / 2, 3.9)
 pill("KV cache", LLX + 0.15, 3.9, LLW - 0.3, 0.38, C["ink"], line=C["line"], fill=C["panel2"], size=13)
