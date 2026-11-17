@@ -390,3 +390,42 @@ def lcr_chunk(s, tok, budget=1024, neighbor=32, top_k=64):
         else:
             reordered.insert(0, p)
     return _emit(tok, q, reordered, budget)
+
+
+_ERF = {}
+def _erf_embed(texts):
+    """bge-small CLS embeddings (normalised), as LangChain would compute for the retrieved documents."""
+    import os, torch
+    from transformers import AutoModel, AutoTokenizer
+    if not _ERF:
+        p = os.environ.get("BGE_PATH", os.path.join(os.environ.get("BP_ROOT", "/root/autodl-tmp"), "models", "bge-small"))
+        torch.set_num_threads(int(os.environ.get("ERF_THREADS", "4")))
+        _ERF["tok"] = AutoTokenizer.from_pretrained(p); _ERF["m"] = AutoModel.from_pretrained(p).eval()
+    out = []
+    with torch.no_grad():
+        for i in range(0, len(texts), 32):
+            b = _ERF["tok"](texts[i:i + 32], padding=True, truncation=True, max_length=512, return_tensors="pt")
+            e = _ERF["m"](**b).last_hidden_state[:, 0]
+            out.append(torch.nn.functional.normalize(e, dim=-1))
+    return torch.cat(out).numpy() if out else None
+
+
+def erf_chunk(s, tok, budget=1024, neighbor=32, top_k=64, thr=0.95):
+    """BGE chunk packing after LangChain EmbeddingsRedundantFilter (default similarity_threshold=0.95):
+    a retrieved chunk is dropped if its embedding has cosine > thr with an earlier (higher-ranked) kept chunk."""
+    q = s["question"]
+    cands, page_map = etp.build_candidate_spans(s["sample_id"], s["task"], q, s["context"])
+    sims = _bge_sims(s) or {}
+    ranked = sorted(cands, key=lambda c: -sims.get(c.span_id, 0.0))[:top_k]
+    pieces = [etp._expanded_piece(c, page_map, neighbor, role="support", use_tags=False)[0] for c in ranked]
+    E = _erf_embed(pieces)
+    keep = []
+    for i in range(len(pieces)):
+        if all(float(E[i] @ E[j]) <= thr for j in keep):
+            keep.append(i)
+    prefix = etp._prefix(q, False)
+    out = []
+    for i in keep:
+        if len(tok("\n\n".join([prefix, *out, pieces[i]]).strip()).input_ids) <= budget:
+            out.append(pieces[i])
+    return _emit(tok, q, out, budget)

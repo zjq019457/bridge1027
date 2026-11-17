@@ -77,7 +77,7 @@
 Selective Context 删除自信息量低的词汇单元 \citep{li2023selectivecontext}。LLMLingua 和 LongLLMLingua 用一个小型语言模型估计 token 的重要性，后者还采用了感知问题的由粗到细压缩 \citep{jiang2023llmlingua,jiang2024longllmlingua}；LLMLingua-2 把保留/删除标签蒸馏到一个双向编码器中 \citep{pan2024llmlingua2}。CPC 用训练过的编码器按问题给句子打分 \citep{liskavets2025cpc}，RECOMP 和 CompAct 则训练抽取式或生成式压缩器 \citep{xu2023recomp,yoon2024compact}。\spk{} 无需训练，从不改动保留段落内部的文字，并且与学习型打分器互补：任何打分器都可以为它提供排序。
 
 \paragraph{检索式上下文构建。}
-检索增强生成用稀疏 \citep{robertson2009probabilistic} 或稠密 \citep{karpukhin2020dense,xiao2023cpack} 检索器对段落排序，并拼接排名靠前的结果 \citep{lewis2020retrieval,izacard2021leveraging}；考虑多样性的选择方法 \citep{carbonell1998mmr} 和多跳检索 \citep{xiong2021answering,trivedi2023interleaving} 改进的是\emph{选哪些}单元。我们研究的是与之互补的问题：在精确预算下，如何把选中的单元变成上下文；并且证明仅这一步就能让 F1 变化 2--4 分。已有实践者观察到，重叠切块会返回几乎重复的相邻块，浪费提示预算，一个工业系统因此限制所选块之间的索引间隔 \citep{sundar2026overlap}；也有工作测量了 RAG 语料中完全相同的块或文档的去重比例 \citep{bytedup2026}，并有报告指出句子窗口检索不如固定大小切块 \citep{eibich2024aragog}。据我们所知，标准打包在单篇长文档内部花在重复文字上的预算比例，以及它对准确率的影响，此前尚未被量化。
+检索增强生成用稀疏 \citep{robertson2009probabilistic} 或稠密 \citep{karpukhin2020dense,xiao2023cpack} 检索器对段落排序，并拼接排名靠前的结果 \citep{lewis2020retrieval,izacard2021leveraging}；考虑多样性的选择方法 \citep{carbonell1998mmr} 和多跳检索 \citep{xiong2021answering,trivedi2023interleaving} 改进的是\emph{选哪些}单元。我们研究的是与之互补的问题：在精确预算下，如何把选中的单元变成上下文；并且证明仅这一步就能让 F1 变化 2--4 分。已有实践者观察到，重叠切块会返回几乎重复的相邻块，浪费提示预算，一个工业系统因此限制所选块之间的索引间隔 \citep{sundar2026overlap}；也有工作测量了 RAG 语料中完全相同的块或文档的去重比例 \citep{bytedup2026}，并有报告指出句子窗口检索不如固定大小切块 \citep{eibich2024aragog}。也有一些系统会把检索到的切块向两侧扩展并合并：MacRAG 按 token 偏移合并相邻切块 \citep{lim2025macrag}，SINR 把细粒度的检索切块映射到更大的、互不重叠的父切块 \citep{nainwani2025search}，查询自适应切块在种子句子周围扩展窗口 \citep{rastogi2026qasc}，LlamaIndex auto-merging 则用父切块替换兄弟切块。同期工作 \citet{bala2026recall} 指出，答案能否保留到打包后的上下文中，比检索召回更能预测准确率，并在 96--224 token 的预算下用子模目标挑选短片段。这些工作把合并或选择内置在检索架构里；我们则固定排序，在精确预算下单独考察打包这一步，测量它去掉的重复内容，并证明正是去掉重复带来了准确率的提升。据我们所知，标准打包在单篇长文档内部花在重复文字上的预算比例，以及它对准确率的影响，此前尚未被量化。
 
 \paragraph{长上下文评测与 KV 缓存压缩。}
 LongBench \citep{bai2023longbench} 评测长输入上的问答，而模型对位于长上下文中间的证据利用不足 \citep{liu2024lost}。KV 缓存方法在生成过程中淘汰、合并或量化缓存的状态 \citep{xiao2023streamingllm,zhang2023h2o,li2024snapkv,liu2024kivi}。\spk{} 则是在预填充之前缩短输入，因此完整上下文从未被编码。
@@ -162,7 +162,7 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \emph{配对打包}：一种结构化的词法打包器，用词法排序器、词法桥接分数和冗余惩罚选择“查询--支撑”片段对，每个片段用固定的 $\pm$32 窗口补全，依次纳入片段对直到第一个放不下的为止，并按原文顺序输出。它代表“结构化、面向多跳的选择 + 常规打包”。
 \emph{LLMLingua-2} \citep{pan2024llmlingua2}（\texttt{xlm-roberta-large-meetingbank}），要求其把上下文压缩到预算以内；输出放在同样的前缀之后，必要时截断到 $B$ 个下游 token。
 \emph{完整上下文}：按 LongBench 的做法，把完整上下文从中间截断到 3 万个 token（所有模型使用 32K 窗口），作为参考。
-第~\ref{sec:external} 节还加入了更强的排序器（BGE-large；在 BGE 前 100 个片段上使用 \texttt{bge-reranker-v2-m3}）以及已发表的系统：LlamaIndex 的句子窗口检索器和自动合并检索器 \citep{liu2022llamaindex}（官方节点解析器，默认窗口 3、层级 2048/512/128、合并阈值 0.5，用 BGE-small 检索）、用 BGE 排序的不超过 64 词的句子对齐块、应用于 BGE 前 60 个块的 Provence \citep{chirkova2025provence}，以及使用其推荐的问题感知设置的 LongLLMLingua \citep{jiang2024longllmlingua}。LongLLMLingua 使用 Llama-3.1-8B-Instruct 作为压缩用的语言模型；它在 1,150 个样本中有 26 个（2.3\%）失败，这些样本退回使用上下文开头部分。所有这些方法都在相同的精确预算下打包，各单元按其自身的排名顺序在放得下时纳入。
+第~\ref{sec:external} 节还加入了更强的排序器（BGE-large；在 BGE 前 100 个片段上使用 \texttt{bge-reranker-v2-m3}）以及已发表的系统：LlamaIndex 的句子窗口检索器和自动合并检索器 \citep{liu2022llamaindex}（官方节点解析器，默认窗口 3、层级 2048/512/128、合并阈值 0.5，用 BGE-small 检索）、用 BGE 排序的不超过 64 词的句子对齐块、应用于 BGE 前 60 个块的 Provence \citep{chirkova2025provence}，以及使用其推荐的问题感知设置的 LongLLMLingua \citep{jiang2024longllmlingua}。LongLLMLingua 使用 Llama-3.1-8B-Instruct 作为压缩用的语言模型；它在 1,150 个样本中有 26 个（2.3\%）失败，这些样本退回使用上下文开头部分。我们还在打包前对 BGE 切块使用两个 LangChain 文档变换器 \citep{chase2022langchain}：\texttt{LongContextReorder} 把最相关的切块移到上下文两端；\texttt{EmbeddingsRedundantFilter}（默认阈值：BGE-small 嵌入的余弦相似度 0.95）删掉与排名更高的切块几乎相同的切块。所有这些方法都在相同的精确预算下打包，各单元按其自身的排名顺序在放得下时纳入。
 附录~\ref{app:extra} 给出了早期环境中配对打包器与截断、Selective Context 以及 BM25/TF-IDF 切块打包的比较。
 
 \paragraph{统计方法。}所有比较都按样本配对。我们使用按任务分层的配对 bootstrap \citep{efron1993bootstrap}，重采样 10,000 次，随机种子 20260701；统计量是各任务平均差值的宏平均。合并结果在 18 个模型--任务分层内重采样。我们报告 95\% 百分位区间和双侧 $p$ 值。
@@ -191,6 +191,7 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \multicolumn{2}{l}{词法配对打包} & 41.69 & 37.79 & 42.57 & 39.74 & \\
 \multicolumn{2}{l}{句子切块 + BGE} & 44.24 & 39.98 & 44.34 & 42.11 & \\
 \multicolumn{2}{l}{BGE chunks + LongContextReorder} & \pend{} & \pend{} & 42.34 & \pend{} & \\
+\multicolumn{2}{l}{BGE chunks + EmbeddingsRedundantFilter} & \pend{} & \pend{} & \pend{} & \pend{} & \\
 \multicolumn{2}{l}{Provence（BGE + 剪枝）} & 44.27 & 40.69 & 45.66 & 42.48 & \\
 \midrule
 \multicolumn{7}{l}{\textit{相同排序下，切块打包与 \spk{} 对比}} \\
@@ -235,6 +236,7 @@ Provence（BGE + 剪枝） & \pend{} & \pend{} & \pend{} & \pend{} & 40.69 & \pe
 \multicolumn{13}{l}{\textit{切块打包}} \\
 BGE-small 切块 & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
 BGE-small chunks + LongContextReorder & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & 37.42 & 42.34 & 45.96 \\
+BGE-small chunks + EmbeddingsRedundantFilter & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} \\
 BGE-large 切块 & \pend{} & \pend{} & \pend{} & \pend{} & 40.12 & \pend{} & \pend{} & 42.55 & \pend{} & 39.93 & 43.04 & 47.14 \\
 重排序切块 & \pend{} & \pend{} & \pend{} & \pend{} & 42.21 & \pend{} & \pend{} & 44.37 & \pend{} & 41.74 & 45.09 & 48.15 \\
 \midrule
