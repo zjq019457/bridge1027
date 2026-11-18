@@ -190,8 +190,8 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \multicolumn{2}{l}{LlamaIndex 自动合并} & 41.50 & 39.13 & 42.52 & 40.32 & \\
 \multicolumn{2}{l}{词法配对打包} & 41.69 & 37.79 & 42.57 & 39.74 & \\
 \multicolumn{2}{l}{句子切块 + BGE} & 44.24 & 39.98 & 44.34 & 42.11 & \\
-\multicolumn{2}{l}{BGE chunks + LongContextReorder} & \pend{} & 39.12 & 42.34 & \pend{} & \\
-\multicolumn{2}{l}{BGE chunks + EmbeddingsRedundantFilter} & \pend{} & 39.28 & 42.66 & \pend{} & \\
+\multicolumn{2}{l}{BGE chunks + LongContextReorder} & 41.48 & 39.12 & 42.34 & 40.30 & \\
+\multicolumn{2}{l}{BGE chunks + EmbeddingsRedundantFilter} & 42.41 & 39.28 & 42.66 & 40.84 & \\
 \multicolumn{2}{l}{Provence（BGE + 剪枝）$^\dagger$} & 44.27 & 40.69 & 45.66 & 42.48 & \\
 \midrule
 \multicolumn{7}{l}{\textit{相同排序下，切块打包与 \spk{} 对比}} \\
@@ -235,8 +235,8 @@ Provence（BGE + 剪枝）$^\dagger$ & \textbf{40.66} & 41.90 & 41.78 & 39.62 & 
 \midrule
 \multicolumn{13}{l}{\textit{切块打包}} \\
 BGE-small 切块 & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
-BGE-small chunks + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & \pend{} & \pend{} & \pend{} & 37.42 & 42.34 & 45.96 \\
-BGE-small chunks + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & \pend{} & \pend{} & \pend{} & 37.94 & 42.66 & 45.72 \\
+BGE-small chunks + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & \pend{} & 41.48 & 44.97 & 37.42 & 42.34 & 45.96 \\
+BGE-small chunks + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & 36.50 & 42.41 & 45.96 & 37.94 & 42.66 & 45.72 \\
 BGE-large 切块 & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.55 & 45.38 & 39.93 & 43.04 & 47.14 \\
 重排序切块 & 37.19 & 41.59 & 43.48 & 38.29 & 42.21 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
 \midrule
