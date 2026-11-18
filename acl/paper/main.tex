@@ -176,7 +176,7 @@ Appendix~\ref{app:extra} compares the pair packer with truncation, Selective Con
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l ccc ccc ccc ccc}
 \toprule
-& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & \multicolumn{3}{c}{Qwen2.5-32B (AWQ 4-bit)} \\
+& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & \multicolumn{3}{c}{Qwen2.5-32B$^\ddagger$} \\
 Full context (30K tokens) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & \multicolumn{3}{c}{47.79} \\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
 Budget (tokens) & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 \\
@@ -194,8 +194,8 @@ Lexical pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 4
 \midrule
 \multicolumn{13}{l}{\textit{Chunk packing}} \\
 BGE-small chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
-BGE-small chunks + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & 35.90 & 41.48 & 44.97 & 37.42 & 42.34 & 45.96 \\
-BGE-small chunks + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & 36.50 & 42.41 & 45.96 & 37.94 & 42.66 & 45.72 \\
+\ + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & 35.90 & 41.48 & 44.97 & 37.42 & 42.34 & 45.96 \\
+\ + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & 36.50 & 42.41 & 45.96 & 37.94 & 42.66 & 45.72 \\
 BGE-large chunks & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.55 & 45.38 & 39.93 & 43.04 & 47.14 \\
 Reranker chunks & 37.19 & 41.59 & 43.48 & 38.29 & 42.21 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
 Hybrid chunks & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} \\
@@ -207,7 +207,7 @@ Reranker + \spk{} & \underline{39.56} & \textbf{42.79} & \textbf{44.96} & \textb
 Hybrid + \spk{} & 36.74 & 40.64 & 43.60 & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 \\
 \bottomrule
 \end{tabular}}
-\caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column; underlined: second best. \spk{} is a packer and can follow any ranker: each \spk{} row pairs the same packer, fixed on the development split before testing, with the ranker of the corresponding chunk-packing row. Per-task scores are in Appendix~\ref{app:pertask}. $^\dagger$Uses a context pruner trained with supervision for this purpose; \spk{} needs no training. }
+\caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. $^\ddagger$Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). The two indented rows apply LangChain's document transformers to the BGE-small chunks. Bold: best compressed result in each column; underlined: second best. \spk{} is a packer and can follow any ranker: each \spk{} row pairs the same packer, fixed on the development split before testing, with the ranker of the corresponding chunk-packing row. Per-task scores are in Appendix~\ref{app:pertask}. $^\dagger$Uses a context pruner trained with supervision for this purpose; \spk{} needs no training. }
 \label{tab:main}
 \end{table*}
 
