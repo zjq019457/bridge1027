@@ -146,7 +146,7 @@ def _seed(s, cands, mode):
     return {i: lex[i] + dense[i] for i in ids}
 
 
-def bridge_hop(s, tok, budget=1024, k1=6, radius=32, beta=0.3, hop2_share=0.5, max_ents=12, seed_mode=0, sent=0):
+def bridge_hop(s, tok, budget=1024, k1=6, radius=32, beta=0.3, hop2_share=0.5, max_ents=12, seed_mode=0, sent=0, pool=60):
     q = s["question"]
     cands, page_map = etp.build_candidate_spans(s["sample_id"], s["task"], q, s["context"])
     if not cands:
@@ -187,14 +187,14 @@ def bridge_hop(s, tok, budget=1024, k1=6, radius=32, beta=0.3, hop2_share=0.5, m
         if c.span_id not in seen:
             seen.add(c.span_id)
             priority.append(c)
-        if len(priority) >= 60:
+        if len(priority) >= pool:
             break
     return _admit(tok, s, priority, page_map, budget, radius, sent)
 
 
-def lex_rep(s, tok, budget=1024, radius=32, seed_mode=0, sent=0):
+def lex_rep(s, tok, budget=1024, radius=32, seed_mode=0, sent=0, pool=60):
     """Control: hop-1 ranking only (lexical / dense / hybrid seeds), same repair/merge/admission."""
-    return bridge_hop(s, tok, budget, radius=radius, hop2_share=0.0, seed_mode=seed_mode, sent=sent)
+    return bridge_hop(s, tok, budget, radius=radius, hop2_share=0.0, seed_mode=seed_mode, sent=sent, pool=pool)
 
 
 def bge_chunk(s, tok, budget=1024, neighbor=32, top_k=64):
@@ -429,3 +429,204 @@ def erf_chunk(s, tok, budget=1024, neighbor=32, top_k=64, thr=0.95):
         if len(tok("\n\n".join([prefix, *out, pieces[i]]).strip()).input_ids) <= budget:
             out.append(pieces[i])
     return _emit(tok, q, out, budget)
+
+
+# ---------------------------------------------------------------------------------------------
+# Additional baselines (round 18): head / middle truncation, RECOMP extractive, Selective Context.
+# All fill the same context slot under the same exact downstream-token budget via _emit.
+# ---------------------------------------------------------------------------------------------
+import os as _os
+_AUX = _os.environ.get("BP_AUX", "/root/autodl-tmp/aux")
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+
+
+def _room(tok, q, budget):
+    return budget - len(tok(etp._prefix(q, False)).input_ids) - 4
+
+
+def head_trunc(s, tok, budget=1024):
+    """Keep the beginning of the context."""
+    q = s["question"]
+    ids = tok(s["context"]).input_ids[:max(0, _room(tok, q, budget))]
+    return _emit(tok, q, [tok.decode(ids)], budget)
+
+
+def mid_trunc(s, tok, budget=1024):
+    """LongBench-style middle truncation: keep the first and the last half of the room."""
+    q = s["question"]
+    room = max(0, _room(tok, q, budget))
+    ids = tok(s["context"]).input_ids
+    if len(ids) > room:
+        h = room // 2
+        text = tok.decode(ids[:h]) + "\n\n" + tok.decode(ids[len(ids) - (room - h):])
+    else:
+        text = tok.decode(ids)
+    return _emit(tok, q, [text], budget)
+
+
+import re as _re
+_SPLIT = _re.compile(r"(?<=[.!?])\s+|\n+")
+
+
+def _sentences(text):
+    return [x.strip() for x in _SPLIT.split(text) if x and len(x.strip()) > 1]
+
+
+_RC = {}
+
+
+def _recomp_embed(texts):
+    import torch
+    from transformers import AutoModel, AutoTokenizer
+    if not _RC:
+        torch.set_num_threads(int(_os.environ.get("RC_THREADS", "1")))
+        p = _os.path.join(_AUX, "hotpotqa_extractive_compressor")
+        _RC["tok"] = AutoTokenizer.from_pretrained(p); _RC["m"] = AutoModel.from_pretrained(p).eval()
+    out = []
+    with torch.no_grad():
+        for i in range(0, len(texts), 64):
+            b = _RC["tok"](texts[i:i + 64], padding=True, truncation=True, max_length=256, return_tensors="pt")
+            h = _RC["m"](**b).last_hidden_state
+            m = b["attention_mask"].unsqueeze(-1).float()
+            out.append((h * m).sum(1) / m.sum(1).clamp(min=1e-9))  # mean pooling (sentence-transformers config)
+    return torch.cat(out)
+
+
+_RCO = {}
+
+
+def _recomp_order(s, q, sents):
+    """Sentence order by RECOMP score, from cache/recomp_order.jsonl (rc_scores.py: same checkpoint and
+    pooling) when present, so the scores are computed once for every tokenizer."""
+    if not _RCO:
+        import json as _json
+        p, _RCO["d"] = _os.path.join(_HERE, "cache", "recomp_order.jsonl"), {}
+        if _os.path.exists(p):
+            for l in open(p, encoding="utf-8"):
+                r = _json.loads(l); _RCO["d"][r["key"]] = r
+    r = _RCO["d"].get(f"{s['task']}/{s['sample_id']}")
+    if r is not None and r["n"] == len(sents):
+        return r["order"]
+    E = _recomp_embed([q] + sents)
+    sc = (E[1:] @ E[0]).tolist()
+    return sorted(range(len(sents)), key=lambda i: -sc[i])
+
+
+def recomp_ext(s, tok, budget=1024):
+    """RECOMP extractive compressor (Xu et al., 2024; HotpotQA checkpoint): sentences ranked by the
+    dot product of their embedding with the question embedding, added in rank order while they fit."""
+    q = s["question"]
+    sents = _sentences(s["context"])
+    if not sents:
+        return _emit(tok, q, [], budget)
+    order = _recomp_order(s, q, sents)
+    prefix = etp._prefix(q, False)
+    chosen, used = [], len(tok(prefix).input_ids)
+    for i in order:
+        n = len(tok(sents[i]).input_ids) + 1
+        if used + n <= budget:
+            chosen.append(sents[i]); used += n
+        if used >= budget - 2:
+            break
+    return _emit(tok, q, [" ".join(chosen)], budget)
+
+
+_SC = {}
+
+
+def _sc():
+    if not _SC:
+        import sys
+        sys.path.insert(0, _os.path.join(_AUX, "sc_pkgs"))
+        import torch, spacy
+        from transformers import GPT2LMHeadModel, GPT2TokenizerFast
+        import selective_context as scm
+        torch.set_num_threads(int(_os.environ.get("SC_THREADS", "1")))
+
+        class LocalSC(scm.SelectiveContext):
+            def _prepare_phrase_tokenizer(self):
+                self.nlp = spacy.load(_os.path.join(_AUX, "en_core_web_sm_hf"), disable=["ner"])
+                self.nlp.add_pipe("merge_noun_chunks")
+
+            def _prepare_model(self):
+                p = _os.path.join(_AUX, "gpt2")
+                self.tokenizer = GPT2TokenizerFast.from_pretrained(p)
+                self.model = GPT2LMHeadModel.from_pretrained(p).to(self.device).eval()
+                self.max_token_length = self.model.config.n_positions
+                self.get_self_information = self._get_self_info_via_gpt2
+
+            def _get_self_info_via_gpt2(self, text):
+                # official computation, applied in windows of 1,023 tokens for the rare over-long sentence
+                with torch.no_grad():
+                    ids = self.tokenizer(text, add_special_tokens=False).input_ids
+                    toks, info, W = [], [], 1023
+                    for a in range(0, max(1, len(ids)), W):
+                        seg = [self.tokenizer.eos_token_id] + ids[a:a + W]
+                        x = torch.tensor([seg], device=self.device)
+                        lp = torch.log_softmax(self.model(input_ids=x).logits, dim=-1)
+                        si = -lp[0, :-1].gather(-1, x[0, 1:].unsqueeze(-1)).squeeze(-1)
+                        toks += [self.tokenizer.decode([t]) for t in seg[1:]]; info += si.tolist()
+                return toks, info
+
+        sc = LocalSC.__new__(LocalSC)
+        sc.model_type, sc.lang, sc.device = "gpt2", "en", torch.device(_os.environ.get("SC_DEVICE", "cpu"))
+        if sc.device.type == "cuda":
+            torch.cuda.set_per_process_memory_fraction(0.04)  # shared card
+        sc.sent_level_self_info = True
+        sc._prepare_phrase_tokenizer()
+        sc.sent_tokenize_pattern = r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s"
+        sc.phrase_mask_token, sc.sent_mask_token, sc.keep_leading_word, sc.mask_token = "", "<...some content omitted.>", False, ""
+        sc._prepare_model()
+        _SC["sc"] = sc
+    return _SC["sc"]
+
+
+def sel_ctx(s, tok, budget=1024):
+    """Selective Context (Li et al., 2023), official phrase-level masking with GPT-2 self-information.
+    The reduce ratio is set so the kept text fits the room; any overflow is cut at the end by _emit."""
+    q = s["question"]
+    room = max(1, _room(tok, q, budget))
+    n = len(tok(s["context"]).input_ids)
+    if n <= room:
+        return _emit(tok, q, [s["context"]], budget)
+    text, _ = _sc()(s["context"], reduce_ratio=min(0.99, 1 - room / n), reduce_level="phrase")
+    return _emit(tok, q, [text], budget)
+
+
+_SCU = {}
+
+
+def sel_ctx2(s, tok, budget=1024):
+    """Selective Context from cached phrase units (sc_units.py): identical masking rule to the official
+    self_info_mask at phrase level (drop units below the reduce-ratio percentile, join with '')."""
+    import json, numpy as np
+    if not _SCU:
+        for l in open(_os.environ.get("SC_CACHE", _os.path.join(_HERE, "cache", "sc_units.jsonl")), encoding="utf-8"):
+            r = json.loads(l); _SCU[r["key"]] = (r["text"], r["info"])
+    q = s["question"]
+    room = max(1, _room(tok, q, budget))
+    n = len(tok(s["context"]).input_ids)
+    if n <= room:
+        return _emit(tok, q, [s["context"]], budget)
+    texts, info = _SCU[f"{s['task']}/{s['sample_id']}"]
+    thr = np.nanpercentile(info, min(0.99, 1 - room / n) * 100)
+    kept = "".join(t for t, i in zip(texts, info) if not (i < thr))
+    return _emit(tok, q, [kept], budget)
+
+
+def hyb_chunk(s, tok, budget=1024, neighbor=32, top_k=64):
+    """Standard chunk packing with the hybrid ranker (z(lexical) + z(BGE-small), as in lex_rep seed_mode=2):
+    identical to bge_chunk except for the ranking."""
+    q = s["question"]
+    cands, page_map = etp.build_candidate_spans(s["sample_id"], s["task"], q, s["context"])
+    if not cands:
+        return _emit(tok, q, [], budget)
+    seed = _seed(s, cands, 2)
+    ranked = sorted(cands, key=lambda c: (-seed[c.span_id], c.source_order_index))[:top_k]
+    prefix = etp._prefix(q, False)
+    pieces = []
+    for c in ranked:
+        piece, _ = etp._expanded_piece(c, page_map, neighbor, role="support", use_tags=False)
+        if len(tok("\n\n".join([prefix, *pieces, piece]).strip()).input_ids) <= budget:
+            pieces.append(piece)
+    return _emit(tok, q, pieces, budget)
