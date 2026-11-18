@@ -216,7 +216,7 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l ccc ccc ccc ccc}
 \toprule
-& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & \multicolumn{3}{c}{Qwen2.5-32B (AWQ)} \\
+& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & \multicolumn{3}{c}{Qwen2.5-32B (AWQ 4-bit)} \\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
 方法 & \textbf{512} & 1,024 & 2,048 & \textbf{512} & 1,024 & 2,048 & \textbf{512} & 1,024 & 2,048 & \textbf{512} & 1,024 & 2,048 \\
 \midrule
@@ -291,7 +291,7 @@ BGE 切块 & \textbf{+3.68} & \textbf{+1.92} & \textbf{+2.26} \\
 
 一个自然的问题是：我们发现的浪费是否只对较弱的排序器有影响？表~\ref{tab:external} 在 Qwen2.5-14B 和 Llama-3.1-8B 上用两种更强的排序器重复了“只换打包器”的实验。使用 BGE-large 时，\spk{} 比切块打包高 3.77 F1；使用交叉编码重排序器（在 BGE 前 100 个片段上运行 \texttt{bge-reranker-v2-m3}）时高 2.00。因此，更好的排序器并不能消除打包浪费：更好的打包带来的提升，与把 BGE-small 换成 BGE-large 或加上重排序器所带来的提升相当，而且两者可以叠加。配合重排序器的 \spk{} 在两个模型上都是最好的压缩配置，在 Llama-3.1-8B 上甚至超过了 3 万 token 的完整上下文（44.12 对 43.13）。
 
-我们还在相同预算和模板下与已发表的上下文构建系统进行了比较。LlamaIndex 的句子窗口检索 \citep{liu2022llamaindex} 先检索单个句子，再把每个句子替换为其前后各 3 句的窗口，它比冻结配置的 \spk{} 低 4.18 F1；相邻高分句子的窗口严重重叠，这正是第~\ref{sec:diag} 节所说的重复。LlamaIndex 的自动合并检索器在父节点的大部分子块都被检索到时，用父节点替换这些叶子块，它比 \spk{} 低 2.33：在固定层级上合并能去掉部分重复，却会纳入大部分内容不相关的整个父节点。LongLLMLingua \citep{jiang2024longllmlingua} 低 2.48。Provence \citep{chirkova2025provence} 是一个训练过的剪枝器，会从每个检索块中删除无关句子，它与冻结配置接近（+0.17），但明显低于配合重排序器的 \spk{}（+2.80）；而 \spk{} 不需要训练剪枝器。最后，用 BGE 打包互不重叠的句子对齐块，从构造上就避免了重复，正如我们的诊断所预测的，它拿回了部分提升；使用相同 BGE 排序器的 \spk{} 仍高出 1.31 F1。
+我们还在相同预算和模板下与已发表的上下文构建系统进行了比较。LlamaIndex 的句子窗口检索 \citep{liu2022llamaindex} 先检索单个句子，再把每个句子替换为其前后各 3 句的窗口，它比冻结配置的 \spk{} 低 4.18 F1；相邻高分句子的窗口严重重叠，这正是第~\ref{sec:diag} 节所说的重复。LlamaIndex 的自动合并检索器在父节点的大部分子块都被检索到时，用父节点替换这些叶子块，它比 \spk{} 低 2.33：在固定层级上合并能去掉部分重复，却会纳入大部分内容不相关的整个父节点。LongLLMLingua \citep{jiang2024longllmlingua} 低 2.48。Provence \citep{chirkova2025provence} 是一个训练过的剪枝器，会从每个检索块中删除无关句子，它与冻结配置接近（+0.17），但明显低于配合重排序器的 \spk{}（+2.80）；而 \spk{} 不需要训练剪枝器。Provence 在最紧的预算下最强：512 token 时，它在 Qwen2.5-7B 上是最好的系统，在另外三个模型上排第二（表~\ref{tab:main}）。但它的剪枝器是一个在约 37 万个查询上有监督训练的 DeBERTa-v3-large 模型（第~\ref{sec:cost} 节），而 \spk{} 不需要任何训练；配合重排序器时，\spk{} 在 12 个模型--预算组合中的 11 个上领先于它。最后，用 BGE 打包互不重叠的句子对齐块，从构造上就避免了重复，正如我们的诊断所预测的，它拿回了部分提升；使用相同 BGE 排序器的 \spk{} 仍高出 1.31 F1。
 
 \subsection{问答之外的任务}
 \label{sec:extra}
@@ -685,6 +685,8 @@ BGE 切块 & \multicolumn{2}{c}{45.93} \\
 \label{tab:permodel}
 \end{table*}
 
+\paragraph{1,024 token 与完整上下文。} 在 1,024 token 时，冻结配置在每个模型上都低于完整上下文：Qwen2.5-7B 低 2.40 F1，Llama-3.1-8B 低 2.15，Qwen2.5-14B 低 3.27，Qwen2.5-32B 低 2.72（32B 模型上 $p=0.01$）。
+
 \section{更多消融实验}
 \label{app:ablation}
 
@@ -713,6 +715,35 @@ BGE 切块 & \multicolumn{2}{c}{45.93} \\
 \paragraph{其他预算下的合并。} 固定 BGE 排序时，仅加入合并即可在 512 token 下把 F1 从 36.33 提高到 37.96（Qwen2.5-14B）、从 33.27 提高到 34.58（Llama-3.1-8B），在 2,048 token 下从 45.29 提高到 46.70、从 40.81 提高到 42.66（合并后分别为 +1.47 [0.62, 2.34] 和 +1.64 [0.63, 2.65]）。
 
 \paragraph{Qwen2.5-32B 上的对照。} 第~\ref{sec:components} 节的去重对照在 32B 模型上同样成立。相对 BGE 切块打包（42.40），MMR 重排序达到 43.50（+1.10 [$-$0.06, 2.24]），跳过重叠切块达到 43.90（+1.49 [0.22, 2.74]），使用同一 BGE 排序的 \spk{} 达到 46.28（+3.88 [2.33, 5.37]）。MMR $<$ 仅跳过 $<$ \spk{} 的顺序与两个较小模型上相同。
+
+\paragraph{四个模型上的逐步构建。} 表~\ref{tab:comp4} 在 Qwen2.5-7B 和 Qwen2.5-32B 上重复了表~\ref{tab:components} 的逐步构建。合并在每个模型上都是提升最大的一步（四个模型合并后 +1.83 F1），去掉合并的损失也最大（$-$1.52），两者的区间都不包含 0。其余各步的作用较小，区间都包含 0。在 Qwen2.5-7B 上，去掉回填的 \spk{} 与完整打包器持平（40.78 对 40.76），MMR 重排序的得分高于跳过重叠切块（40.22 对 39.53）。
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+BGE 排序，1,024 token & Qwen-7B & Llama-8B & Qwen-14B & Qwen-32B & $\Delta$（合并） \\
+\midrule
+切块打包 & 38.85 & 39.03 & 42.34 & 42.54 & \\
+\ + 合并重叠范围 & 39.77 & 41.17 & 44.42 & 44.72 & +1.83 [1.00, 2.72] \\
+\ + 按文档顺序输出 & 40.52 & 41.05 & 44.75 & 45.57 & +0.45 [$-$0.23, 1.09] \\
+\ + 句子对齐补全（= \spk{}） & 40.76 & 41.67 & 45.18 & 46.28 & +0.50 [$-$0.31, 1.35] \\
+\midrule
+\spk{} 去掉回填 & 40.78 & 41.24 & 44.84 & 45.86 & $-$0.29 [$-$0.68, 0.09] \\
+\spk{} 去掉合并 & 39.98 & 40.10 & 43.32 & 44.39 & $-$1.52 [$-$2.44, $-$0.67] \\
+\midrule
+MMR 重排序 + 切块打包 & 40.22 & 39.95 & 43.21 & 43.50 & +1.03 \\
+跳过重叠切块 & 39.53 & 40.26 & 44.24 & 43.90 & +1.29 \\
+\bottomrule
+\end{tabular}}
+\caption{表~\ref{tab:components} 的逐步构建消融在全部四个模型上的结果。$\Delta$：相对上一行的配对 F1 差值（中间两行相对 \spk{}，最后两行相对切块打包），在四个模型上合并，并给出 95\% bootstrap 区间。最后两行缺少 Qwen2.5-14B 的逐题预测，因此 $\Delta$ 为四个模型差值的平均，不给区间。}
+\label{tab:comp4}
+\end{table}
+
+\paragraph{先用 Provence 剪枝，再用 \spk{} 打包。} 我们还尝试不直接拼接 Provence 保留的句子，而是用 \spk{} 打包它们（Llama-3.1-8B）。在 512、1,024 和 2,048 token 下分别得到 39.62、39.92 和 40.09 F1：512 token 时与单独使用 Provence 相同，1,024 和 2,048 token 时低于单独使用 Provence（40.69 和 41.36）。剪枝之后保留的句子很少重叠，几乎没有可合并的内容，而且剪枝后的候选往往不足以填满预算（2,048 token 中平均只用了 583）。
 
 \section{排序器}
 \label{app:rankers}
@@ -843,6 +874,9 @@ LlamaIndex 1024/200 (default) & 2.9 & 1.0 & 26.5 & 26.9 & 76.9 & 77.1 \\
 \caption{MultiHop-RAG（2,255 个查询，BGE-small 排序，1,024 和 2,048 token）：在相同排序切块上，标准打包（Std）与 \spk{} 的重复 token 比例、金标证据召回率和答案字符串覆盖率。}
 \label{tab:mhrag}
 \end{table}
+
+\paragraph{端到端问答。} 我们还用 Qwen2.5-14B 在句子窗口上下文上回答 MultiHop-RAG 的查询。1,024 token 时标准打包为 73.72 F1，\spk{} 为 73.18（2,048 token 时为 78.77 和 78.46）。这个基准的答案大多很短（是/否或一个名字），两种上下文下大多都能答对，因此表~\ref{tab:mhrag} 中更高的证据召回没有转化为 F1 的提升。
+
 
 \section{补充基线}
 \label{app:extra}
