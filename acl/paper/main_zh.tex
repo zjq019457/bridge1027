@@ -205,7 +205,7 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \multicolumn{2}{l}{\spk{}（冻结的混合配置）} & 44.32 & 40.98 & 45.07 & 42.65 & \\
 \bottomrule
 \end{tabular}}
-\caption{1,024 token 下全部方法的比较（LongBench 问答，1,150 个样本，宏平均 F1）。$\Delta$：在\emph{相同排序}下 \spk{} 减去切块打包，Qwen-14B 与 Llama-8B 合并（$^{***}$：$p\le0.001$；每个模型单独也显著）。配合重排序器时，\spk{} 达到 45.29 F1，与 3 万 token 的完整上下文（45.36）持平，而输入只有其十二分之一。\spk{} 是打包器，可接在任何排序器之后：冻结的混合配置在测试前于开发集上固定，其余各行把它与上方切块打包行所用的排序器配对。表~\ref{tab:main} 改变预算和模型。\textsuperscript{b}Qwen-14B 与 Llama-8B 的平均。$\circ$：正在运行，稍后填入。 $^\dagger$使用专门为此训练的上下文剪枝模型；\spk{} 无需训练。}
+\caption{1,024 token 下全部方法的比较（LongBench 问答，1,150 个样本，宏平均 F1）。$\Delta$：在\emph{相同排序}下 \spk{} 减去切块打包，Qwen-14B 与 Llama-8B 合并（$^{***}$：$p\le0.001$；每个模型单独也显著）。配合重排序器时，\spk{} 达到 45.29 F1，与 3 万 token 的完整上下文（45.36）持平，而输入只有其十二分之一。\spk{} 是打包器，可接在任何排序器之后：冻结的混合配置在测试前于开发集上固定，其余各行把它与上方切块打包行所用的排序器配对。加粗：每列最好；下划线：每列第二好。表~\ref{tab:main} 改变预算和模型。\textsuperscript{b}Qwen-14B 与 Llama-8B 的平均。$\circ$：正在运行，稍后填入。 $^\dagger$使用专门为此训练的上下文剪枝模型；\spk{} 无需训练。}
 \label{tab:external}
 \end{table}
 
