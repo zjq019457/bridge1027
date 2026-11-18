@@ -813,7 +813,7 @@ Figure~\ref{fig:example} shows a real 2WikiMultihopQA instance from the LongBenc
 
 \section{MultiHop-RAG: Duplication with Common Chunkers}
 \label{app:mhrag}
-To see how much duplication standard packing produces outside LongBench, we run the retrieval and packing stages (no LLM) on all 2,255 non-null queries of MultiHop-RAG \citep{tang2024multihoprag}, a corpus of 609 news articles, with four common chunkers, BGE-small ranking and a 1,024-token budget (Qwen tokenizer). For each chunker we pack the same ranked list either as standard top-$k$ chunks or with \spk{}, and report the share of duplicated tokens, gold-evidence recall and whether the gold answer string appears in the context (Table~\ref{tab:mhrag}). Duplication tracks the chunker: overlapping sentence windows duplicate 7.4\% of the context and \spk{} cuts this to 2.7\%, raising evidence recall by 1.5 points; with small overlapping chunks it halves duplication; with large chunks and little overlap there is almost nothing to remove and \spk{} returns the same context. The gain is therefore proportional to the waste the chunker creates, as in Section~\ref{sec:diag}.
+To see how much duplication standard packing produces outside LongBench, we run the retrieval and packing stages (no LLM) on all 2,255 non-null queries of MultiHop-RAG \citep{tang2024multihoprag}, a corpus of 609 news articles, with four common chunkers, BGE-small ranking and budgets of 1,024 and 2,048 tokens (Qwen tokenizer). For each chunker we pack the same ranked list either as standard top-$k$ chunks or with \spk{}, and report the share of duplicated tokens, gold-evidence recall and whether the gold answer string appears in the context (Table~\ref{tab:mhrag}). Duplication tracks the chunker: overlapping sentence windows duplicate 7.4\% of the context and \spk{} cuts this to 2.7\%, raising evidence recall by 1.5 points; with small overlapping chunks it halves duplication; with large chunks and little overlap there is almost nothing to remove and \spk{} returns the same context. At 2,048 tokens duplication grows with every chunker (10.9\% with sentence windows, 2.9\% even with the default LlamaIndex chunker), and \spk{} reduces it for all four, cutting it to 2.9\% and 1.0\%, while evidence recall and answer coverage rise for all four (by up to 1.3 and 0.7 points). The gain is therefore proportional to the waste the chunker creates, as in Section~\ref{sec:diag}.
 
 \begin{table}[t]
 \centering
@@ -825,13 +825,20 @@ To see how much duplication standard packing produces outside LongBench, we run 
  & \multicolumn{2}{c}{Dup.\ (\%)} & \multicolumn{2}{c}{Evid.\ rec.} & \multicolumn{2}{c}{Ans.\ cov.} \\
 Chunker & Std & \spk{} & Std & \spk{} & Std & \spk{} \\
 \midrule
+\multicolumn{7}{l}{\textit{1,024 tokens}} \\
 LlamaIndex sentence window (3) & 7.4 & 2.7 & 24.1 & 25.6 & 80.2 & 79.2 \\
 LlamaIndex 256/50 & 2.7 & 1.2 & 27.8 & 28.0 & 74.9 & 75.0 \\
 LangChain 1000/200 chars & 2.4 & 1.7 & 31.3 & 31.6 & 76.6 & 76.6 \\
 LlamaIndex 1024/200 (default) & 0.7 & 0.7 & 15.8 & 15.8 & 58.6 & 58.6 \\
+\midrule
+\multicolumn{7}{l}{\textit{2,048 tokens}} \\
+LlamaIndex sentence window (3) & 10.9 & 2.9 & 33.5 & 34.8 & 85.2 & 85.9 \\
+LlamaIndex 256/50 & 4.1 & 1.6 & 39.2 & 40.0 & 86.0 & 86.2 \\
+LangChain 1000/200 chars & 3.2 & 2.2 & 42.8 & 43.1 & 84.6 & 84.8 \\
+LlamaIndex 1024/200 (default) & 2.9 & 1.0 & 26.5 & 26.9 & 76.9 & 77.1 \\
 \bottomrule
 \end{tabular}}
-\caption{MultiHop-RAG (2,255 queries, BGE-small ranking, 1,024 tokens): duplicated tokens, gold-evidence recall and answer-string coverage for standard packing (Std) and \spk{} over the same ranked chunks. Results at 2,048 tokens are running.}
+\caption{MultiHop-RAG (2,255 queries, BGE-small ranking, 1,024 and 2,048 tokens): duplicated tokens, gold-evidence recall and answer-string coverage for standard packing (Std) and \spk{} over the same ranked chunks.}
 \label{tab:mhrag}
 \end{table}
 
