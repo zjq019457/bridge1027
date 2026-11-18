@@ -1,0 +1,26 @@
+{
+ "grid_hybrid_chunks": {"q7": [null, null, null], "llama": [null, null, null], "q14": [null, 42.42, null], "q32": [null, null, null]},
+ "base": {
+  "head": {"q7": null, "llama": null, "q14": 28.06},
+  "mid": {"q7": null, "llama": null, "q14": null},
+  "sc": {"q7": null, "llama": null, "q14": null},
+  "recomp": {"q7": null, "llama": null, "q14": null},
+  "bge_chunk": {"q7": 38.85, "llama": 38.99, "q14": 42.34},
+  "bge_dp": {"q7": 40.76, "llama": 41.67, "q14": 45.18}
+ },
+ "b256": {"head": 20.39, "mid": null, "bge_chunk": 30.72, "bge_dp": null, "hyb_dp": null},
+ "sens": {
+  "default": {"q7": 40.76, "llama": 41.67, "q14": 45.18},
+  "r16": {"q7": null, "llama": null, "q14": null},
+  "r64": {"q7": null, "llama": null, "q14": null},
+  "p30": {"q7": null, "llama": null, "q14": null},
+  "p120": {"q7": null, "llama": null, "q14": null},
+  "bge_chunk": {"q7": 38.85, "llama": 38.99, "q14": 42.34}
+ },
+ "samp": {
+  "greedy_chunk": {"llama": 38.99, "q14": 42.34},
+  "greedy_dp": {"llama": 41.67, "q14": 45.18},
+  "samp_chunk": {"llama": null, "q14": null},
+  "samp_dp": {"llama": null, "q14": null}
+ }
+}

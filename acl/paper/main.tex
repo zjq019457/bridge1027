@@ -196,9 +196,9 @@ Lexical pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 4
 BGE-small chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
 \quad + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & 35.90 & 41.48 & 44.97 & 37.42 & 42.34 & 45.96 \\
 \quad + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & 36.50 & 42.41 & 45.96 & 37.94 & 42.66 & 45.72 \\
-BGE-large chunks & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.55 & 45.38 & 39.93 & 43.04 & 47.14 \\
+BGE-large chunks & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.48 & 45.38 & 39.93 & 43.04 & 47.14 \\
 Reranker chunks & 37.19 & 41.59 & 43.48 & 38.29 & 42.21 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
-Hybrid chunks & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} \\
+Hybrid chunks & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & 42.42 & \pend{} & \pend{} & \pend{} & \pend{} \\
 \midrule
 \multicolumn{13}{l}{\textit{\spk{}}} \\
 BGE-small + \spk{} & 35.64 & 40.76 & 43.14 & 36.16 & 41.67 & 43.58 & 39.21 & 45.18 & 48.10 & 40.34 & 46.28 & 49.01 \\
@@ -723,8 +723,8 @@ BGE-small & chunks & 38.85 & 38.99 & 42.34 & 42.40 \\
 Lexical (BM25 + TF-IDF) & \spk{} & 39.33 & 40.19 & 43.69 & -- \\
 Hybrid & \spk{} & 40.64 & 40.98 & 44.32 & 45.07 \\
 BGE-small & \spk{} & 40.76 & 41.67 & 45.18 & 46.28 \\
-BGE-large & \spk{} & -- & 43.98 & 46.23 & 46.52 \\
-BGE + reranker & \spk{} & -- & 44.12 & 46.45 & 47.32 \\
+BGE-large & \spk{} & 42.28 & 43.98 & 46.23 & 46.52 \\
+BGE + reranker & \spk{} & 42.79 & 44.12 & 46.45 & 47.32 \\
 \bottomrule
 \end{tabular}}
 \caption{\spk{} after rankers of increasing strength (1,024 tokens, macro F1), against BGE-small chunk packing.}
@@ -837,8 +837,104 @@ LlamaIndex 1024/200 (default) & 2.9 & 1.0 & 26.5 & 26.9 & 76.9 & 77.1 \\
 \end{table}
 
 
+% R18-ROBUST-BEGIN
+\section{Robustness Checks}
+\label{app:robust}
+Table~\ref{tab:sens} varies the two settings of the packer, Table~\ref{tab:samp} replaces greedy decoding with sampling, and Table~\ref{tab:b256} lowers the budget to 256 tokens on Qwen2.5-14B.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
+\begin{tabular}{lccc}
+\toprule
+BGE-small + \spk{}, 1,024 tokens & Qwen-7B & Llama-8B & Qwen-14B \\
+\midrule
+Default ($r=32$, 60 spans) & 40.76 & 41.67 & 45.18 \\
+$r=16$ & \pend{} & \pend{} & \pend{} \\
+$r=64$ & \pend{} & \pend{} & \pend{} \\
+$P$ of 30 spans & \pend{} & \pend{} & \pend{} \\
+$P$ of 120 spans & \pend{} & \pend{} & \pend{} \\
+\midrule
+BGE-small chunks & 38.85 & 38.99 & 42.34 \\
+\bottomrule
+\end{tabular}}
+\caption{Sensitivity of \spk{} (BGE-small ranker, 1,024 tokens) to the padding radius $r$ and the length of the priority list $P$ (macro F1). The default is $r=32$ and 60 spans; the last row is chunk packing with the same ranker.}
+\label{tab:sens}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
+\begin{tabular}{lcc}
+\toprule
+1,024 tokens & Llama-8B & Qwen-14B \\
+\midrule
+\multicolumn{3}{l}{\textit{Greedy decoding}} \\
+BGE-small chunks & 38.99 & 42.34 \\
+BGE-small + \spk{} & 41.67 & 45.18 \\
+\multicolumn{3}{l}{\textit{Sampling (temperature 0.7, top-$p$ 0.9, 3 seeds)}} \\
+BGE-small chunks & \pend{} & \pend{} \\
+BGE-small + \spk{} & \pend{} & \pend{} \\
+\bottomrule
+\end{tabular}}
+\caption{Greedy decoding versus sampling (1,024 tokens, BGE-small ranker, macro F1). Sampling rows give the mean $\pm$ standard deviation over three seeds.}
+\label{tab:samp}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
+\begin{tabular}{lc}
+\toprule
+Qwen2.5-14B, 256 tokens & F1 \\
+\midrule
+Head truncation & 20.39 \\
+Middle truncation & \pend{} \\
+\midrule
+BGE-small chunks & 30.72 \\
+BGE-small + \spk{} & \pend{} \\
+Hybrid + \spk{} & \pend{} \\
+\bottomrule
+\end{tabular}}
+\caption{Qwen2.5-14B under an exact 256-token budget (macro F1).}
+\label{tab:b256}
+\end{table}
+
+% R18-ROBUST-END
 \section{Additional Baselines}
 \label{app:extra}
+% R18-BASE-BEGIN
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
+\begin{tabular}{lccc}
+\toprule
+1,024 tokens & Qwen-7B & Llama-8B & Qwen-14B \\
+\midrule
+Head truncation & \pend{} & \pend{} & 28.06 \\
+Middle truncation & \pend{} & \pend{} & \pend{} \\
+Selective Context & \pend{} & \pend{} & \pend{} \\
+RECOMP (extractive) & \pend{} & \pend{} & \pend{} \\
+\midrule
+BGE-small chunks & 38.85 & 38.99 & 42.34 \\
+BGE-small + \spk{} & 40.76 & 41.67 & 45.18 \\
+\bottomrule
+\end{tabular}}
+\caption{Further baselines under the same exact 1,024-token budget (macro F1, 1,150 instances). Head truncation keeps the beginning of the document; middle truncation keeps its beginning and end, as in LongBench. Selective Context \citep{li2023selectivecontext} removes the phrases with the lowest GPT-2 self-information; RECOMP \citep{xu2023recomp} adds sentences in the order given by its extractive compressor (HotpotQA checkpoint) until the budget is full.}
+\label{tab:base18}
+\end{table}
+
+Table~\ref{tab:base18} adds four further baselines in the current environment.
+
+% R18-BASE-END
 In an earlier run with the same candidate spans, prompt wrapper, scorer and exact 1,024-token budget, but with Qwen2.5-7B-Instruct and Meta-Llama-3-8B-Instruct in an earlier software environment, the pair packer of Table~\ref{tab:main} outperformed head and middle truncation by 13.1 and 13.6 F1, Selective Context by 18.2, LLMLingua-2 by 11.3, LongLLMLingua by 6.6, and BM25 and TF-IDF chunk packing by 2.1 and 1.9 F1 (two-model averages, all $p<0.001$). Since \spk{} outperforms the pair packer in every setting of Table~\ref{tab:main}, these baselines are dominated by \spk{} as well; we report them here rather than in the main table because they were run in a different environment.
 
 \end{document}

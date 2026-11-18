@@ -198,9 +198,9 @@ Provence（BGE + 剪枝）$^\dagger$ & \textbf{40.66} & 41.90 & 41.78 & \underli
 BGE-small 切块 & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
 \quad + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & 35.90 & 41.48 & 44.97 & 37.42 & 42.34 & 45.96 \\
 \quad + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & 36.50 & 42.41 & 45.96 & 37.94 & 42.66 & 45.72 \\
-BGE-large 切块 & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.55 & 45.38 & 39.93 & 43.04 & 47.14 \\
+BGE-large 切块 & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.48 & 45.38 & 39.93 & 43.04 & 47.14 \\
 重排序切块 & 37.19 & 41.59 & 43.48 & 38.29 & 42.21 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
-混合排序切块 & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} \\
+混合排序切块 & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & 42.42 & \pend{} & \pend{} & \pend{} & \pend{} \\
 \midrule
 \multicolumn{13}{l}{\textit{\spk{}}} \\
 BGE-small + \spk{} & 35.64 & 40.76 & 43.14 & 36.16 & 41.67 & 43.58 & 39.21 & 45.18 & 48.10 & 40.34 & 46.28 & 49.01 \\
@@ -725,8 +725,8 @@ BGE-small & 切块 & 38.85 & 38.99 & 42.34 & 42.40 \\
 词汇（BM25 + TF-IDF） & \spk{} & 39.33 & 40.19 & 43.69 & -- \\
 混合 & \spk{} & 40.64 & 40.98 & 44.32 & 45.07 \\
 BGE-small & \spk{} & 40.76 & 41.67 & 45.18 & 46.28 \\
-BGE-large & \spk{} & -- & 43.98 & 46.23 & 46.52 \\
-BGE + 重排序器 & \spk{} & -- & 44.12 & 46.45 & 47.32 \\
+BGE-large & \spk{} & 42.28 & 43.98 & 46.23 & 46.52 \\
+BGE + 重排序器 & \spk{} & 42.79 & 44.12 & 46.45 & 47.32 \\
 \bottomrule
 \end{tabular}}
 \caption{\spk{} 接在由弱到强的排序器之后的结果（1,024 token，宏平均 F1），并与 BGE-small 切块打包对比。}
@@ -839,8 +839,104 @@ LlamaIndex 1024/200 (default) & 2.9 & 1.0 & 26.5 & 26.9 & 76.9 & 77.1 \\
 \end{table}
 
 
+% R18-ROBUST-BEGIN
+\section{稳健性检验}
+\label{app:robust}
+表~\ref{tab:sens} 改变打包器的两个设置，表~\ref{tab:samp} 把贪心解码换成采样，表~\ref{tab:b256} 在 Qwen2.5-14B 上把预算降到 256 token。
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
+\begin{tabular}{lccc}
+\toprule
+BGE-small + \spk{}，1,024 token & Qwen-7B & Llama-8B & Qwen-14B \\
+\midrule
+默认（$r=32$，60 个片段） & 40.76 & 41.67 & 45.18 \\
+$r=16$ & \pend{} & \pend{} & \pend{} \\
+$r=64$ & \pend{} & \pend{} & \pend{} \\
+$P$ 取 30 个片段 & \pend{} & \pend{} & \pend{} \\
+$P$ 取 120 个片段 & \pend{} & \pend{} & \pend{} \\
+\midrule
+BGE-small 切块 & 38.85 & 38.99 & 42.34 \\
+\bottomrule
+\end{tabular}}
+\caption{\spk{}（BGE-small 排序器，1,024 token）对补全半径 $r$ 和优先列表 $P$ 长度的敏感性（宏平均 F1）。默认值为 $r=32$、$P$ 取 60 个片段；最后一行是同一排序器的切块打包。}
+\label{tab:sens}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
+\begin{tabular}{lcc}
+\toprule
+1,024 token & Llama-8B & Qwen-14B \\
+\midrule
+\multicolumn{3}{l}{\textit{贪心解码}} \\
+BGE-small 切块 & 38.99 & 42.34 \\
+BGE-small + \spk{} & 41.67 & 45.18 \\
+\multicolumn{3}{l}{\textit{采样（温度 0.7，top-$p$ 0.9，3 个种子）}} \\
+BGE-small 切块 & \pend{} & \pend{} \\
+BGE-small + \spk{} & \pend{} & \pend{} \\
+\bottomrule
+\end{tabular}}
+\caption{贪心解码与采样的对比（1,024 token，BGE-small 排序器，宏平均 F1）。采样行给出 3 个种子的均值 $\pm$ 标准差。}
+\label{tab:samp}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
+\begin{tabular}{lc}
+\toprule
+Qwen2.5-14B, 256 token & F1 \\
+\midrule
+开头截断 & 20.39 \\
+中间截断 & \pend{} \\
+\midrule
+BGE-small 切块 & 30.72 \\
+BGE-small + \spk{} & \pend{} \\
+混合 + \spk{} & \pend{} \\
+\bottomrule
+\end{tabular}}
+\caption{Qwen2.5-14B 在 256 token 精确预算下的结果（宏平均 F1）。}
+\label{tab:b256}
+\end{table}
+
+% R18-ROBUST-END
 \section{补充基线}
 \label{app:extra}
+% R18-BASE-BEGIN
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
+\begin{tabular}{lccc}
+\toprule
+1,024 token & Qwen-7B & Llama-8B & Qwen-14B \\
+\midrule
+开头截断 & \pend{} & \pend{} & 28.06 \\
+中间截断 & \pend{} & \pend{} & \pend{} \\
+Selective Context & \pend{} & \pend{} & \pend{} \\
+RECOMP（抽取式） & \pend{} & \pend{} & \pend{} \\
+\midrule
+BGE-small 切块 & 38.85 & 38.99 & 42.34 \\
+BGE-small + \spk{} & 40.76 & 41.67 & 45.18 \\
+\bottomrule
+\end{tabular}}
+\caption{相同 1,024 token 精确预算下的更多基线（宏平均 F1，1,150 个样本）。开头截断保留文档开头；中间截断按 LongBench 的做法保留开头和结尾。Selective Context \citep{li2023selectivecontext} 删除 GPT-2 自信息最低的短语；RECOMP \citep{xu2023recomp} 按其抽取式压缩器（HotpotQA 检查点）的句子排序依次加入句子，直到填满预算。}
+\label{tab:base18}
+\end{table}
+
+表~\ref{tab:base18} 在当前环境中补充了四个基线。
+
+% R18-BASE-END
 在一次较早的运行中，使用相同的候选片段、提示模板、评分脚本和 1,024 token 精确预算，但使用 Qwen2.5-7B-Instruct 和 Meta-Llama-3-8B-Instruct 以及较早的软件环境，表~\ref{tab:main} 中的配对打包器比开头截断和中间截断分别高 13.1 和 13.6 F1，比 Selective Context 高 18.2，比 LLMLingua-2 高 11.3，比 LongLLMLingua 高 6.6，比 BM25 和 TF-IDF 切块打包分别高 2.1 和 1.9 F1（两模型平均，均 $p<0.001$）。由于 \spk{} 在表~\ref{tab:main} 的每个组合上都优于配对打包器，这些基线同样被 \spk{} 超过；由于它们是在不同环境中运行的，我们把它们放在这里而不是主表中。
 
 \end{document}
