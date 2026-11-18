@@ -1,26 +1,26 @@
 {
- "LlamaIndex sentence window (3) | B=1024": {
+ "LlamaIndex 1024/200 (default) | B=1024": {
   "std": {
-   "dup": 8.8,
-   "evidence_recall": 22.4,
-   "answer_cov": 87.5
+   "dup": 0.7,
+   "evidence_recall": 15.8,
+   "answer_cov": 58.6
   },
   "dedup": {
-   "dup": 2.6,
-   "evidence_recall": 26.5,
-   "answer_cov": 87.5
+   "dup": 0.7,
+   "evidence_recall": 15.8,
+   "answer_cov": 58.6
   }
  },
- "LlamaIndex sentence window (3) | B=2048": {
+ "LlamaIndex 1024/200 (default) | B=2048": {
   "std": {
-   "dup": 12.5,
-   "evidence_recall": 34.7,
-   "answer_cov": 87.5
+   "dup": 2.9,
+   "evidence_recall": 26.5,
+   "answer_cov": 76.9
   },
   "dedup": {
-   "dup": 2.6,
-   "evidence_recall": 39.4,
-   "answer_cov": 87.5
+   "dup": 1.0,
+   "evidence_recall": 26.9,
+   "answer_cov": 77.1
   }
  }
 }

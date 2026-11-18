@@ -1,3 +1,4 @@
 C:\Users\dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\transformers\utils\hub.py:110: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
   warnings.warn(
 LlamaIndex 1024/200 (default) 1024 {'std': {'dup': 0.7, 'evidence_recall': np.float64(15.8), 'answer_cov': 58.6}, 'dedup': {'dup': 0.7, 'evidence_recall': np.float64(15.8), 'answer_cov': 58.6}} chunks=1934
+LlamaIndex 1024/200 (default) 2048 {'std': {'dup': 2.9, 'evidence_recall': np.float64(26.5), 'answer_cov': 76.9}, 'dedup': {'dup': 1.0, 'evidence_recall': np.float64(26.9), 'answer_cov': 77.1}} chunks=1934
