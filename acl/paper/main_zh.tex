@@ -802,6 +802,17 @@ $B$ & 打包器 & 答案覆盖 & 重复（\%） & 句末（\%） & token 数 \\
 
 表~\ref{tab:terciles} 给出第~\ref{sec:components} 节概括的完整三等分分析。六种设置中有四种的最大 F1 提升出现在重复最多的一组；在 512 和 1,024 token 下，两个模型的覆盖提升都随重复率单调增加。
 
+\section{一个真实例子}
+\label{app:example}
+图~\ref{fig:example} 展示了 LongBench 测试集中的一个真实 2WikiMultihopQA 样本：两种方法使用相同的 BGE 排序，并打包进相同的 1,024 token 预算。标准切块打包用电影条目里互相重叠的窗口填满了预算：同样的句子最多出现五次，好几个片段从句子中间开始或结束，而包含第二跳信息的导演生平始终放不进去；Qwen2.5-14B 和 Llama-3.1-8B 都回答文中没有提到出生地。\spk{} 让电影条目的每段范围只出现一次，并把省下的预算用于导演生平和作品列表，两个模型都答对了。这个样本选自 8 个满足以下条件的 HotpotQA 与 2WikiMultihopQA 问题：两个模型在切块打包下都答错、在 \spk{} 下都答对，且金标答案只出现在 \spk{} 的上下文中。
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_example.pdf}
+\caption{LongBench 中的一个真实样本（2WikiMultihopQA），相同的 BGE 排序和相同的 1,024 token 预算。摘录均原样取自两份打包后的上下文（[\ldots] 表示省略的文字）；橙色标签表示该句在标准上下文中出现的次数。回答为两个模型的实际预测。}
+\label{fig:example}
+\end{figure*}
+
 \section{MultiHop-RAG：常见切块器下的重复}
 \label{app:mhrag}
 为了检验 LongBench 之外标准打包会产生多少重复，我们在 MultiHop-RAG \citep{tang2024multihoprag}（609 篇新闻文章）的全部 2,255 个非空查询上运行检索与打包阶段（不调用 LLM），使用四种常见切块器、BGE-small 排序和 1,024 token 预算（Qwen 分词器）。对每种切块器，我们把同一排序列表分别按标准 top-$k$ 切块和 \spk{} 打包，报告重复 token 比例、金标证据召回率以及金标答案字符串是否出现在上下文中（表~\ref{tab:mhrag}）。重复程度取决于切块器：相互重叠的句子窗口使 7.4\% 的上下文重复，\spk{} 将其降到 2.7\%，证据召回提高 1.5 个点；对有重叠的小切块，重复减半；对重叠很少的大切块，几乎没有可去除的重复，\spk{} 给出相同的上下文。因此收益与切块器造成的浪费成正比，与第~\ref{sec:diag} 节一致。
