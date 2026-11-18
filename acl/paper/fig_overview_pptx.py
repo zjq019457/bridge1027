@@ -20,7 +20,8 @@ C = dict(ink="1F2328", mute="5F6670", line="7D848D", panel="F4F5F7", panel2="E4E
          blu="0072B2", blul="EAF3FA", blum="94C3E3", blud="00507D",  # DedupPack (blue)
          seg="D9DEE5", w="FFFFFF")
 rgb = lambda h: RGBColor.from_string(h)
-W, H = 12.6, 5.5
+DY = 0.4   # everything below the headers moves up (full-context path removed)
+W, H = 12.6, 5.5 - DY
 prs = Presentation()
 prs.slide_width, prs.slide_height = Inches(W), Inches(H)
 s = prs.slides.add_slide(prs.slide_layouts[6])
@@ -29,7 +30,11 @@ RECT, RRECT, OVAL = MSO_SHAPE.RECTANGLE, MSO_SHAPE.ROUNDED_RECTANGLE, MSO_SHAPE.
 LW = 1.75  # default stroke
 
 
+sy = lambda y: y - DY if y > 0.45 else y  # header row (y <= 0.45) stays put
+
+
 def box(x, y, w, h, fill=None, line=None, lw=LW, dash=False, kind=RECT, radius=0.08, name=None):
+    y = sy(y)
     p = sh.add_shape(kind, Inches(x), Inches(y), Inches(w), Inches(h))
     p.shadow.inherit = False
     if fill: p.fill.solid(); p.fill.fore_color.rgb = rgb(fill)
@@ -70,6 +75,7 @@ def pill(t, x, y, w, h, color, line=None, fill="FFFFFF", size=13, radius=0.5, lw
 
 
 def line(x1, y1, x2, y2, color=None, lw=LW, head=True, dash=False):
+    y1, y2 = sy(y1), sy(y2)
     c = sh.add_connector(MSO_CONNECTOR.STRAIGHT, Inches(x1), Inches(y1), Inches(x2), Inches(y2))
     c.line.color.rgb = rgb(color or C["ink"]); c.line.width = Pt(lw)
     if dash: c.line.dash_style = MSO_LINE_DASH_STYLE.DASH
@@ -109,7 +115,7 @@ LX0, LX1 = 3.95, 9.45           # lanes
 BX0, BW = 4.2, 5.0              # bars (1,024 tokens)
 LLX, LLW = 9.8, 1.5             # LLM column
 AX, AW = 11.5, 1.02            # answers
-YA, YB = 2.08, 4.84            # bar centres of the two lanes
+YA, YB = 2.2, 4.84            # bar centres of the two lanes
 TOP, BOT = 1.02, 5.42          # lane / LLM vertical extent
 
 # headers and divider
@@ -128,7 +134,7 @@ text("Long document\n~12.5K tokens", 0.1, 3.5, 1.85, 0.55, size=14)
 # ranker (question and document both go in)
 RX, RY, RWd, RH = 2.05, 1.95, 1.65, 2.1
 box(RX, RY, RWd, RH, fill=C["panel"], line=C["mute"], kind=RRECT, radius=0.08, name="Ranker")
-text("Any ranker", RX, RY + 0.08, RWd, 0.36, size=15)
+text("Ranker", RX, RY + 0.08, RWd, 0.36, size=15)
 for i, t in enumerate(("Lexical / Hybrid", "BGE", "Reranker")):
     pill(t, RX + 0.1, RY + 0.55 + 0.47 * i, RWd - 0.2, 0.36, C["ink"], line=C["line"], size=12.5, lw=1.25)
 poly([(1.65, 1.32), (RX + RWd / 2, 1.32), (RX + RWd / 2, RY)])
@@ -139,26 +145,26 @@ line(RX + RWd, 3.0, JX, 3.0, head=False)
 line(JX, YA, JX, YB, head=False)
 line(JX, YA, LX0, YA); line(JX, YB, LX0, YB)
 
-# full-context path: the whole document goes to the LLM
-poly([(0.5, 2.65), (0.15, 2.65), (0.15, 0.68), (LLX + LLW / 2, 0.68), (LLX + LLW / 2, TOP)], color=C["line"], lw=2.25)
-pill("Full context: the whole document (~12.5K tokens)", 3.1, 0.5, 4.9, 0.38, C["ink"], line=C["line"], fill=C["panel2"], size=13)
-
 # lane 1: standard chunk packing
 box(LX0, TOP, LX1 - LX0, 1.75, fill=C["orgl"], line=C["org"], kind=RRECT, radius=0.05, name="Chunk packing lane")
 text("Standard chunk packing", LX0 + 0.15, TOP + 0.06, 3.0, 0.36, size=16, align=PP_ALIGN.LEFT)
 O, G, K = C["org"], C["seg"], C["ink"]
 bar(BX0, YA - 0.22, [("A", 0.65, G, C["line"], False, 15, K), ("A dup.", 0.8, C["orgm"], O, True, 13, K),
                      ("B", 0.65, G, C["line"], False, 15, K), ("B dup.", 0.8, C["orgm"], O, True, 13, K),
-                     ("C", 0.65, G, C["line"], False, 15, K), ("D", 0.65, G, C["line"], False, 15, K),
-                     ("unused", 0.8, C["w"], C["line"], True, 12.5, C["mute"])])
-pill("23% duplicated", 5.05, TOP + 0.42, 1.75, 0.32, O, line=O, size=13)
-line(5.55, TOP + 0.74, BX0 + 1.05, YA - 0.22, color=O); line(6.3, TOP + 0.74, BX0 + 2.5, YA - 0.22, color=O)
-pill("cut mid-sentence", 7.15, TOP + 0.42, 1.85, 0.32, O, line=O, size=13)
-line(7.75, TOP + 0.74, BX0 + 3.55, YA - 0.22, color=O); line(8.45, TOP + 0.74, BX0 + 4.2, YA - 0.22, color=O)
-budget(BX0, BX0 + BW, 2.53, "1,024 tokens", C["ink"], C["orgl"])
+                     ("C…", 0.65, G, C["line"], False, 15, K), ("…D…", 0.65, G, C["line"], False, 15, K),
+                     ("", 0.8, C["w"], C["line"], True, 12.5, C["mute"])])
+# three waste callouts in the same style: duplicated, cut mid-sentence, unused
+PY = TOP + 0.44
+pill("23% duplicated", 4.75, PY, 1.6, 0.32, O, line=O, size=12.5)
+line(5.15, PY + 0.32, BX0 + 1.05, YA - 0.22, color=O); line(6.0, PY + 0.32, BX0 + 2.5, YA - 0.22, color=O)
+pill("cut mid-sentence", 6.5, PY, 1.65, 0.32, O, line=O, size=12.5)
+line(7.35, PY + 0.32, BX0 + 3.55, YA - 0.22, color=O); line(7.95, PY + 0.32, BX0 + 4.2, YA - 0.22, color=O)
+pill("unused", 8.3, PY, 1.0, 0.32, O, line=O, size=12.5)
+line(8.8, PY + 0.32, BX0 + 4.6, YA - 0.22, color=O)
+budget(BX0, BX0 + BW, 2.6, "1,024 tokens", C["ink"], C["orgl"])
 for cx in (BX0 + 3.55, BX0 + 4.2):  # jagged edges where pieces are cut mid-sentence
-    zz = sh.build_freeform(Inches(cx), Inches(YA - 0.22))
-    pts, yy = [], YA - 0.22
+    zz = sh.build_freeform(Inches(cx), Inches(sy(YA - 0.22)))
+    pts, yy = [], sy(YA - 0.22)
     for k in range(6):
         yy += 0.0733; pts.append((Inches(cx + (0.06 if k % 2 == 0 else 0)), Inches(yy)))
     zz.add_line_segments(pts, close=False)
@@ -213,21 +219,19 @@ text("recovered budget → new evidence", BX0 + 1.5, SY + SH + 0.03, 3.5, 0.26, 
 bar(BX0, YB - 0.22, [("A", 0.7, G, C["line"], False, 15, K), ("B", 0.7, G, C["line"], False, 15, K),
                      ("C", 0.7, G, C["line"], False, 15, K), ("D", 0.7, G, C["line"], False, 15, K),
                      ("E", 1.1, C["blum"], C["blu"], False, 15, K), ("F", 1.1, C["blum"], C["blu"], False, 15, K)])
-budget(BX0, BX0 + BW, 5.21, "1,024 tokens, no duplicates", C["blud"], C["blul"])
+budget(BX0, BX0 + BW, 5.21, "1,024 tokens: whole sentences, no duplicates", C["blud"], C["blul"])
 
 # LLM column
 box(LLX, TOP, LLW, BOT - TOP, fill=C["panel"], line=C["mute"], kind=RRECT, radius=0.07, name="LLM")
-lg = 0.38
-logos = ("qwen_t.png", "meta_t.png")
-x0 = LLX + (LLW - (len(logos) * lg + (len(logos) - 1) * 0.14)) / 2
-for i, f in enumerate(logos):
-    sh.add_picture(str(HERE / "logos" / f), Inches(x0 + i * (lg + 0.14)), Inches(TOP + 0.13), Inches(lg), Inches(lg))
-text("LLM", LLX, TOP + 0.55, LLW, 0.42, size=22)
-text("Qwen2.5\nLlama-3.1\n7B–32B", LLX, TOP + 0.95, LLW, 0.66, size=12.5, color=C["mute"])
-pill("prefill", LLX + 0.17, 2.9, LLW - 0.34, 0.38, C["ink"], line=C["line"], size=14)
-line(LLX + LLW / 2, 3.28, LLX + LLW / 2, 3.5)
-pill("KV cache", LLX + 0.17, 3.5, LLW - 0.34, 0.38, C["ink"], line=C["line"], fill=C["panel2"], size=14)
-pill("~12× smaller", LLX + 0.12, 3.98, LLW - 0.24, 0.36, C["blud"], line=C["blu"], fill=C["blul"], size=12.5)
+text("LLM", LLX, TOP + 0.1, LLW, 0.42, size=22)
+lg = 0.36
+for i, (f, nm) in enumerate((("qwen_t.png", "Qwen2.5"), ("meta_t.png", "Llama-3.1"))):
+    ly = TOP + 0.58 + i * 0.72
+    sh.add_picture(str(HERE / "logos" / f), Inches(LLX + (LLW - lg) / 2), Inches(sy(ly)), Inches(lg), Inches(lg))
+    text(nm, LLX, ly + lg + 0.0, LLW, 0.28, size=12.5, color=C["mute"])
+pill("prefill", LLX + 0.17, 3.0, LLW - 0.34, 0.38, C["ink"], line=C["line"], size=14)
+line(LLX + LLW / 2, 3.38, LLX + LLW / 2, 3.6)
+pill("KV cache", LLX + 0.17, 3.6, LLW - 0.34, 0.38, C["ink"], line=C["line"], fill=C["panel2"], size=14)
 line(LX1, YA, LLX, YA); line(LX1, YB, LLX, YB)
 
 # answers
