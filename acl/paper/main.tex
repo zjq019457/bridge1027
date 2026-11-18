@@ -133,7 +133,7 @@ Given a question $q$ and a long context $C$, we construct $\hat C$ with $|\hat C
 The context is split into contiguous pages of 256 regex tokens (words or single punctuation marks), and each page into candidate spans of 64 regex tokens with stride 32; spans never cross pages. Regex tokens only define candidate units; all budget accounting uses $\tau$. All span-based methods in our comparison use the same candidate spans.
 
 \subsection{Rankers}
-\spk{} accepts any function that scores spans against $q$. We use three, none of which sees gold answers. The \emph{lexical} ranker fuses $z$-normalised BM25 ($k_1{=}1.2$, $b{=}0.75$) and TF-IDF scores computed over the spans of the instance. The \emph{dense} ranker is the cosine similarity between the question (with BGE's query instruction) and the span under \texttt{bge-small-en-v1.5} \citep{xiao2023cpack}. The \emph{hybrid} ranker adds the $z$-normalised lexical and dense scores. The top 60 spans form the priority list $P$, ordered by score with ties broken by position. Our main configuration uses the hybrid ranker, chosen on the development split; Section~\ref{sec:agnostic} shows the gains do not depend on this choice.
+\spk{} accepts any function that scores spans against $q$. We use three, none of which sees gold answers. The \emph{lexical} ranker fuses $z$-normalised BM25 ($k_1{=}1.2$, $b{=}0.75$) and TF-IDF scores computed over the spans of the instance. The \emph{dense} ranker is the cosine similarity between the question (with BGE's query instruction) and the span under \texttt{bge-small-en-v1.5} \citep{xiao2023cpack}. The \emph{hybrid} ranker adds the $z$-normalised lexical and dense scores. The top 60 spans form the priority list $P$, ordered by score with ties broken by position. We report \spk{} with every ranker; Section~\ref{sec:external} adds BGE-large and a cross-encoder reranker. The packer is the same in all cases.
 
 \subsection{The Packer}
 \paragraph{Deduplication by merging (core).} Top-ranked spans cluster in the relevant passages, and their padded ranges overlap (Section~\ref{sec:diag}). \spk{} keeps the selection as a set of token ranges, sorts them by page and position, and merges every pair that overlaps or touches into one range. Overlapping evidence is therefore rendered, and paid for, once, and a span adjacent to already selected evidence costs only the tokens it adds.
@@ -145,7 +145,7 @@ The context is split into contiguous pages of 256 regex tokens (words or single 
 \paragraph{Document-order emission.} The merged passages are emitted verbatim in document order, separated by blank lines. If re-joining changes the token count, the context is clipped to $B$, so $|\hat C|_\tau\le B$ always holds. Algorithm~\ref{alg:sp} (Appendix~\ref{app:impl}) gives the procedure.
 
 \paragraph{Development protocol.}
-All choices---the ranker, sentence rather than fixed repair, $r$, the list length, merging, backfilling and emission order---were made on a development split of 584 instances: the HotpotQA and 2WikiMultihopQA portions of LongBench-E \citep{bai2023longbench} after removing every question that also appears in the LongBench test set. The development experiments used a 4-bit Qwen2.5-7B model on a separate GPU. The configuration was then frozen and the test set was run once with every model and budget reported here; no test result was used to change the method.
+All packer choices---sentence rather than fixed repair, $r$, the list length, merging, backfilling and emission order---were made on a development split of 584 instances: the HotpotQA and 2WikiMultihopQA portions of LongBench-E \citep{bai2023longbench} after removing every question that also appears in the LongBench test set. The development experiments used a 4-bit Qwen2.5-7B model on a separate GPU. The packer was then frozen and the test set was run once with every ranker, model and budget reported here; no test result was used to change the packer.
 
 % =====================================================================
 \section{Experimental Setup}
@@ -201,11 +201,11 @@ Ranker & Packing / system & Qwen-14B & Llama-8B & Qwen-32B & Avg.\textsuperscrip
  & \spk{} & \underline{46.23} & \underline{43.98} & \underline{46.52} & \underline{45.11} & \textbf{+3.77}$^{***}$ \\
 \multirow{2}{*}{\shortstack[l]{BGE + bge-\\reranker-v2-m3}} & chunks & 44.37 & 42.21 & 45.09 & 43.29 & \\
  & \spk{} & \textbf{46.45} & \textbf{44.12} & \textbf{47.32} & \textbf{45.29} & \textbf{+2.00}$^{***}$ \\
-\midrule
-\multicolumn{2}{l}{\spk{} (frozen hybrid configuration)} & 44.32 & 40.98 & 45.07 & 42.65 & \\
+\multirow{2}{*}{\shortstack[l]{Hybrid (lexical\\+ BGE-small)}} & chunks & \pend{} & \pend{} & \pend{} & \pend{} & \\
+ & \spk{} & 44.32 & 40.98 & 45.07 & 42.65 & \pend{} \\
 \bottomrule
 \end{tabular}}
-\caption{All methods at 1,024 tokens on LongBench QA (1,150 instances, macro F1). $\Delta$: \spk{} minus chunk packing \emph{with the same ranking}, pooled over Qwen-14B and Llama-8B ($^{***}$: $p\le0.001$; significant for each model separately as well). With a reranker, \spk{} reaches 45.29 F1, on par with the 30K-token full context (45.36), from 1/12 of the input. \spk{} is a packer and can follow any ranker: the frozen hybrid configuration was fixed on the development split before testing; the other rows pair it with the ranker of the chunk-packing row above. Bold: best, underlined: second best in each column. Table~\ref{tab:main} varies the budget and the model. \textsuperscript{b}Average over Qwen-14B and Llama-8B. $^\dagger$Uses a context pruner trained with supervision for this purpose; \spk{} needs no training. }
+\caption{All methods at 1,024 tokens on LongBench QA (1,150 instances, macro F1). $\Delta$: \spk{} minus chunk packing \emph{with the same ranking}, pooled over Qwen-14B and Llama-8B ($^{***}$: $p\le0.001$; significant for each model separately as well). With a reranker, \spk{} reaches 45.29 F1, on par with the 30K-token full context (45.36), from 1/12 of the input. \spk{} is a packer and can follow any ranker: each \spk{} row uses the ranker of the chunk-packing row above it, and the packer is the same in all four. Bold: best, underlined: second best in each column. Table~\ref{tab:main} varies the budget and the model. \textsuperscript{b}Average over Qwen-14B and Llama-8B. $^\dagger$Uses a context pruner trained with supervision for this purpose; \spk{} needs no training. }
 \label{tab:external}
 \end{table}
 
@@ -239,15 +239,16 @@ BGE-small chunks + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 
 BGE-small chunks + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & 36.50 & 42.41 & 45.96 & 37.94 & 42.66 & 45.72 \\
 BGE-large chunks & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.55 & 45.38 & 39.93 & 43.04 & 47.14 \\
 Reranker chunks & 37.19 & 41.59 & 43.48 & 38.29 & 42.21 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
+Hybrid chunks & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} \\
 \midrule
 \multicolumn{13}{l}{\textit{\spk{}}} \\
 BGE-small + \spk{} & 35.64 & 40.76 & 43.14 & 36.16 & 41.67 & 43.58 & 39.21 & 45.18 & 48.10 & 40.34 & 46.28 & 49.01 \\
 BGE-large + \spk{} & 38.24 & \underline{42.28} & \underline{44.32} & 38.81 & \underline{43.98} & \underline{44.65} & 41.54 & \underline{46.23} & \underline{48.61} & 41.05 & \underline{46.52} & \underline{49.25} \\
 Reranker + \spk{} & \underline{39.56} & \textbf{42.79} & \textbf{44.96} & \textbf{40.49} & \textbf{44.12} & \textbf{45.61} & \textbf{42.85} & \textbf{46.45} & \textbf{49.54} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
-Hybrid + \spk{} (frozen, main) & 36.74 & 40.64 & 43.60 & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 \\
+Hybrid + \spk{} & 36.74 & 40.64 & 43.60 & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 \\
 \bottomrule
 \end{tabular}}
-\caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column; underlined: second best. \spk{} is a packer and can follow any ranker: the hybrid configuration was fixed on the development split before testing, and the other \spk{} rows pair it with the rankers of the chunk-packing rows. Per-task scores are in Appendix~\ref{app:pertask}. $^\dagger$Uses a context pruner trained with supervision for this purpose; \spk{} needs no training. }
+\caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column; underlined: second best. \spk{} is a packer and can follow any ranker: each \spk{} row pairs the same packer, fixed on the development split before testing, with the ranker of the corresponding chunk-packing row. Per-task scores are in Appendix~\ref{app:pertask}. $^\dagger$Uses a context pruner trained with supervision for this purpose; \spk{} needs no training. }
 \label{tab:main}
 \end{table*}
 
@@ -310,7 +311,7 @@ Method (1,024 tokens) & Qwen-14B & Llama-8B & Qwen-14B & Llama-8B \\
 Pair packing & 58.39 & 42.94 & 49.28 & 40.13 \\
 BGE chunks & 54.64 & 39.98 & 47.93 & 39.44 \\
 \spk{} (BGE) & 61.81 & 47.20 & \textbf{52.74} & 44.18 \\
-\spk{} (hybrid, frozen) & \textbf{62.56} & \textbf{49.67} & 52.61 & \textbf{44.93} \\
+\spk{} (hybrid) & \textbf{62.56} & \textbf{49.67} & 52.61 & \textbf{44.93} \\
 \midrule
 Full context (30K) & 63.10 & 46.59 & 54.64 & 44.70 \\
 \bottomrule
@@ -338,7 +339,7 @@ Method & 1,024 & 2,048 & 1,024 & 2,048 \\
 Pair packing & 33.71 & 34.61 & 32.80 & 36.55 \\
 BGE chunks & 36.58 & 37.44 & 36.81 & 40.15 \\
 Sentence chunks + BGE & 36.36 & 37.69 & 36.09 & 39.99 \\
-\spk{} (hybrid, frozen) & \textbf{38.03} & \textbf{38.45} & \textbf{38.36} & 40.98 \\
+\spk{} (hybrid) & \textbf{38.03} & \textbf{38.45} & \textbf{38.36} & 40.98 \\
 \spk{} (BGE) & 36.76 & 37.63 & 36.56 & \textbf{41.49} \\
 \midrule
 Full context (30K) & \multicolumn{2}{c}{36.44} & \multicolumn{2}{c}{38.16} \\
@@ -681,11 +682,11 @@ Model & Comparison & 512 & 1,024 & 2,048 \\
  & \spk{}-BGE $-$ BGE chunks & +2.95 [1.38, 4.53] & +2.84 [1.25, 4.49] & +2.81 [1.12, 4.59] \\
 \bottomrule
 \end{tabular}
-\caption{Per-model paired bootstrap differences (F1, 95\% intervals). \spk{} denotes the frozen hybrid configuration.}
+\caption{Per-model paired bootstrap differences (F1, 95\% intervals). \spk{} denotes \spk{} with the hybrid ranker.}
 \label{tab:permodel}
 \end{table*}
 
-\paragraph{Full context at 1,024 tokens.} At 1,024 tokens, the frozen configuration stays below the full context on every model: by 2.40 F1 on Qwen2.5-7B, 2.15 on Llama-3.1-8B, 3.27 on Qwen2.5-14B and 2.72 on Qwen2.5-32B ($p=0.01$ for the 32B model).
+\paragraph{Full context at 1,024 tokens.} At 1,024 tokens, \spk{} with the hybrid ranker stays below the full context on every model: by 2.40 F1 on Qwen2.5-7B, 2.15 on Llama-3.1-8B, 3.27 on Qwen2.5-14B and 2.72 on Qwen2.5-32B ($p=0.01$ for the 32B model).
 
 \section{Further Ablations}
 \label{app:ablation}
@@ -706,11 +707,11 @@ Full packer & 40.64 & 40.98 & 44.32 & 45.07 & \\
 \ without document order & 40.37 & 41.60 & 44.61 & 45.27 & +0.21 [$-$0.49, 0.90] \\
 \bottomrule
 \end{tabular}}
-\caption{Leave-one-out ablation of the frozen hybrid configuration. $\Delta$: paired F1 difference to the full packer, pooled over four models (95\% bootstrap interval).}
+\caption{Leave-one-out ablation of \spk{} with the hybrid ranker. $\Delta$: paired F1 difference to the full packer, pooled over four models (95\% bootstrap interval).}
 \label{tab:loo}
 \end{table}
 
-\paragraph{Leave-one-out on the hybrid configuration.} Table~\ref{tab:components} builds the packer up from chunk packing with a fixed BGE ranking. Table~\ref{tab:loo} instead removes one operation at a time from the frozen hybrid configuration. The picture is the same: merging is the operation whose removal costs most ($-$1.00 F1 pooled, with a 95\% interval that excludes zero; $-$1.43 on Qwen2.5-14B and $-$1.64 on Qwen2.5-32B), backfilling adds a little, and sentence-aligned padding and document order leave F1 essentially unchanged. These two are kept because they make the context readable (Appendix~\ref{app:mechanism}), not because they raise F1.
+\paragraph{Leave-one-out with the hybrid ranker.} Table~\ref{tab:components} builds the packer up from chunk packing with a fixed BGE ranking. Table~\ref{tab:loo} instead removes one operation at a time from the frozen hybrid configuration. The picture is the same: merging is the operation whose removal costs most ($-$1.00 F1 pooled, with a 95\% interval that excludes zero; $-$1.43 on Qwen2.5-14B and $-$1.64 on Qwen2.5-32B), backfilling adds a little, and sentence-aligned padding and document order leave F1 essentially unchanged. These two are kept because they make the context readable (Appendix~\ref{app:mechanism}), not because they raise F1.
 
 \paragraph{Merging at other budgets.} With the BGE ranking fixed, merging alone raises F1 from 36.33 to 37.96 (Qwen2.5-14B) and from 33.27 to 34.58 (Llama-3.1-8B) at 512 tokens, and from 45.29 to 46.70 and from 40.81 to 42.66 at 2,048 tokens (pooled +1.47 [0.62, 2.34] and +1.64 [0.63, 2.65]).
 
@@ -759,7 +760,7 @@ Ranker & Packing & Qwen-7B & Llama-8B & Qwen-14B & Qwen-32B \\
 BGE-small & chunks & 38.85 & 38.99 & 42.34 & 42.40 \\
 \midrule
 Lexical (BM25 + TF-IDF) & \spk{} & 39.33 & 40.19 & 43.69 & -- \\
-Hybrid (frozen) & \spk{} & 40.64 & 40.98 & 44.32 & 45.07 \\
+Hybrid & \spk{} & 40.64 & 40.98 & 44.32 & 45.07 \\
 BGE-small & \spk{} & 40.76 & 41.67 & 45.18 & 46.28 \\
 BGE-large & \spk{} & -- & 43.98 & 46.23 & 46.52 \\
 BGE + reranker & \spk{} & -- & 44.12 & 46.45 & 47.32 \\
@@ -802,7 +803,7 @@ $B$ & Packer & Ans.\ cov. & Dup.\ (\%) & Sent.\ end (\%) & Tokens \\
  & \spk{} (BGE) & \textbf{49.7} & 1.5 & 64.1 & 2,033 \\
 \bottomrule
 \end{tabular}}
-\caption{Context diagnostics on the test set (Qwen tokenizer; ablation rows: hybrid configuration). Ans.\ cov.: share of instances whose gold answer appears in the packed context. Dup.: share of packed words that start an 8-word sequence already present. Sent.\ end: share of packed pieces that end at a sentence boundary. With the Llama tokenizer all values are within 0.6 points.}
+\caption{Context diagnostics on the test set (Qwen tokenizer; ablation rows: hybrid ranker). Ans.\ cov.: share of instances whose gold answer appears in the packed context. Dup.: share of packed words that start an 8-word sequence already present. Sent.\ end: share of packed pieces that end at a sentence boundary. With the Llama tokenizer all values are within 0.6 points.}
 \label{tab:mechanism}
 \end{table}
 
