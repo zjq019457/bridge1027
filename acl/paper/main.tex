@@ -188,8 +188,8 @@ Ranker & Packing / system & Qwen-14B & Llama-8B & Qwen-32B & Avg.\textsuperscrip
 \multicolumn{2}{l}{LlamaIndex auto-merging} & 41.50 & 39.13 & 42.52 & 40.32 & \\
 \multicolumn{2}{l}{Lexical pair packing} & 41.69 & 37.79 & 42.57 & 39.74 & \\
 \multicolumn{2}{l}{Sentence chunks + BGE} & 44.24 & 39.98 & 44.34 & 42.11 & \\
-\multicolumn{2}{l}{BGE chunks + LongContextReorder} & \pend{} & \pend{} & 42.34 & \pend{} & \\
-\multicolumn{2}{l}{BGE chunks + EmbeddingsRedundantFilter} & \pend{} & \pend{} & \pend{} & \pend{} & \\
+\multicolumn{2}{l}{BGE chunks + LongContextReorder} & \pend{} & 39.12 & 42.34 & \pend{} & \\
+\multicolumn{2}{l}{BGE chunks + EmbeddingsRedundantFilter} & \pend{} & 39.28 & \pend{} & \pend{} & \\
 \multicolumn{2}{l}{Provence (BGE + pruning)$^\dagger$} & 44.27 & 40.69 & 45.66 & 42.48 & \\
 \midrule
 \multicolumn{7}{l}{\textit{Same ranking, chunk packing vs.\ \spk{}}} \\
@@ -221,7 +221,7 @@ Method & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 &
 Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & \multicolumn{3}{c}{47.79} \\
 \midrule
 \multicolumn{13}{l}{\textit{Prompt compression}} \\
-LLMLingua-2 & \pend{} & 24.60 & \pend{} & \pend{} & 28.43 & \pend{} & \pend{} & 27.10 & \pend{} & \pend{} & \pend{} & \pend{} \\
+LLMLingua-2 & \pend{} & 24.60 & \pend{} & 22.84 & 28.43 & 34.28 & 21.12 & 27.10 & 35.97 & \pend{} & \pend{} & \pend{} \\
 LongLLMLingua & \pend{} & \pend{} & \pend{} & 32.06 & 39.58 & \pend{} & 34.68 & 40.77 & \pend{} & \pend{} & 41.88 & \pend{}  \\
 \midrule
 \multicolumn{13}{l}{\textit{Published context construction}} \\
@@ -233,8 +233,8 @@ Lexical pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 4
 \midrule
 \multicolumn{13}{l}{\textit{Chunk packing}} \\
 BGE-small chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
-BGE-small chunks + LongContextReorder & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & 37.42 & 42.34 & 45.96 \\
-BGE-small chunks + EmbeddingsRedundantFilter & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} \\
+BGE-small chunks + LongContextReorder & \pend{} & \pend{} & \pend{} & 33.32 & 39.12 & 41.26 & \pend{} & \pend{} & \pend{} & 37.42 & 42.34 & 45.96 \\
+BGE-small chunks + EmbeddingsRedundantFilter & \pend{} & \pend{} & \pend{} & 33.94 & 39.28 & 42.16 & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} \\
 BGE-large chunks & \pend{} & \pend{} & \pend{} & \pend{} & 40.12 & \pend{} & \pend{} & 42.55 & \pend{} & 39.93 & 43.04 & 47.14 \\
 Reranker chunks & \pend{} & \pend{} & \pend{} & \pend{} & 42.21 & \pend{} & \pend{} & 44.37 & \pend{} & 41.74 & 45.09 & 48.15 \\
 \midrule
