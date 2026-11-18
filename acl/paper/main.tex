@@ -180,7 +180,7 @@ Ranker & Packing / system & Qwen-14B & Llama-8B & Qwen-32B & Avg.\textsuperscrip
 \multicolumn{2}{l}{Full context (30K, reference)} & 47.59 & 43.13 & 47.79 & 45.36 & \\
 \midrule
 \multicolumn{7}{l}{\textit{Prompt compression}} \\
-\multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & \pend{} & 27.77 & \\
+\multicolumn{2}{l}{LLMLingua-2} & 27.10 & 28.43 & 29.39 & 27.77 & \\
 \multicolumn{2}{l}{LongLLMLingua} & 40.77 & 39.58 & 41.88 & 40.18 & \\
 \midrule
 \multicolumn{7}{l}{\textit{Published context construction}} \\
@@ -216,33 +216,33 @@ Ranker & Packing / system & Qwen-14B & Llama-8B & Qwen-32B & Avg.\textsuperscrip
 \toprule
 & \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & \multicolumn{3}{c}{Qwen2.5-32B (AWQ)} \\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
-Method & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 \\
+Method & \textbf{512} & 1,024 & 2,048 & \textbf{512} & 1,024 & 2,048 & \textbf{512} & 1,024 & 2,048 & \textbf{512} & 1,024 & 2,048 \\
 \midrule
 Full context (reference) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & \multicolumn{3}{c}{47.79} \\
 \midrule
 \multicolumn{13}{l}{\textit{Prompt compression}} \\
-LLMLingua-2 & \pend{} & 24.60 & \pend{} & 22.84 & 28.43 & 34.28 & 21.12 & 27.10 & 35.97 & \pend{} & \pend{} & \pend{} \\
-LongLLMLingua & \pend{} & \pend{} & \pend{} & 32.06 & 39.58 & \pend{} & 34.68 & 40.77 & \pend{} & \pend{} & 41.88 & \pend{}  \\
+LLMLingua-2 & 20.06 & 24.60 & \pend{} & 22.84 & 28.43 & 34.28 & 21.12 & 27.10 & 35.97 & 22.38 & 29.39 & 36.31 \\
+LongLLMLingua & 30.85 & 37.46 & 40.80 & 32.06 & 39.58 & 43.21 & 34.68 & 40.77 & \pend{} & 35.70 & 41.88 & 46.03 \\
 \midrule
 \multicolumn{13}{l}{\textit{Published context construction}} \\
-LlamaIndex sentence window & \pend{} & \pend{} & \pend{} & 32.65 & 36.96 & 41.35 & 35.86 & 39.99 & 45.50 & \pend{} & 41.49 & \pend{}  \\
-LlamaIndex auto-merging & \pend{} & \pend{} & \pend{} & 33.23 & 39.13 & 43.52 & 34.65 & 41.50 & 45.93 & 35.11 & 42.52 & 47.12 \\
-Provence (BGE + pruning)$^\dagger$ & \pend{} & \pend{} & \pend{} & \textbf{39.62} & 40.69 & 41.36 & \textbf{42.70} & 44.27 & 44.36 & \pend{} & 45.66 & \pend{}  \\
-Sentence chunks + BGE & \pend{} & \pend{} & \pend{} & 35.73 & 39.98 & 43.11 & 40.04 & 44.24 & 47.79 & \pend{} & 44.34 & \pend{}  \\
+LlamaIndex sentence window & 31.98 & 37.02 & 41.48 & 32.65 & 36.96 & 41.35 & 35.86 & 39.99 & 45.50 & 36.08 & 41.49 & 46.02 \\
+LlamaIndex auto-merging & 31.84 & 39.30 & 40.92 & 33.23 & 39.13 & 43.52 & 34.65 & 41.50 & 45.93 & 35.11 & 42.52 & 47.12 \\
+Provence (BGE + pruning)$^\dagger$ & \textbf{40.66} & 41.90 & 41.78 & 39.62 & 40.69 & 41.36 & 42.70 & 44.27 & 44.36 & 43.66 & 45.66 & 45.68 \\
+Sentence chunks + BGE & 35.74 & 38.55 & 42.46 & 35.73 & 39.98 & 43.11 & 40.04 & 44.24 & 47.79 & 39.89 & 44.34 & 48.62 \\
 Lexical pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 37.51 & 42.57 & 44.77 \\
 \midrule
 \multicolumn{13}{l}{\textit{Chunk packing}} \\
 BGE-small chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
-BGE-small chunks + LongContextReorder & \pend{} & \pend{} & \pend{} & 33.32 & 39.12 & 41.26 & \pend{} & \pend{} & \pend{} & 37.42 & 42.34 & 45.96 \\
-BGE-small chunks + EmbeddingsRedundantFilter & \pend{} & \pend{} & \pend{} & 33.94 & 39.28 & 42.16 & \pend{} & \pend{} & \pend{} & 37.94 & 42.66 & 45.72 \\
-BGE-large chunks & \pend{} & \pend{} & \pend{} & \pend{} & 40.12 & \pend{} & \pend{} & 42.55 & \pend{} & 39.93 & 43.04 & 47.14 \\
-Reranker chunks & \pend{} & \pend{} & \pend{} & \pend{} & 42.21 & \pend{} & \pend{} & 44.37 & \pend{} & 41.74 & 45.09 & 48.15 \\
+BGE-small chunks + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & \pend{} & \pend{} & \pend{} & 37.42 & 42.34 & 45.96 \\
+BGE-small chunks + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & \pend{} & \pend{} & \pend{} & 37.94 & 42.66 & 45.72 \\
+BGE-large chunks & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.55 & 45.38 & 39.93 & 43.04 & 47.14 \\
+Reranker chunks & 37.19 & 41.59 & 43.48 & 38.29 & 42.21 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
 \midrule
 \multicolumn{13}{l}{\textit{\spk{}}} \\
-BGE-small + \spk{} & 35.64 & \textbf{40.76} & 43.14 & 36.16 & 41.67 & \textbf{43.58} & 39.21 & 45.18 & \textbf{48.10} & 40.34 & 46.28 & 49.01 \\
-BGE-large + \spk{} & \pend{} & \pend{} & \pend{} & \pend{} & 43.98 & \pend{} & \pend{} & 46.23 & \pend{} & 41.05 & 46.52 & 49.25 \\
-Reranker + \spk{} & \pend{} & \pend{} & \pend{} & \pend{} & \textbf{44.12} & \pend{} & \pend{} & \textbf{46.45} & \pend{} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
-Hybrid + \spk{} (frozen, main) & \textbf{36.74} & 40.64 & \textbf{43.60} & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15  \\
+BGE-small + \spk{} & 35.64 & 40.76 & 43.14 & 36.16 & 41.67 & 43.58 & 39.21 & 45.18 & 48.10 & 40.34 & 46.28 & 49.01 \\
+BGE-large + \spk{} & 38.24 & 42.28 & 44.32 & 38.81 & 43.98 & 44.65 & 41.54 & 46.23 & 48.61 & 41.05 & 46.52 & 49.25 \\
+Reranker + \spk{} & 39.56 & \textbf{42.79} & \textbf{44.96} & \textbf{40.49} & \textbf{44.12} & \textbf{45.61} & \textbf{42.85} & \textbf{46.45} & \textbf{49.54} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
+Hybrid + \spk{} (frozen, main) & 36.74 & 40.64 & 43.60 & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 \\
 \bottomrule
 \end{tabular}}
 \caption{Complete results grid: macro F1 on the 1,150 LongBench QA instances for every method, model and exact budget. The full-context reference reads up to 30K tokens and does not depend on the budget. Qwen2.5-32B uses the official AWQ 4-bit release (Section~\ref{sec:scale}). Bold: best compressed result in each column. \spk{} is a packer and can follow any ranker: the hybrid configuration was fixed on the development split before testing, and the other \spk{} rows pair it with the rankers of the chunk-packing rows. $\circ$: running, to be filled in. Per-task scores are in Appendix~\ref{app:pertask}. $^\dagger$Uses a context pruner trained with supervision for this purpose; \spk{} needs no training. }
@@ -691,22 +691,22 @@ Model & Comparison & 512 & 1,024 & 2,048 \\
 \small
 \setlength{\tabcolsep}{3pt}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \toprule
-Hybrid \spk{}, 1,024 tokens & Qwen-7B & Llama-8B & Qwen-14B & $\Delta$ (pooled) \\
+Hybrid \spk{}, 1,024 tokens & Qwen-7B & Llama-8B & Qwen-14B & Qwen-32B & $\Delta$ (pooled) \\
 \midrule
-Full packer & 40.64 & 40.98 & 44.32 & \\
-\ without merging & 40.08 & 40.62 & 42.89 & $-$0.78 [$-$1.68, 0.12] \\
-\ without backfilling & 40.34 & 41.12 & 43.59 & $-$0.29 [$-$0.74, 0.16] \\
-\ without sentence-aligned padding & 40.77 & 40.42 & 44.75 & +0.00 [$-$0.88, 0.88] \\
-\ without document order & 40.37 & 41.60 & 44.61 & +0.22 [$-$0.60, 1.03] \\
+Full packer & 40.64 & 40.98 & 44.32 & 45.07 & \\
+\ without merging & 40.08 & 40.62 & 42.89 & 43.43 & $-$1.00 [$-$1.83, $-$0.21] \\
+\ without backfilling & 40.34 & 41.12 & 43.59 & 44.79 & $-$0.29 [$-$0.69, 0.10] \\
+\ without sentence-aligned padding & 40.77 & 40.42 & 44.75 & 44.93 & $-$0.03 [$-$0.87, 0.79] \\
+\ without document order & 40.37 & 41.60 & 44.61 & 45.27 & +0.21 [$-$0.49, 0.90] \\
 \bottomrule
 \end{tabular}}
-\caption{Leave-one-out ablation of the frozen hybrid configuration. $\Delta$: paired F1 difference to the full packer, pooled over three models (95\% bootstrap interval).}
+\caption{Leave-one-out ablation of the frozen hybrid configuration. $\Delta$: paired F1 difference to the full packer, pooled over four models (95\% bootstrap interval).}
 \label{tab:loo}
 \end{table}
 
-\paragraph{Leave-one-out on the hybrid configuration.} Table~\ref{tab:components} builds the packer up from chunk packing with a fixed BGE ranking. Table~\ref{tab:loo} instead removes one operation at a time from the frozen hybrid configuration. The picture is the same: merging is the operation whose removal costs most ($-$0.78 F1 pooled, $-$1.43 on Qwen2.5-14B), backfilling adds a little, and sentence-aligned padding and document order leave F1 essentially unchanged. These two are kept because they make the context readable (Appendix~\ref{app:mechanism}), not because they raise F1.
+\paragraph{Leave-one-out on the hybrid configuration.} Table~\ref{tab:components} builds the packer up from chunk packing with a fixed BGE ranking. Table~\ref{tab:loo} instead removes one operation at a time from the frozen hybrid configuration. The picture is the same: merging is the operation whose removal costs most ($-$1.00 F1 pooled, with a 95\% interval that excludes zero; $-$1.43 on Qwen2.5-14B and $-$1.64 on Qwen2.5-32B), backfilling adds a little, and sentence-aligned padding and document order leave F1 essentially unchanged. These two are kept because they make the context readable (Appendix~\ref{app:mechanism}), not because they raise F1.
 
 \paragraph{Merging at other budgets.} With the BGE ranking fixed, merging alone raises F1 from 36.33 to 37.96 (Qwen2.5-14B) and from 33.27 to 34.58 (Llama-3.1-8B) at 512 tokens, and from 45.29 to 46.70 and from 40.81 to 42.66 at 2,048 tokens (pooled +1.47 [0.62, 2.34] and +1.64 [0.63, 2.65]).
 
