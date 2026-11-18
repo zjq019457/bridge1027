@@ -22,7 +22,7 @@
 \newcommand{\spk}{\textsc{DedupPack}}
 \newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
-\title{A Quarter of the Budget Is Spent Twice: Duplicated Evidence in\\Budgeted Context Packing and a Simple Fix}
+\title{DedupPack: Deduplicated Context Packing for Long-Context QA\\under Exact Token Budgets}
 
 \author{Anonymous ACL submission}
 
@@ -126,6 +126,8 @@ We measure three kinds of waste in the contexts produced by standard packers on 
 
 \subsection{Problem Setting}
 Given a question $q$ and a long context $C$, we construct $\hat C$ with $|\hat C|_{\tau}\le B$, where $|\cdot|_{\tau}$ counts tokens with the tokenizer $\tau$ of the downstream model. A fixed prompt wrapper keeps the task instruction and question unchanged; only the context slot is replaced by $\hat C$. Because the budget is defined in downstream tokens, every method is held to exactly the same constraint for each model.
+
+\paragraph{Packing as budgeted coverage.} Each candidate span $s$ covers an interval $I(s)$ of the document. A packer chooses a set $S$ of spans from the priority list and renders the text they cover. Its value is the evidence it covers, which the ranker estimates; its cost is what the context slot is charged. Standard packing renders each selected chunk separately and is charged $\sum_{s\in S}|I(s)|_\tau$, so text in overlapping intervals is paid for, and shown, once per chunk. \spk{} renders the union and is charged $|\bigcup_{s\in S} I(s)|_\tau$: a span that is already covered costs nothing and adds nothing, and a partially covered span costs only its new part. Choosing $S$ to maximise the covered evidence subject to $|\bigcup_{s\in S} I(s)|_\tau\le B$ is an instance of budgeted maximum coverage \citep{khuller1999budgeted}. In this view the ranker supplies the value model and the packer the cost model. Standard packing charges overlaps twice; \spk{} corrects the cost model and leaves the ranking unchanged, which is why its gain adds to that of a better ranker (Section~\ref{sec:agnostic}). The share of the budget lost to the per-chunk cost is $1-|\bigcup_{s}I(s)|/\sum_{s}|I(s)|$, the duplication rate measured in Section~\ref{sec:diag}.
 
 \subsection{Candidate Spans}
 The context is split into contiguous pages of 256 regex tokens (words or single punctuation marks), and each page into candidate spans of 64 regex tokens with stride 32; spans never cross pages. Regex tokens only define candidate units; all budget accounting uses $\tau$. All span-based methods in our comparison use the same candidate spans.
@@ -714,7 +716,7 @@ Full packer & 40.64 & 40.98 & 44.32 & 45.07 & \\
 
 \paragraph{Controls on Qwen2.5-32B.} The deduplication controls of Section~\ref{sec:components} replicate on the 32B model. Relative to BGE chunk packing (42.40), MMR re-ranking reaches 43.50 (+1.10 [$-$0.06, 2.24]), skipping overlapping chunks 43.90 (+1.49 [0.22, 2.74]) and \spk{} with the same BGE ranking 46.28 (+3.88 [2.33, 5.37]). The ordering MMR $<$ skip-only $<$ \spk{} is the same as on the two smaller models.
 
-\paragraph{Build-up on all four models.} Table~\ref{tab:comp4} repeats the build-up of Table~\ref{tab:components} on Qwen2.5-7B and Qwen2.5-32B. Merging is the largest step on every model (+1.83 F1 pooled over the four models) and removing it the largest loss ($-$1.52); both intervals exclude zero. The other steps are small and their intervals include zero. On Qwen2.5-7B, \spk{} without backfilling is on par with the full packer (40.78 vs.\ 40.76), and MMR re-ranking scores above skipping overlapping chunks (40.22 vs.\ 39.53).
+\paragraph{Build-up on all four models.} Table~\ref{tab:comp4} repeats the build-up of Table~\ref{tab:components} on Qwen2.5-7B and Qwen2.5-32B. Merging is the largest step on every model (+1.83 F1 pooled over the four models) and removing it the largest loss ($-$1.52); both intervals exclude zero. The other steps are small and their intervals include zero.
 
 \begin{table}[t]
 \centering
@@ -741,7 +743,6 @@ Skip overlapping chunks & 39.53 & 40.26 & 44.24 & 43.90 & +1.29 \\
 \label{tab:comp4}
 \end{table}
 
-\paragraph{Provence followed by \spk{}.} Instead of concatenating the sentences that Provence keeps, we also packed them with \spk{} (Llama-3.1-8B). This gives 39.62, 39.92 and 40.09 F1 at 512, 1,024 and 2,048 tokens: equal to Provence alone at 512 tokens and below it at 1,024 and 2,048 tokens (40.69 and 41.36). After pruning, the kept sentences rarely overlap, so there is little left to merge, and the pruned pool is often too small to fill the budget (583 of 2,048 tokens on average).
 
 \section{Rankers}
 \label{app:rankers}
@@ -872,8 +873,6 @@ LlamaIndex 1024/200 (default) & 2.9 & 1.0 & 26.5 & 26.9 & 76.9 & 77.1 \\
 \caption{MultiHop-RAG (2,255 queries, BGE-small ranking, 1,024 and 2,048 tokens): duplicated tokens, gold-evidence recall and answer-string coverage for standard packing (Std) and \spk{} over the same ranked chunks.}
 \label{tab:mhrag}
 \end{table}
-
-\paragraph{End-to-end QA.} We also answered the MultiHop-RAG queries with Qwen2.5-14B from the sentence-window contexts. Standard packing reaches 73.72 F1 and \spk{} 73.18 at 1,024 tokens (78.77 and 78.46 at 2,048). Most answers are short (yes/no or a name) and are already answered correctly from either context, so the higher evidence recall of Table~\ref{tab:mhrag} does not translate into F1 on this benchmark.
 
 
 \section{Additional Baselines}
