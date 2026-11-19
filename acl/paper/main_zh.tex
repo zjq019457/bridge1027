@@ -108,7 +108,7 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
  & \spk{} & \textbf{1.5} & \textbf{64.1} & 2,033 & \textbf{49.7} \\
 \bottomrule
 \end{tabular}}
-\caption{预算花在了哪里（LongBench 测试集，1,150 个样本，Qwen 分词器；Llama-3.1 在每一列上的差别都在 1 个点以内）。BGE 切块与 \spk{} 使用相同的 BGE-small 排序。重复率：打包文本中，以该词开头的 8 词序列已在同一上下文前文出现过的词所占比例。句末结束：以句末标点结尾的打包片段所占比例。Token 数：上下文平均长度。答案覆盖：规范化后的标准答案逐字出现在上下文中的样本比例。}
+\caption{预算花在了哪里（LongBench 测试集，1,150 个样本，用 Qwen 分词器打包；改用 Llama 分词器时每一列的差别都在 1 个点以内）。BGE 切块与 \spk{} 使用相同的 BGE-small 排序。重复率：打包文本中，以该词开头的 8 词序列已在同一上下文前文出现过的词所占比例。句末结束：以句末标点结尾的打包片段所占比例。Token 数：上下文平均长度。答案覆盖：规范化后的标准答案逐字出现在上下文中的样本比例。}
 \label{tab:diag}
 \end{table}
 
@@ -155,7 +155,7 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 
 \paragraph{数据。}LongBench \citep{bai2023longbench} 中全部英文单文档和多文档问答任务：Qasper \citep{dasigi2021qasper}（200）、MultiFieldQA-en（150）、HotpotQA \citep{yang2018hotpotqa}（200）、2WikiMultihopQA \citep{ho2020constructing}（200）、MuSiQue \citep{trivedi2022musique}（200）和 NarrativeQA \citep{kocisky2018narrativeqa}（200），共 1,150 个样本。我们报告 LongBench 的 F1 以及六个任务的宏平均；“MH”表示三个多跳任务的平均。
 
-\paragraph{模型与解码。}Qwen2.5-7B-Instruct、Qwen2.5-14B-Instruct \citep{qwen2025qwen25} 和 Llama-3.1-8B-Instruct \citep{grattafiori2024llama3} 使用 bfloat16 精度，Qwen2.5-32B-Instruct 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节），均在 vLLM 上运行，把 LongBench 的任务提示放入各模型的对话模板中，使用贪心解码和 LongBench 规定的各任务输出长度。14B 和 32B 模型读取用 Qwen 分词器打包的上下文，该分词器与 7B 模型相同。
+\paragraph{模型与解码。}Qwen2.5-7B-Instruct、Qwen2.5-14B-Instruct \citep{qwen2025qwen25} 和 Llama-3.1-8B-Instruct \citep{grattafiori2024llama3} 使用 bfloat16 精度，Qwen2.5-32B-Instruct 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节），均在 vLLM 上运行，把 LongBench 的任务提示放入各模型的对话模板中，使用贪心解码和 LongBench 规定的各任务输出长度。每个模型读取用它自己的分词器打包的上下文：Llama-3.1 使用 Llama 分词器，14B 和 32B 模型使用与 7B 模型相同的 Qwen 分词器。
 
 \paragraph{预算。}上下文部分的预算为 $B\in\{512, 1{,}024, 2{,}048\}$ 个下游 token。完整提示平均有 1.25 万个 Qwen token，因此这三档预算大约保留了上下文的 4\%、8\% 和 16\%。
 

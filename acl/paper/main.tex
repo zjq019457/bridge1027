@@ -106,7 +106,7 @@ $B$ & Packer & Dup.\,$\downarrow$ & Sent.\,end\,$\uparrow$ & Tokens & Ans.\,cov.
  & \spk{} & \textbf{1.5} & \textbf{64.1} & 2,033 & \textbf{49.7} \\
 \bottomrule
 \end{tabular}}
-\caption{Where the budget goes (LongBench test, 1,150 instances, Qwen tokenizer; Llama-3.1 is within one point on every column). BGE chunks and \spk{} use the same BGE-small ranking. Dup.: share of packed words that start an 8-word sequence already present earlier in the same context. Sent.\ end: share of packed pieces ending with sentence punctuation. Tokens: mean context length. Ans.\ cov.: share of instances whose normalised gold answer appears verbatim in the context.}
+\caption{Where the budget goes (LongBench test, 1,150 instances, packed with the Qwen tokenizer; with the Llama tokenizer every column is within one point). BGE chunks and \spk{} use the same BGE-small ranking. Dup.: share of packed words that start an 8-word sequence already present earlier in the same context. Sent.\ end: share of packed pieces ending with sentence punctuation. Tokens: mean context length. Ans.\ cov.: share of instances whose normalised gold answer appears verbatim in the context.}
 \label{tab:diag}
 \end{table}
 
@@ -153,7 +153,7 @@ All packer choices---sentence rather than fixed repair, $r$, the list length, me
 
 \paragraph{Data.} All English single- and multi-document QA tasks of LongBench \citep{bai2023longbench}: Qasper \citep{dasigi2021qasper} (200), MultiFieldQA-en (150), HotpotQA \citep{yang2018hotpotqa} (200), 2WikiMultihopQA \citep{ho2020constructing} (200), MuSiQue \citep{trivedi2022musique} (200) and NarrativeQA \citep{kocisky2018narrativeqa} (200), 1,150 instances. We report LongBench's F1 and the macro average over the six tasks; ``MH'' averages the three multi-hop tasks.
 
-\paragraph{Models and decoding.} Qwen2.5-7B-Instruct, Qwen2.5-14B-Instruct \citep{qwen2025qwen25} and Llama-3.1-8B-Instruct \citep{grattafiori2024llama3} in bfloat16, and Qwen2.5-32B-Instruct in its official AWQ 4-bit release (Section~\ref{sec:scale}), all with vLLM, LongBench's task prompts inside each model's chat template, greedy decoding and LongBench's per-task output lengths. The 14B and 32B models read the packed contexts built with the Qwen tokenizer, which they share with the 7B model.
+\paragraph{Models and decoding.} Qwen2.5-7B-Instruct, Qwen2.5-14B-Instruct \citep{qwen2025qwen25} and Llama-3.1-8B-Instruct \citep{grattafiori2024llama3} in bfloat16, and Qwen2.5-32B-Instruct in its official AWQ 4-bit release (Section~\ref{sec:scale}), all with vLLM, LongBench's task prompts inside each model's chat template, greedy decoding and LongBench's per-task output lengths. Each model reads contexts packed with its own tokenizer: Llama-3.1 with the Llama tokenizer, and the 14B and 32B models with the Qwen tokenizer they share with the 7B model.
 
 \paragraph{Budgets.} $B\in\{512, 1{,}024, 2{,}048\}$ downstream tokens for the context slot. The mean full prompt has 12.5K Qwen tokens, so these budgets keep roughly 4\%, 8\% and 16\% of the context.
 
