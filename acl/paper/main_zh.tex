@@ -59,7 +59,7 @@
 \begin{itemize}
 \item \textbf{诊断打包浪费。}标准的检索式打包把 15--30\% 的预算花在重复文字上，94\% 的片段在句子中间被截断；这种浪费来自打包步骤本身，无论使用哪种排序器都存在（第~\ref{sec:diag} 节）。
 \item \textbf{即插即用的打包器。}\spk{} 是一个无需训练、可接在任何排序器之后的打包模块：它合并重叠区间，使任何文字都不会被付费两次，把重复率降到约 1.5\%，并把答案覆盖率提高 3--4 个百分点；它在单个 CPU 核上每个样本只需 0.4 秒，比 LongLLMLingua 快约 40 倍（第~\ref{sec:method} 节和第~\ref{sec:cost} 节）。
-\item \textbf{严格控制的评测。}在开发集上冻结全部设计选择后，\spk{} 在 7B 到 32B 的全部四个模型、每档预算下都优于切块打包（合并后领先 1.9--3.7 F1，均 $p\le0.001$）；在排序固定时，它在三种排序器上分别提升 2.0--3.8 F1；配合重排序器时，它是所有压缩配置中最好的，高于 LlamaIndex 的句子窗口与自动合并检索器、Provence、LongLLMLingua 和 LLMLingua-2（表~\ref{tab:main}）。只用六分之一的 token，它就保留了完整上下文 99--103\% 的 F1，每个请求的 KV 缓存缩小约 6 倍；提升还推广到 LongBench 全部 11 个带查询的任务以及整本书长度的 InfiniteBench（第~\ref{sec:extra}、\ref{sec:infbench} 和~\ref{sec:scale} 节）。
+\item \textbf{严格控制的评测。}在开发集上冻结全部设计选择后，\spk{} 在 7B 到 32B 的全部四个模型、每档预算下都优于切块打包（合并后领先 1.9--3.7 F1，均 $p\le0.001$）；在排序固定时，它在三种排序器上分别提升 2.0--3.8 F1；配合重排序器时，它是所有压缩配置中最好的，高于 LlamaIndex 的句子窗口与自动合并检索器、Provence、RECOMP、LongLLMLingua 和 LLMLingua-2（表~\ref{tab:main}）。只用六分之一的 token，它就保留了完整上下文 99--103\% 的 F1，每个请求的 KV 缓存缩小约 6 倍；提升还推广到 LongBench 全部 11 个带查询的任务以及整本书长度的 InfiniteBench（第~\ref{sec:extra}、\ref{sec:infbench} 和~\ref{sec:scale} 节）。
 \item \textbf{分析有效的原因。}排序固定的逐步叠加消融表明，去重是真正起作用的成分：仅合并一步就拿回 77\% 的提升，去掉它损失 1.71 F1，而通用的去冗余选择方法（MMR）只拿回约三分之一；重复越多的样本获益越大（第~\ref{sec:components} 节）。
 \end{itemize}
 
@@ -164,8 +164,8 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \emph{配对打包}：一种结构化的词法打包器，用词法排序器、词法桥接分数和冗余惩罚选择“查询--支撑”片段对，每个片段用固定的 $\pm$32 窗口补全，依次纳入片段对直到第一个放不下的为止，并按原文顺序输出。它代表“结构化、面向多跳的选择 + 常规打包”。
 \emph{LLMLingua-2} \citep{pan2024llmlingua2}（\texttt{xlm-roberta-large-meetingbank}），要求其把上下文压缩到预算以内；输出放在同样的前缀之后，必要时截断到 $B$ 个下游 token。
 \emph{完整上下文}：按 LongBench 的做法，把完整上下文从中间截断到 3 万个 token（所有模型使用 32K 窗口），作为参考。
-第~\ref{sec:external} 节还加入了更强的排序器（BGE-large；在 BGE 前 100 个片段上使用 \texttt{bge-reranker-v2-m3}）以及已发表的系统：LlamaIndex 的句子窗口检索器和自动合并检索器 \citep{liu2022llamaindex}（官方节点解析器，默认窗口 3、层级 2048/512/128、合并阈值 0.5，用 BGE-small 检索）、用 BGE 排序的不超过 64 词的句子对齐块、应用于 BGE 前 60 个块的 Provence \citep{chirkova2025provence}，以及使用其推荐的问题感知设置的 LongLLMLingua \citep{jiang2024longllmlingua}。LongLLMLingua 使用 Llama-3.1-8B-Instruct 作为压缩用的语言模型。我们还在打包前对 BGE 切块使用两个 LangChain 文档变换器 \citep{chase2022langchain}：\texttt{LongContextReorder} 把最相关的切块移到上下文两端；\texttt{EmbeddingsRedundantFilter}（默认阈值：BGE-small 嵌入的余弦相似度 0.95）删掉与排名更高的切块几乎相同的切块。所有这些方法都在相同的精确预算下打包，各单元按其自身的排名顺序在放得下时纳入。
-附录~\ref{app:extra} 在相同预算下补充了开头截断、中间截断、Selective Context 和 RECOMP。
+第~\ref{sec:external} 节还加入了更强的排序器（BGE-large；在 BGE 前 100 个片段上使用 \texttt{bge-reranker-v2-m3}）以及已发表的系统：LlamaIndex 的句子窗口检索器和自动合并检索器 \citep{liu2022llamaindex}（官方节点解析器，默认窗口 3、层级 2048/512/128、合并阈值 0.5，用 BGE-small 检索）、用 BGE 排序的不超过 64 词的句子对齐块、应用于 BGE 前 60 个块的 Provence \citep{chirkova2025provence}、RECOMP 的抽取式压缩器 \citep{xu2023recomp}（HotpotQA 检查点；按与问题的相似度给上下文中所有句子排序，并按此顺序在放得下时依次加入），以及使用其推荐的问题感知设置的 LongLLMLingua \citep{jiang2024longllmlingua}。LongLLMLingua 使用 Llama-3.1-8B-Instruct 作为压缩用的语言模型。我们还在打包前对 BGE 切块使用两个 LangChain 文档变换器 \citep{chase2022langchain}：\texttt{LongContextReorder} 把最相关的切块移到上下文两端；\texttt{EmbeddingsRedundantFilter}（默认阈值：BGE-small 嵌入的余弦相似度 0.95）删掉与排名更高的切块几乎相同的切块。所有这些方法都在相同的精确预算下打包，各单元按其自身的排名顺序在放得下时纳入。
+附录~\ref{app:extra} 在相同预算下补充了开头截断、中间截断和 Selective Context。
 
 \paragraph{统计方法。}所有比较都按样本配对。我们使用按任务分层的配对 bootstrap \citep{efron1993bootstrap}，重采样 10,000 次，随机种子 20260701；统计量是各任务平均差值的宏平均。合并结果在 18 个模型--任务分层内重采样。我们报告 95\% 百分位区间和双侧 $p$ 值。
 
@@ -190,7 +190,8 @@ LongLLMLingua & 30.85 & 37.46 & 40.80 & 32.06 & 39.58 & 43.21 & 34.68 & 40.77 & 
 \multicolumn{13}{l}{\textit{已发表的上下文构建方法}} \\
 LlamaIndex 句子窗口 & 31.98 & 37.02 & 41.48 & 32.65 & 36.96 & 41.35 & 35.86 & 39.99 & 45.50 & 36.08 & 41.49 & 46.02 \\
 LlamaIndex 自动合并 & 31.84 & 39.30 & 40.92 & 33.23 & 39.13 & 43.52 & 34.65 & 41.50 & 45.93 & 35.11 & 42.52 & 47.12 \\
-Provence（BGE + 剪枝）$^\dagger$ & \textbf{40.66} & 41.90 & 41.78 & \underline{39.62} & 40.69 & 41.36 & \underline{42.70} & 44.27 & 44.36 & \underline{43.66} & 45.66 & 45.68 \\
+Provence（BGE + 剪枝）$^\dagger$ & \textbf{40.66} & 41.90 & 41.78 & \underline{39.62} & 40.69 & 41.36 & 42.70 & 44.27 & 44.36 & \underline{43.66} & 45.66 & 45.68 \\
+RECOMP（抽取式）$^\dagger$ & 38.22 & 40.46 & 41.74 & 38.08 & 41.56 & 42.40 & \textbf{42.88} & 45.50 & 47.30 & 42.63 & 45.93 & 47.39 \\
 句子切块 + BGE & 35.74 & 38.55 & 42.46 & 35.73 & 39.98 & 43.11 & 40.04 & 44.24 & 47.79 & 39.89 & 44.34 & 48.62 \\
 词法配对打包 & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 37.51 & 42.57 & 44.77 \\
 \midrule
@@ -205,11 +206,11 @@ BGE-large 切块 & 34.34 & 38.74 & 42.55 & 35.05 & 40.14 & 42.49 & 38.69 & 42.48
 \multicolumn{13}{l}{\textit{\spk{}}} \\
 BGE-small + \spk{} & 35.64 & 40.76 & 43.14 & 36.16 & 41.67 & 43.58 & 39.21 & 45.18 & 48.10 & 40.34 & 46.28 & 49.01 \\
 BGE-large + \spk{} & 38.24 & \underline{42.28} & \underline{44.32} & 38.81 & \underline{43.98} & \underline{44.65} & 41.54 & \underline{46.23} & \underline{48.61} & 41.05 & \underline{46.52} & \underline{49.25} \\
-重排序器 + \spk{} & \underline{39.56} & \textbf{42.79} & \textbf{44.96} & \textbf{40.49} & \textbf{44.13} & \textbf{45.61} & \textbf{42.85} & \textbf{46.43} & \textbf{49.54} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
+重排序器 + \spk{} & \underline{39.56} & \textbf{42.79} & \textbf{44.96} & \textbf{40.49} & \textbf{44.13} & \textbf{45.61} & \underline{42.85} & \textbf{46.43} & \textbf{49.54} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
 混合 + \spk{} & 36.74 & 40.64 & 43.60 & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 \\
 \bottomrule
 \end{tabular}}
-\caption{完整结果表：LongBench 1,150 个问答样本上，每种方法、每个模型、每个精确预算的宏平均 F1。完整上下文参考最多读取 3 万 token，与预算无关。$^\ddagger$Qwen2.5-32B 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节）。缩进的两行是在 BGE-small 切块上应用 LangChain 的文档变换器。加粗：每列中最好的压缩结果；下划线：第二好。\spk{} 是打包器，可接在任何排序器之后：每个 \spk{} 行都是同一个打包器（测试前在开发集上固定）与对应切块打包行的排序器的组合。 各任务分数见附录~\ref{app:pertask}。 $^\dagger$使用专门为此训练的上下文剪枝模型；\spk{} 无需训练。}
+\caption{完整结果表：LongBench 1,150 个问答样本上，每种方法、每个模型、每个精确预算的宏平均 F1。完整上下文参考最多读取 3 万 token，与预算无关。$^\ddagger$Qwen2.5-32B 使用官方 AWQ 4-bit 版本（第~\ref{sec:scale} 节）。缩进的两行是在 BGE-small 切块上应用 LangChain 的文档变换器。加粗：每列中最好的压缩结果；下划线：第二好。\spk{} 是打包器，可接在任何排序器之后：每个 \spk{} 行都是同一个打包器（测试前在开发集上固定）与对应切块打包行的排序器的组合。 各任务分数见附录~\ref{app:pertask}。 $^\dagger$使用专门为此有监督训练的压缩模型（Provence 为上下文剪枝模型，RECOMP 为抽取式句子压缩器）；\spk{} 无需训练。}
 \label{tab:main}
 \end{table*}
 
@@ -241,7 +242,7 @@ BGE-large & \textbf{+2.91} & \textbf{+3.66} & \textbf{+2.32} \\
 \end{table}
 
 \subsection{\spk{} 与标准打包的对比}
-表~\ref{tab:main} 比较了 1,024 token 下的全部方法：\spk{} 高于所有提示压缩方法和已发表的上下文构建系统，并且在三种排序器下，相同排序时都比切块打包高 2.0--3.8 F1；第~\ref{sec:external} 节讨论这些比较。表~\ref{tab:main} 给出了每个模型和预算下的宏平均 F1，表~\ref{tab:sig} 给出了合并后的配对检验。\spk{} 在全部 9 个模型--预算组合上都优于 BGE 切块打包。三个模型合并后，512 token 时提升 +3.68 F1，1,024 时 +1.92，2,048 时 +2.26，所有区间都不包含 0。在 Qwen2.5-32B 上（最后三列），\spk{} 同样在每个预算下都优于切块打包，分别高 +3.36、+2.67 和 +3.07 F1（第~\ref{sec:scale} 节）。提升在最小预算时最大，因为此时每个被浪费的 token 代价最高。
+表~\ref{tab:main} 比较了 1,024 token 下的全部方法：使用 BGE-large 或重排序器时，\spk{} 在全部四个模型上都高于所有提示压缩方法和已发表的上下文构建系统，并且在三种排序器下，相同排序时都比切块打包高 2.0--3.8 F1；第~\ref{sec:external} 节讨论这些比较。表~\ref{tab:main} 给出了每个模型和预算下的宏平均 F1，表~\ref{tab:sig} 给出了合并后的配对检验。\spk{} 在全部 9 个模型--预算组合上都优于 BGE 切块打包。三个模型合并后，512 token 时提升 +3.68 F1，1,024 时 +1.92，2,048 时 +2.26，所有区间都不包含 0。在 Qwen2.5-32B 上（最后三列），\spk{} 同样在每个预算下都优于切块打包，分别高 +3.36、+2.67 和 +3.07 F1（第~\ref{sec:scale} 节）。提升在最小预算时最大，因为此时每个被浪费的 token 代价最高。
 
 \spk{} 在每档预算下也比结构化配对打包器高 2.5--3.1 F1，且在全部 9 个组合上都领先。配对打包器是为多跳问题设计的，按片段对选择证据；然而一个逐个片段排序、但打包得当的打包器在多跳任务上同样更好：在 1,024 token 时，\spk{} 在三个模型上的 MH F1 为 46.3、43.9 和 50.3，而配对打包为 42.4、39.6 和 47.0，BGE 切块为 42.7、41.3 和 48.0（附录~\ref{app:pertask}）。
 
@@ -254,9 +255,9 @@ BGE-large & \textbf{+2.91} & \textbf{+3.66} & \textbf{+2.32} \\
 \subsection{更强的排序器与外部系统}
 \label{sec:external}
 
-一个自然的问题是：我们发现的浪费是否只对较弱的排序器有影响？表~\ref{tab:main} 在全部四个模型上用两种更强的排序器重复了“只换打包器”的实验。在 1,024 token 下合并四个模型，使用 BGE-large 时 \spk{} 比切块打包高 3.66 F1，使用交叉编码重排序器（在 BGE 前 100 个片段上运行 \texttt{bge-reranker-v2-m3}）时高 1.85（表~\ref{tab:sig}）。因此，更好的排序器并不能消除打包浪费：更好的打包带来的提升，与把 BGE-small 换成 BGE-large 或加上重排序器所带来的提升相当，而且两者可以叠加。配合重排序器的 \spk{} 在 12 个模型--预算组合中的 11 个上是最好的压缩结果，在 Llama-3.1-8B 上 1,024 token 时甚至超过了 3 万 token 的完整上下文（44.13 对 43.13）。
+一个自然的问题是：我们发现的浪费是否只对较弱的排序器有影响？表~\ref{tab:main} 在全部四个模型上用两种更强的排序器重复了“只换打包器”的实验。在 1,024 token 下合并四个模型，使用 BGE-large 时 \spk{} 比切块打包高 3.66 F1，使用交叉编码重排序器（在 BGE 前 100 个片段上运行 \texttt{bge-reranker-v2-m3}）时高 1.85（表~\ref{tab:sig}）。因此，更好的排序器并不能消除打包浪费：更好的打包带来的提升，与把 BGE-small 换成 BGE-large 或加上重排序器所带来的提升相当，而且两者可以叠加。配合重排序器的 \spk{} 在 12 个模型--预算组合中的 10 个上是最好的压缩结果，在其余 2 个上排第二，在 Llama-3.1-8B 上 1,024 token 时甚至超过了 3 万 token 的完整上下文（44.13 对 43.13）。
 
-我们还在相同预算和模板下与已发表的上下文构建系统进行了比较。LlamaIndex 的句子窗口检索 \citep{liu2022llamaindex} 先检索单个句子，再把每个句子替换为其前后各 3 句的窗口，它比冻结配置的 \spk{} 低 4.18 F1；相邻高分句子的窗口严重重叠，这正是第~\ref{sec:diag} 节所说的重复。LlamaIndex 的自动合并检索器在父节点的大部分子块都被检索到时，用父节点替换这些叶子块，它比 \spk{} 低 2.33：在固定层级上合并能去掉部分重复，却会纳入大部分内容不相关的整个父节点。LongLLMLingua \citep{jiang2024longllmlingua} 低 2.48。Provence \citep{chirkova2025provence} 是一个训练过的剪枝器，会从每个检索块中删除无关句子，它与冻结配置接近（+0.17），但明显低于配合重排序器的 \spk{}（+2.80）；而 \spk{} 不需要训练剪枝器。Provence 在最紧的预算下最强：512 token 时，它在 Qwen2.5-7B 上是最好的系统，在另外三个模型上排第二（表~\ref{tab:main}）。但它的剪枝器是一个在约 37 万个查询上有监督训练的 DeBERTa-v3-large 模型（第~\ref{sec:cost} 节），而 \spk{} 不需要任何训练；配合重排序器时，\spk{} 在 12 个模型--预算组合中的 11 个上领先于它。最后，用 BGE 打包互不重叠的句子对齐块，从构造上就避免了重复，正如我们的诊断所预测的，它拿回了部分提升；使用相同 BGE 排序器的 \spk{} 仍高出 1.31 F1。
+我们还在相同预算和模板下与已发表的上下文构建系统进行了比较。LlamaIndex 的句子窗口检索 \citep{liu2022llamaindex} 先检索单个句子，再把每个句子替换为其前后各 3 句的窗口，它比冻结配置的 \spk{} 低 4.18 F1；相邻高分句子的窗口严重重叠，这正是第~\ref{sec:diag} 节所说的重复。LlamaIndex 的自动合并检索器在父节点的大部分子块都被检索到时，用父节点替换这些叶子块，它比 \spk{} 低 2.33：在固定层级上合并能去掉部分重复，却会纳入大部分内容不相关的整个父节点。LongLLMLingua \citep{jiang2024longllmlingua} 低 2.48。Provence \citep{chirkova2025provence} 是一个训练过的剪枝器，会从每个检索块中删除无关句子，它与冻结配置接近（+0.17），但明显低于配合重排序器的 \spk{}（+2.80）；而 \spk{} 不需要训练剪枝器。Provence 在最紧的预算下最强：512 token 时，它在 Qwen2.5-7B 上是最好的系统，在 Llama-3.1-8B 和 Qwen2.5-32B 上排第二（表~\ref{tab:main}）。但它的剪枝器是一个在约 37 万个查询上有监督训练的 DeBERTa-v3-large 模型（第~\ref{sec:cost} 节），而 \spk{} 不需要任何训练；配合重排序器时，\spk{} 在 12 个模型--预算组合中的 11 个上领先于它。RECOMP \citep{xu2023recomp} 的抽取式压缩器在 HotpotQA 上训练，同样在小预算下最强：512 token 时它在 Qwen2.5-14B 上是最好的系统（高 0.03 F1），但预算增大时它的提升较小。合并四个模型后，配合重排序器的 \spk{} 在 512、1,024 和 2,048 token 时分别比它高 1.28、1.80 和 2.94 F1（后两个区间不包含 0）；在 2,048 token 时，全部四个 \spk{} 变体在每个模型上都高于它。最后，用 BGE 打包互不重叠的句子对齐块，从构造上就避免了重复，正如我们的诊断所预测的，它拿回了部分提升；使用相同 BGE 排序器的 \spk{} 仍高出 1.31 F1。
 
 \subsection{问答之外的任务}
 \label{sec:extra}
@@ -929,7 +930,6 @@ BGE-small + \spk{} & \underline{29.40} & \underline{32.89} \\
 开头截断 & 25.33 & 26.44 & 28.06 \\
 中间截断 & 24.55 & 26.39 & 28.77 \\
 Selective Context & 22.26 & 24.56 & 25.54 \\
-RECOMP（抽取式） & 40.46 & 41.56 & 45.50 \\
 \midrule
 BGE-small 切块 & 38.85 & 38.99 & 42.34 \\
 \midrule
@@ -939,11 +939,11 @@ BGE-large + \spk{} & \underline{42.28} & \underline{43.98} & \underline{46.23} \
 重排序器 + \spk{} & \textbf{42.79} & \textbf{44.13} & \textbf{46.43} \\
 \bottomrule
 \end{tabular}}
-\caption{相同 1,024 token 精确预算下的更多基线（宏平均 F1，1,150 个样本）。开头截断保留文档开头；中间截断按 LongBench 的做法保留开头和结尾。Selective Context \citep{li2023selectivecontext} 删除 GPT-2 自信息最低的短语；RECOMP \citep{xu2023recomp} 按其抽取式压缩器（HotpotQA 检查点）的句子排序依次加入句子，直到填满预算。}
+\caption{相同 1,024 token 精确预算下的更多基线（宏平均 F1，1,150 个样本）。开头截断保留文档开头；中间截断按 LongBench 的做法保留开头和结尾。Selective Context \citep{li2023selectivecontext} 删除 GPT-2 自信息最低的短语。RECOMP 在每档预算下的结果见表~\ref{tab:main}。}
 \label{tab:base18}
 \end{table}
 
-表~\ref{tab:base18} 在当前环境和相同的 1,024 token 预算下补充了四个基线。开头截断、中间截断和 Selective Context 比 BGE-small + \spk{} 低 15--20 F1。RECOMP 是其中最强的基线；使用 BGE-large 或重排序器的 \spk{} 在三个模型上都高于它。
+表~\ref{tab:base18} 在当前环境和相同的 1,024 token 预算下补充了三个基线。开头截断、中间截断和 Selective Context 比 BGE-small + \spk{} 低 15--20 F1。
 
 % R18-BASE-END
 在一次较早的运行中，使用相同的候选片段、提示模板、评分脚本和 1,024 token 精确预算，但使用 Qwen2.5-7B-Instruct 和 Meta-Llama-3-8B-Instruct 以及较早的软件环境，表~\ref{tab:main} 中的配对打包器还比 BM25 和 TF-IDF 切块打包分别高 2.1 和 1.9 F1（两模型平均，均 $p<0.001$）。由于 \spk{} 在表~\ref{tab:main} 的每个组合上都优于配对打包器，这两个基线同样被 \spk{} 超过。
