@@ -1,0 +1,54 @@
+\documentclass[11pt]{article}
+% Standalone preview in ACL style; not part of the paper.
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{colortbl}
+\usepackage[paperwidth=19cm,paperheight=12.3cm,margin=0.4cm]{geometry}
+\pagestyle{empty}
+\newcommand{\spk}{\textsc{DedupPack}}
+\begin{document}
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{18.2cm}{!}{%
+\begin{tabular}{l ccc ccc ccc ccc ccc}
+\toprule
+& \multicolumn{3}{c}{Qwen2.5-7B} & \multicolumn{3}{c}{Llama-3.1-8B} & \multicolumn{3}{c}{Qwen2.5-14B} & \multicolumn{3}{c}{Qwen2.5-32B} & \multicolumn{3}{c}{Average} \\
+Full context (30K tokens) & \multicolumn{3}{c}{43.04} & \multicolumn{3}{c}{43.13} & \multicolumn{3}{c}{47.59} & \multicolumn{3}{c}{47.79} & \multicolumn{3}{c}{45.39} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}\cmidrule(lr){14-16}
+Budget (tokens) & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 & 512 & 1,024 & 2,048 \\
+\midrule
+\multicolumn{16}{l}{\textit{Prompt compression}} \\
+LLMLingua-2 & 20.06 & 24.60 & 32.76 & 22.84 & 28.43 & 34.28 & 21.12 & 27.10 & 35.97 & 22.38 & 29.39 & 36.31 & 21.60 & 27.38 & 34.83 \\
+LongLLMLingua & 30.85 & 37.46 & 40.80 & 32.06 & 39.58 & 43.21 & 34.68 & 40.77 & 45.51 & 35.70 & 41.88 & 46.03 & 33.32 & 39.92 & 43.89 \\
+\midrule
+\multicolumn{16}{l}{\textit{Published context construction}} \\
+LlamaIndex sentence window & 31.98 & 37.02 & 41.48 & 32.65 & 36.96 & 41.35 & 35.86 & 39.99 & 45.50 & 36.08 & 41.49 & 46.02 & 34.14 & 38.87 & 43.59 \\
+LlamaIndex auto-merging & 31.84 & 39.30 & 40.92 & 33.23 & 39.13 & 43.52 & 34.65 & 41.50 & 45.93 & 35.11 & 42.52 & 47.12 & 33.71 & 40.61 & 44.37 \\
+Provence (BGE + pruning)$^\dagger$ & \textbf{40.66} & 41.90 & 41.78 & \underline{39.62} & 40.69 & 41.36 & 42.70 & 44.27 & 44.36 & \underline{43.66} & 45.66 & 45.68 & \underline{41.66} & 43.13 & 43.30 \\
+\rowcolor[gray]{0.90}RECOMP (extractive)$^\dagger$ & 38.22 & 40.46 & 41.74 & 38.08 & 41.56 & 42.40 & \textbf{42.88} & 45.50 & 47.30 & 42.63 & 45.93 & 47.39 & 40.45 & 43.36 & 44.71 \\
+Sentence chunks + BGE & 35.74 & 38.55 & 42.46 & 35.73 & 39.98 & 43.11 & 40.04 & 44.24 & 47.79 & 39.89 & 44.34 & 48.62 & 37.85 & 41.78 & 45.50 \\
+Lexical pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 41.69 & 44.23 & 37.51 & 42.57 & 44.77 & 35.54 & 40.29 & 42.32 \\
+\midrule
+\multicolumn{16}{l}{\textit{Chunk packing}} \\
+BGE-small chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 & 35.03 & 40.65 & 43.30 \\
+\quad + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & 35.90 & 41.48 & 44.97 & 37.42 & 42.34 & 45.96 & 34.93 & 40.54 & 43.36 \\
+\quad + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & 36.50 & 42.41 & 45.96 & 37.94 & 42.66 & 45.72 & 35.48 & 40.72 & 43.88 \\
+BGE-large chunks & 34.34 & 38.74 & 42.55 & 35.05 & 40.14 & 42.49 & 38.69 & 42.48 & 45.38 & 39.93 & 43.04 & 47.14 & 37.00 & 41.10 & 44.39 \\
+Reranker chunks & 37.19 & 41.59 & 43.48 & 38.29 & 42.22 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 & 39.60 & 43.32 & 45.66 \\
+Hybrid chunks & 34.27 & 38.60 & 41.55 & 34.20 & 38.85 & 40.61 & 36.75 & 42.42 & 45.45 & 37.96 & 42.02 & 45.25 & 35.80 & 40.47 & 43.22 \\
+\midrule
+\multicolumn{16}{l}{\textit{\spk{}}} \\
+BGE-small + \spk{} & 35.64 & 40.76 & 43.14 & 36.16 & 41.67 & 43.58 & 39.21 & 45.18 & 48.10 & 40.34 & 46.28 & 49.01 & 37.84 & 43.47 & 45.96 \\
+BGE-large + \spk{} & 38.24 & \underline{42.28} & \underline{44.32} & 38.81 & \underline{43.98} & \underline{44.65} & 41.54 & \underline{46.23} & \underline{48.61} & 41.05 & \underline{46.52} & \underline{49.25} & 39.91 & \underline{44.75} & \underline{46.71} \\
+Reranker + \spk{} & \underline{39.56} & \textbf{42.79} & \textbf{44.96} & \textbf{40.49} & \textbf{44.13} & \textbf{45.61} & \underline{42.85} & \textbf{46.43} & \textbf{49.54} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} & \textbf{41.74} & \textbf{45.17} & \textbf{47.65} \\
+Hybrid + \spk{} & 36.74 & 40.64 & 43.60 & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 & 38.63 & 42.75 & 45.76 \\
+\bottomrule
+\end{tabular}}
+\caption*{\footnotesize Macro F1 on the 1,150 LongBench QA instances at each exact budget (shaded: RECOMP with its HotpotQA extractive checkpoint). Bold: best compressed result in each column; underlined: second best. $^\dagger$Trained compressor; \spk{} needs no training.}
+\end{table}
+\end{document}
