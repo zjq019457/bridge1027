@@ -1,26 +1,35 @@
 {
- "grid_hybrid_chunks": {"q7": [null, null, null], "llama": [null, null, null], "q14": [null, 42.42, null], "q32": [null, null, null]},
+ "grid_hybrid_chunks": {"q7": [34.27, 38.60, 41.55], "llama": [34.20, 38.85, 40.61], "q14": [36.75, 42.42, 45.45], "q32": [37.96, 42.02, 45.25]},
  "base": {
-  "head": {"q7": null, "llama": null, "q14": 28.06},
-  "mid": {"q7": null, "llama": null, "q14": null},
-  "sc": {"q7": null, "llama": null, "q14": null},
-  "recomp": {"q7": null, "llama": null, "q14": null},
+  "head": {"q7": 25.33, "llama": 26.44, "q14": 28.06},
+  "mid": {"q7": 24.55, "llama": 26.39, "q14": 28.77},
+  "sc": {"q7": 22.26, "llama": 24.56, "q14": 25.54},
+  "recomp": {"q7": 40.46, "llama": 41.56, "q14": 45.50},
   "bge_chunk": {"q7": 38.85, "llama": 38.99, "q14": 42.34},
-  "bge_dp": {"q7": 40.76, "llama": 41.67, "q14": 45.18}
+  "bge_dp": {"q7": 40.76, "llama": 41.67, "q14": 45.18},
+  "hyb_dp": {"q7": 40.64, "llama": 40.98, "q14": 44.32},
+  "bgel_dp": {"q7": 42.28, "llama": 43.98, "q14": 46.23},
+  "rr_dp": {"q7": 42.79, "llama": 44.13, "q14": 46.43}
  },
- "b256": {"head": 20.39, "mid": null, "bge_chunk": 30.72, "bge_dp": null, "hyb_dp": null},
+ "b256": {
+  "head": {"q7": 18.20, "q14": 20.39},
+  "mid": {"q7": 18.26, "q14": 20.61},
+  "bge_chunk": {"q7": 27.48, "q14": 30.72},
+  "bge_dp": {"q7": 29.40, "q14": 32.89},
+  "hyb_dp": {"q7": 29.82, "q14": 33.54}
+ },
  "sens": {
   "default": {"q7": 40.76, "llama": 41.67, "q14": 45.18},
-  "r16": {"q7": null, "llama": null, "q14": null},
-  "r64": {"q7": null, "llama": null, "q14": null},
-  "p30": {"q7": null, "llama": null, "q14": null},
-  "p120": {"q7": null, "llama": null, "q14": null},
+  "r16": {"q7": 40.52, "llama": 41.40, "q14": 44.87},
+  "r64": {"q7": 40.78, "llama": 42.01, "q14": 45.04},
+  "p30": {"q7": 40.49, "llama": 41.91, "q14": 45.16},
+  "p120": {"q7": 40.79, "llama": 41.79, "q14": 45.12},
   "bge_chunk": {"q7": 38.85, "llama": 38.99, "q14": 42.34}
  },
  "samp": {
   "greedy_chunk": {"llama": 38.99, "q14": 42.34},
   "greedy_dp": {"llama": 41.67, "q14": 45.18},
-  "samp_chunk": {"llama": null, "q14": null},
-  "samp_dp": {"llama": null, "q14": null}
+  "samp_chunk": {"llama": [37.99, 0.10], "q14": [42.05, 0.13]},
+  "samp_dp": {"llama": [40.72, 0.14], "q14": [45.10, 0.29]}
  }
 }

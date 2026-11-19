@@ -163,7 +163,7 @@ All packer choices---sentence rather than fixed repair, $r$, the list length, me
 \emph{LLMLingua-2} \citep{pan2024llmlingua2} (\texttt{xlm-roberta-large-meetingbank}), asked to compress the context to the budget; its output is placed after the same prefix and truncated to $B$ downstream tokens if needed.
 \emph{Full context}: the whole context, middle-truncated to 30K tokens as in LongBench (a 32K window for all models), as a reference.
 Section~\ref{sec:external} adds stronger rankers (BGE-large; \texttt{bge-reranker-v2-m3} over the top 100 BGE spans) and published systems: LlamaIndex's sentence-window and auto-merging retrievers \citep{liu2022llamaindex} (official node parsers, default window 3 and hierarchy 2048/512/128, merge threshold 0.5, BGE-small retrieval), sentence-aligned chunks of up to 64 words ranked by BGE, Provence \citep{chirkova2025provence} applied to the top 60 BGE chunks, and LongLLMLingua \citep{jiang2024longllmlingua} with its recommended question-aware settings. For LongLLMLingua we use Llama-3.1-8B-Instruct as the compressor LM. We also apply two LangChain document transformers \citep{chase2022langchain} to the BGE chunks before packing: \texttt{LongContextReorder}, which moves the most relevant chunks to both ends of the context, and \texttt{EmbeddingsRedundantFilter} (default cosine threshold 0.95 on BGE-small embeddings), which drops a chunk that is nearly identical to a higher-ranked one. All of these are packed into the same exact budget; units are admitted in their own rank order while they fit.
-Appendix~\ref{app:extra} compares the pair packer with truncation, Selective Context and BM25/TF-IDF chunk packing in an earlier environment.
+Appendix~\ref{app:extra} adds head and middle truncation, Selective Context and RECOMP under the same budget.
 
 \paragraph{Statistics.} Comparisons are paired on instances. We use a task-stratified paired bootstrap \citep{efron1993bootstrap} with 10,000 resamples and seed 20260701; the statistic is the macro average of per-task mean differences. Pooled results resample within the eighteen model--task strata. We report 95\% percentile intervals and two-sided $p$-values.
 
@@ -196,14 +196,14 @@ Lexical pair packing & 33.88 & 39.11 & 40.68 & 34.05 & 37.79 & 39.60 & 36.73 & 4
 BGE-small chunks & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
 \quad + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & 35.90 & 41.48 & 44.97 & 37.42 & 42.34 & 45.96 \\
 \quad + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & 36.50 & 42.41 & 45.96 & 37.94 & 42.66 & 45.72 \\
-BGE-large chunks & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.48 & 45.38 & 39.93 & 43.04 & 47.14 \\
-Reranker chunks & 37.19 & 41.59 & 43.48 & 38.29 & 42.21 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
-Hybrid chunks & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & 42.42 & \pend{} & \pend{} & \pend{} & \pend{} \\
+BGE-large chunks & 34.34 & 38.74 & 42.55 & 35.05 & 40.14 & 42.49 & 38.69 & 42.48 & 45.38 & 39.93 & 43.04 & 47.14 \\
+Reranker chunks & 37.19 & 41.59 & 43.48 & 38.29 & 42.22 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
+Hybrid chunks & 34.27 & 38.60 & 41.55 & 34.20 & 38.85 & 40.61 & 36.75 & 42.42 & 45.45 & 37.96 & 42.02 & 45.25 \\
 \midrule
 \multicolumn{13}{l}{\textit{\spk{}}} \\
 BGE-small + \spk{} & 35.64 & 40.76 & 43.14 & 36.16 & 41.67 & 43.58 & 39.21 & 45.18 & 48.10 & 40.34 & 46.28 & 49.01 \\
 BGE-large + \spk{} & 38.24 & \underline{42.28} & \underline{44.32} & 38.81 & \underline{43.98} & \underline{44.65} & 41.54 & \underline{46.23} & \underline{48.61} & 41.05 & \underline{46.52} & \underline{49.25} \\
-Reranker + \spk{} & \underline{39.56} & \textbf{42.79} & \textbf{44.96} & \textbf{40.49} & \textbf{44.12} & \textbf{45.61} & \textbf{42.85} & \textbf{46.45} & \textbf{49.54} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
+Reranker + \spk{} & \underline{39.56} & \textbf{42.79} & \textbf{44.96} & \textbf{40.49} & \textbf{44.13} & \textbf{45.61} & \textbf{42.85} & \textbf{46.43} & \textbf{49.54} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
 Hybrid + \spk{} & 36.74 & 40.64 & 43.60 & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 \\
 \bottomrule
 \end{tabular}}
@@ -223,11 +223,12 @@ Hybrid + \spk{} & 36.74 & 40.64 & 43.60 & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 
 \midrule
 BGE-small & \textbf{+2.81} & \textbf{+2.83} & \textbf{+2.66} \\
  & {\scriptsize [1.69, 3.95]} & {\scriptsize [1.68, 3.98]} & {\scriptsize [1.53, 3.81]} \\
-BGE-large & \textbf{+2.91} & \pend{} & \textbf{+2.32} \\
- & {\scriptsize [1.83, 4.04]} &  & {\scriptsize [1.23, 3.42]} \\
-Reranker & \textbf{+2.14} & \pend{} & \textbf{+1.98} \\
- & {\scriptsize [1.13, 3.18]} &  & {\scriptsize [0.95, 3.03]} \\
-Hybrid & \pend{} & \pend{} & \pend{} \\
+BGE-large & \textbf{+2.91} & \textbf{+3.66} & \textbf{+2.32} \\
+ & {\scriptsize [1.83, 4.04]} & {\scriptsize [2.51, 4.80]} & {\scriptsize [1.23, 3.42]} \\
+Reranker & \textbf{+2.14} & \textbf{+1.85} & \textbf{+1.98} \\
+ & {\scriptsize [1.13, 3.18]} & {\scriptsize [0.77, 2.97]} & {\scriptsize [0.95, 3.03]} \\
+Hybrid & \textbf{+2.83} & \textbf{+2.28} & \textbf{+2.54} \\
+ & {\scriptsize [1.68, 3.98]} & {\scriptsize [1.12, 3.49]} & {\scriptsize [1.42, 3.68]} \\
 \midrule
 \spk{} (BGE-small) minus pair packing & \textbf{+2.30} & \textbf{+3.19} & \textbf{+3.63} \\
  & {\scriptsize [0.69, 3.93]} & {\scriptsize [1.72, 4.64]} & {\scriptsize [2.26, 5.00]} \\
@@ -244,14 +245,14 @@ Table~\ref{tab:main} compares all methods at 1,024 tokens: \spk{} is above every
 
 \subsection{The packer, not the ranker, carries the gain}
 \label{sec:agnostic}
-The most direct test of the packer is to keep the ranking fixed. BGE chunk packing and \spk{} with the BGE ranker use the same BGE similarities over the same spans and differ only in how the top spans are turned into a context. Changing the packer improves F1 by +2.81, +2.48 and +2.57 at the three budgets (Table~\ref{tab:sig}; per-model results in Appendix~\ref{app:permodel}).
+The most direct test of the packer is to keep the ranking fixed. BGE chunk packing and \spk{} with the BGE ranker use the same BGE similarities over the same spans and differ only in how the top spans are turned into a context. Changing the packer improves F1 by +2.81, +2.83 and +2.66 at the three budgets (Table~\ref{tab:sig}; per-model results in Appendix~\ref{app:permodel}).
 
 Conversely, the choice of ranker inside \spk{} matters little. The hybrid ranker selected on the development split and the BGE ranker are within 0.6 F1 of each other on average; each is best in some settings. With a purely lexical ranker, \spk{} outperforms the pair packer, which uses the same lexical signals, by 1.54 F1 at 1,024 tokens. In short, the improvement comes from the packing operations and transfers across lexical, dense and hybrid rankers.
 
 \subsection{Stronger rankers and external systems}
 \label{sec:external}
 
-A natural question is whether the waste we identify matters only for weak rankers. Table~\ref{tab:main} repeats the packer swap with two stronger rankers on Qwen2.5-14B and Llama-3.1-8B. With BGE-large, \spk{} improves on chunk packing by 3.77 F1; with a cross-encoder reranker (\texttt{bge-reranker-v2-m3} over the top 100 BGE spans) by 2.00. A better ranker therefore does not remove the packing waste: the gain from better packing is comparable to the gain from replacing BGE-small with BGE-large or with a reranker, and the two add up. \spk{} with the reranker is the best compressed configuration on both models, and on Llama-3.1-8B it scores above the 30K-token full context (44.12 vs.\ 43.13).
+A natural question is whether the waste we identify matters only for weak rankers. Table~\ref{tab:main} repeats the packer swap with two stronger rankers on all four models. Pooled over the four models at 1,024 tokens, \spk{} improves on chunk packing by 3.66 F1 with BGE-large and by 1.85 with a cross-encoder reranker (\texttt{bge-reranker-v2-m3} over the top 100 BGE spans; Table~\ref{tab:sig}). A better ranker therefore does not remove the packing waste: the gain from better packing is comparable to the gain from replacing BGE-small with BGE-large or with a reranker, and the two add up. \spk{} with the reranker is the best compressed result in 11 of the 12 model--budget columns, and on Llama-3.1-8B at 1,024 tokens it scores above the 30K-token full context (44.13 vs.\ 43.13).
 
 We also compare with published context-construction systems under the same budget and wrapper. LlamaIndex's sentence-window retrieval \citep{liu2022llamaindex}, which retrieves single sentences and replaces each with its $\pm$3-sentence window, trails the frozen \spk{} configuration by 4.18 F1; its windows of neighbouring top sentences overlap heavily, which is exactly the duplication of Section~\ref{sec:diag}. LlamaIndex's auto-merging retriever, which replaces retrieved leaf chunks by their parent when most of the parent's children are retrieved, trails it by 2.33: merging at fixed hierarchy levels removes some duplication but admits whole parents that are mostly irrelevant. LongLLMLingua \citep{jiang2024longllmlingua} trails it by 2.48. Provence \citep{chirkova2025provence}, a trained pruner that removes irrelevant sentences from each retrieved chunk, is close to the frozen configuration (+0.17) and is clearly below \spk{} given a reranker (+2.80); \spk{} needs no trained pruner. Provence is strongest at the tightest budget: at 512 tokens it is the best system on Qwen2.5-7B and second on the other three models (Table~\ref{tab:main}). Its pruner, however, is a DeBERTa-v3-large model trained with supervision on about 370K queries (Section~\ref{sec:cost}), whereas \spk{} needs no training; given a reranker, \spk{} is ahead of it in 11 of the 12 model--budget settings. Finally, packing non-overlapping sentence-aligned chunks with BGE, which avoids duplication by construction, recovers part of the gain, as our diagnosis predicts; \spk{} with the same BGE ranker remains 1.31 F1 higher.
 
@@ -340,7 +341,7 @@ Qwen2.5-32B (AWQ) & +3.36 & \textbf{+2.67} & \textbf{+3.07} \\
 \end{table}
 
 \subsection{Evidence-level vs.\ token-level compression}
-Under the same exact 1,024-token budget, LLMLingua-2 reaches 24.6--28.4 F1, and \spk{} exceeds it by 15.27 F1 pooled over models. At roughly 12$\times$ compression a token-level compressor must remove most of every sentence, including the names, numbers and function words that extractive QA needs to copy, whereas \spk{} spends the budget on a few complete passages. Appendix~\ref{app:extra} shows the same ordering for Selective Context and LongLLMLingua.
+Under the same exact 1,024-token budget, LLMLingua-2 reaches 24.6--28.4 F1, and \spk{} exceeds it by 15.27 F1 pooled over models. At roughly 12$\times$ compression a token-level compressor must remove most of every sentence, including the names, numbers and function words that extractive QA needs to copy, whereas \spk{} spends the budget on a few complete passages. Selective Context, which also deletes tokens, reaches only 22.3--25.5 F1 (Appendix~\ref{app:extra}).
 
 \subsection{Deduplication is the active ingredient}
 \label{sec:components}
@@ -724,7 +725,7 @@ Lexical (BM25 + TF-IDF) & \spk{} & 39.33 & 40.19 & 43.69 & -- \\
 Hybrid & \spk{} & 40.64 & 40.98 & 44.32 & 45.07 \\
 BGE-small & \spk{} & 40.76 & 41.67 & 45.18 & 46.28 \\
 BGE-large & \spk{} & 42.28 & 43.98 & 46.23 & 46.52 \\
-BGE + reranker & \spk{} & 42.79 & 44.12 & 46.45 & 47.32 \\
+BGE + reranker & \spk{} & 42.79 & 44.13 & 46.43 & 47.32 \\
 \bottomrule
 \end{tabular}}
 \caption{\spk{} after rankers of increasing strength (1,024 tokens, macro F1), against BGE-small chunk packing.}
@@ -840,7 +841,11 @@ LlamaIndex 1024/200 (default) & 2.9 & 1.0 & 26.5 & 26.9 & 76.9 & 77.1 \\
 % R18-ROBUST-BEGIN
 \section{Robustness Checks}
 \label{app:robust}
-Table~\ref{tab:sens} varies the two settings of the packer, Table~\ref{tab:samp} replaces greedy decoding with sampling, and Table~\ref{tab:b256} lowers the budget to 256 tokens on Qwen2.5-14B.
+\paragraph{Packer settings.} Table~\ref{tab:sens} varies the padding radius $r$ and the length of the priority list $P$. Every setting stays within 0.35 F1 of the default and at least 1.6 F1 above chunk packing with the same ranker on every model.
+
+\paragraph{Sampling.} Table~\ref{tab:samp} replaces greedy decoding with sampling. Under sampling, \spk{} remains 2.73 F1 (Llama-3.1-8B) and 3.05 F1 (Qwen2.5-14B) above chunk packing, against 2.68 and 2.84 with greedy decoding; the standard deviation across seeds is at most 0.3 F1.
+
+\paragraph{A 256-token budget.} Table~\ref{tab:b256} lowers the budget to 256 tokens. With the same BGE ranking, \spk{} again improves on chunk packing, by 1.92 F1 (Qwen2.5-7B) and 2.17 F1 (Qwen2.5-14B).
 
 \begin{table}[t]
 \centering
@@ -852,10 +857,10 @@ Table~\ref{tab:sens} varies the two settings of the packer, Table~\ref{tab:samp}
 BGE-small + \spk{}, 1,024 tokens & Qwen-7B & Llama-8B & Qwen-14B \\
 \midrule
 Default ($r=32$, 60 spans) & 40.76 & 41.67 & 45.18 \\
-$r=16$ & \pend{} & \pend{} & \pend{} \\
-$r=64$ & \pend{} & \pend{} & \pend{} \\
-$P$ of 30 spans & \pend{} & \pend{} & \pend{} \\
-$P$ of 120 spans & \pend{} & \pend{} & \pend{} \\
+$r=16$ & 40.52 & 41.40 & 44.87 \\
+$r=64$ & 40.78 & 42.01 & 45.04 \\
+$P$ of 30 spans & 40.49 & 41.91 & 45.16 \\
+$P$ of 120 spans & 40.79 & 41.79 & 45.12 \\
 \midrule
 BGE-small chunks & 38.85 & 38.99 & 42.34 \\
 \bottomrule
@@ -877,8 +882,8 @@ BGE-small chunks & 38.85 & 38.99 & 42.34 \\
 BGE-small chunks & 38.99 & 42.34 \\
 BGE-small + \spk{} & 41.67 & 45.18 \\
 \multicolumn{3}{l}{\textit{Sampling (temperature 0.7, top-$p$ 0.9, 3 seeds)}} \\
-BGE-small chunks & \pend{} & \pend{} \\
-BGE-small + \spk{} & \pend{} & \pend{} \\
+BGE-small chunks & 37.99 $\pm$ 0.10 & 42.05 $\pm$ 0.13 \\
+BGE-small + \spk{} & 40.72 $\pm$ 0.14 & 45.10 $\pm$ 0.29 \\
 \bottomrule
 \end{tabular}}
 \caption{Greedy decoding versus sampling (1,024 tokens, BGE-small ranker, macro F1). Sampling rows give the mean $\pm$ standard deviation over three seeds.}
@@ -890,19 +895,19 @@ BGE-small + \spk{} & \pend{} & \pend{} \\
 \small
 \setlength{\tabcolsep}{3pt}
 \resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
-\begin{tabular}{lc}
+\begin{tabular}{lcc}
 \toprule
-Qwen2.5-14B, 256 tokens & F1 \\
+256 tokens & Qwen-7B & Qwen-14B \\
 \midrule
-Head truncation & 20.39 \\
-Middle truncation & \pend{} \\
+Head truncation & 18.20 & 20.39 \\
+Middle truncation & 18.26 & 20.61 \\
 \midrule
-BGE-small chunks & 30.72 \\
-BGE-small + \spk{} & \pend{} \\
-Hybrid + \spk{} & \pend{} \\
+BGE-small chunks & 27.48 & 30.72 \\
+BGE-small + \spk{} & \underline{29.40} & \underline{32.89} \\
+Hybrid + \spk{} & \textbf{29.82} & \textbf{33.54} \\
 \bottomrule
 \end{tabular}}
-\caption{Qwen2.5-14B under an exact 256-token budget (macro F1).}
+\caption{Qwen2.5-7B and Qwen2.5-14B under an exact 256-token budget (macro F1).}
 \label{tab:b256}
 \end{table}
 
@@ -919,22 +924,26 @@ Hybrid + \spk{} & \pend{} \\
 \toprule
 1,024 tokens & Qwen-7B & Llama-8B & Qwen-14B \\
 \midrule
-Head truncation & \pend{} & \pend{} & 28.06 \\
-Middle truncation & \pend{} & \pend{} & \pend{} \\
-Selective Context & \pend{} & \pend{} & \pend{} \\
-RECOMP (extractive) & \pend{} & \pend{} & \pend{} \\
+Head truncation & 25.33 & 26.44 & 28.06 \\
+Middle truncation & 24.55 & 26.39 & 28.77 \\
+Selective Context & 22.26 & 24.56 & 25.54 \\
+RECOMP (extractive) & 40.46 & 41.56 & 45.50 \\
 \midrule
 BGE-small chunks & 38.85 & 38.99 & 42.34 \\
+\midrule
 BGE-small + \spk{} & 40.76 & 41.67 & 45.18 \\
+Hybrid + \spk{} & 40.64 & 40.98 & 44.32 \\
+BGE-large + \spk{} & \underline{42.28} & \underline{43.98} & \underline{46.23} \\
+Reranker + \spk{} & \textbf{42.79} & \textbf{44.13} & \textbf{46.43} \\
 \bottomrule
 \end{tabular}}
 \caption{Further baselines under the same exact 1,024-token budget (macro F1, 1,150 instances). Head truncation keeps the beginning of the document; middle truncation keeps its beginning and end, as in LongBench. Selective Context \citep{li2023selectivecontext} removes the phrases with the lowest GPT-2 self-information; RECOMP \citep{xu2023recomp} adds sentences in the order given by its extractive compressor (HotpotQA checkpoint) until the budget is full.}
 \label{tab:base18}
 \end{table}
 
-Table~\ref{tab:base18} adds four further baselines in the current environment.
+Table~\ref{tab:base18} adds four further baselines in the current environment, under the same 1,024-token budget. Head and middle truncation and Selective Context stay 15--20 F1 below BGE-small + \spk{}. RECOMP is the strongest of these baselines; \spk{} with BGE-large or the reranker scores above it on all three models.
 
 % R18-BASE-END
-In an earlier run with the same candidate spans, prompt wrapper, scorer and exact 1,024-token budget, but with Qwen2.5-7B-Instruct and Meta-Llama-3-8B-Instruct in an earlier software environment, the pair packer of Table~\ref{tab:main} outperformed head and middle truncation by 13.1 and 13.6 F1, Selective Context by 18.2, LLMLingua-2 by 11.3, LongLLMLingua by 6.6, and BM25 and TF-IDF chunk packing by 2.1 and 1.9 F1 (two-model averages, all $p<0.001$). Since \spk{} outperforms the pair packer in every setting of Table~\ref{tab:main}, these baselines are dominated by \spk{} as well; we report them here rather than in the main table because they were run in a different environment.
+In an earlier run with the same candidate spans, prompt wrapper, scorer and exact 1,024-token budget, but with Qwen2.5-7B-Instruct and Meta-Llama-3-8B-Instruct in an earlier software environment, the pair packer of Table~\ref{tab:main} also outperformed BM25 and TF-IDF chunk packing by 2.1 and 1.9 F1 (two-model averages, both $p<0.001$). Since \spk{} outperforms the pair packer in every setting of Table~\ref{tab:main}, it outperforms these two baselines as well.
 
 \end{document}

@@ -165,7 +165,7 @@ $B$ & 打包器 & 重复率\,$\downarrow$ & 句末结束\,$\uparrow$ & Token 数
 \emph{LLMLingua-2} \citep{pan2024llmlingua2}（\texttt{xlm-roberta-large-meetingbank}），要求其把上下文压缩到预算以内；输出放在同样的前缀之后，必要时截断到 $B$ 个下游 token。
 \emph{完整上下文}：按 LongBench 的做法，把完整上下文从中间截断到 3 万个 token（所有模型使用 32K 窗口），作为参考。
 第~\ref{sec:external} 节还加入了更强的排序器（BGE-large；在 BGE 前 100 个片段上使用 \texttt{bge-reranker-v2-m3}）以及已发表的系统：LlamaIndex 的句子窗口检索器和自动合并检索器 \citep{liu2022llamaindex}（官方节点解析器，默认窗口 3、层级 2048/512/128、合并阈值 0.5，用 BGE-small 检索）、用 BGE 排序的不超过 64 词的句子对齐块、应用于 BGE 前 60 个块的 Provence \citep{chirkova2025provence}，以及使用其推荐的问题感知设置的 LongLLMLingua \citep{jiang2024longllmlingua}。LongLLMLingua 使用 Llama-3.1-8B-Instruct 作为压缩用的语言模型。我们还在打包前对 BGE 切块使用两个 LangChain 文档变换器 \citep{chase2022langchain}：\texttt{LongContextReorder} 把最相关的切块移到上下文两端；\texttt{EmbeddingsRedundantFilter}（默认阈值：BGE-small 嵌入的余弦相似度 0.95）删掉与排名更高的切块几乎相同的切块。所有这些方法都在相同的精确预算下打包，各单元按其自身的排名顺序在放得下时纳入。
-附录~\ref{app:extra} 给出了早期环境中配对打包器与截断、Selective Context 以及 BM25/TF-IDF 切块打包的比较。
+附录~\ref{app:extra} 在相同预算下补充了开头截断、中间截断、Selective Context 和 RECOMP。
 
 \paragraph{统计方法。}所有比较都按样本配对。我们使用按任务分层的配对 bootstrap \citep{efron1993bootstrap}，重采样 10,000 次，随机种子 20260701；统计量是各任务平均差值的宏平均。合并结果在 18 个模型--任务分层内重采样。我们报告 95\% 百分位区间和双侧 $p$ 值。
 
@@ -198,14 +198,14 @@ Provence（BGE + 剪枝）$^\dagger$ & \textbf{40.66} & 41.90 & 41.78 & \underli
 BGE-small 切块 & 33.05 & 38.85 & 40.98 & 33.27 & 38.99 & 40.85 & 36.27 & 42.34 & 45.29 & 37.52 & 42.40 & 46.08 \\
 \quad + LongContextReorder & 33.06 & 39.21 & 41.24 & 33.32 & 39.12 & 41.26 & 35.90 & 41.48 & 44.97 & 37.42 & 42.34 & 45.96 \\
 \quad + EmbeddingsRedundantFilter & 33.53 & 38.53 & 41.66 & 33.94 & 39.28 & 42.16 & 36.50 & 42.41 & 45.96 & 37.94 & 42.66 & 45.72 \\
-BGE-large 切块 & 34.34 & 38.74 & 42.55 & 35.05 & 40.12 & 42.49 & 38.69 & 42.48 & 45.38 & 39.93 & 43.04 & 47.14 \\
-重排序切块 & 37.19 & 41.59 & 43.48 & 38.29 & 42.21 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
-混合排序切块 & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & \pend{} & 42.42 & \pend{} & \pend{} & \pend{} & \pend{} \\
+BGE-large 切块 & 34.34 & 38.74 & 42.55 & 35.05 & 40.14 & 42.49 & 38.69 & 42.48 & 45.38 & 39.93 & 43.04 & 47.14 \\
+重排序切块 & 37.19 & 41.59 & 43.48 & 38.29 & 42.22 & 43.72 & 41.18 & 44.37 & 47.30 & 41.74 & 45.09 & 48.15 \\
+混合排序切块 & 34.27 & 38.60 & 41.55 & 34.20 & 38.85 & 40.61 & 36.75 & 42.42 & 45.45 & 37.96 & 42.02 & 45.25 \\
 \midrule
 \multicolumn{13}{l}{\textit{\spk{}}} \\
 BGE-small + \spk{} & 35.64 & 40.76 & 43.14 & 36.16 & 41.67 & 43.58 & 39.21 & 45.18 & 48.10 & 40.34 & 46.28 & 49.01 \\
 BGE-large + \spk{} & 38.24 & \underline{42.28} & \underline{44.32} & 38.81 & \underline{43.98} & \underline{44.65} & 41.54 & \underline{46.23} & \underline{48.61} & 41.05 & \underline{46.52} & \underline{49.25} \\
-重排序器 + \spk{} & \underline{39.56} & \textbf{42.79} & \textbf{44.96} & \textbf{40.49} & \textbf{44.12} & \textbf{45.61} & \textbf{42.85} & \textbf{46.45} & \textbf{49.54} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
+重排序器 + \spk{} & \underline{39.56} & \textbf{42.79} & \textbf{44.96} & \textbf{40.49} & \textbf{44.13} & \textbf{45.61} & \textbf{42.85} & \textbf{46.43} & \textbf{49.54} & \textbf{44.05} & \textbf{47.32} & \textbf{50.47} \\
 混合 + \spk{} & 36.74 & 40.64 & 43.60 & 36.44 & 40.98 & 42.78 & 40.44 & 44.32 & 47.50 & 40.88 & 45.07 & 49.15 \\
 \bottomrule
 \end{tabular}}
@@ -225,11 +225,12 @@ BGE-large + \spk{} & 38.24 & \underline{42.28} & \underline{44.32} & 38.81 & \un
 \midrule
 BGE-small & \textbf{+2.81} & \textbf{+2.83} & \textbf{+2.66} \\
  & {\scriptsize [1.69, 3.95]} & {\scriptsize [1.68, 3.98]} & {\scriptsize [1.53, 3.81]} \\
-BGE-large & \textbf{+2.91} & \pend{} & \textbf{+2.32} \\
- & {\scriptsize [1.83, 4.04]} &  & {\scriptsize [1.23, 3.42]} \\
-重排序器 & \textbf{+2.14} & \pend{} & \textbf{+1.98} \\
- & {\scriptsize [1.13, 3.18]} &  & {\scriptsize [0.95, 3.03]} \\
-混合 & \pend{} & \pend{} & \pend{} \\
+BGE-large & \textbf{+2.91} & \textbf{+3.66} & \textbf{+2.32} \\
+ & {\scriptsize [1.83, 4.04]} & {\scriptsize [2.51, 4.80]} & {\scriptsize [1.23, 3.42]} \\
+重排序器 & \textbf{+2.14} & \textbf{+1.85} & \textbf{+1.98} \\
+ & {\scriptsize [1.13, 3.18]} & {\scriptsize [0.77, 2.97]} & {\scriptsize [0.95, 3.03]} \\
+混合 & \textbf{+2.83} & \textbf{+2.28} & \textbf{+2.54} \\
+ & {\scriptsize [1.68, 3.98]} & {\scriptsize [1.12, 3.49]} & {\scriptsize [1.42, 3.68]} \\
 \midrule
 \spk{}（BGE-small）减去配对打包 & \textbf{+2.30} & \textbf{+3.19} & \textbf{+3.63} \\
  & {\scriptsize [0.69, 3.93]} & {\scriptsize [1.72, 4.64]} & {\scriptsize [2.26, 5.00]} \\
@@ -246,14 +247,14 @@ BGE-large & \textbf{+2.91} & \pend{} & \textbf{+2.32} \\
 
 \subsection{提升来自打包器，而不是排序器}
 \label{sec:agnostic}
-检验打包器最直接的方法是固定排序。BGE 切块打包和使用 BGE 排序器的 \spk{} 在相同片段上使用相同的 BGE 相似度，唯一的区别是如何把排名靠前的片段变成上下文。更换打包器在三档预算下分别提升 +2.81、+2.48 和 +2.57 F1（表~\ref{tab:sig}；各模型结果见附录~\ref{app:permodel}）。
+检验打包器最直接的方法是固定排序。BGE 切块打包和使用 BGE 排序器的 \spk{} 在相同片段上使用相同的 BGE 相似度，唯一的区别是如何把排名靠前的片段变成上下文。更换打包器在三档预算下分别提升 +2.81、+2.83 和 +2.66 F1（表~\ref{tab:sig}；各模型结果见附录~\ref{app:permodel}）。
 
 反过来，\spk{} 内部选用哪种排序器影响不大。在开发集上选出的混合排序器与 BGE 排序器平均相差不到 0.6 F1；两者各在一部分组合中更好。使用纯词法排序器时，\spk{} 在 1,024 token 时比使用相同词法信号的配对打包器高 1.54 F1。总之，提升来自打包操作，并能迁移到词法、稠密和混合排序器上。
 
 \subsection{更强的排序器与外部系统}
 \label{sec:external}
 
-一个自然的问题是：我们发现的浪费是否只对较弱的排序器有影响？表~\ref{tab:main} 在 Qwen2.5-14B 和 Llama-3.1-8B 上用两种更强的排序器重复了“只换打包器”的实验。使用 BGE-large 时，\spk{} 比切块打包高 3.77 F1；使用交叉编码重排序器（在 BGE 前 100 个片段上运行 \texttt{bge-reranker-v2-m3}）时高 2.00。因此，更好的排序器并不能消除打包浪费：更好的打包带来的提升，与把 BGE-small 换成 BGE-large 或加上重排序器所带来的提升相当，而且两者可以叠加。配合重排序器的 \spk{} 在两个模型上都是最好的压缩配置，在 Llama-3.1-8B 上甚至超过了 3 万 token 的完整上下文（44.12 对 43.13）。
+一个自然的问题是：我们发现的浪费是否只对较弱的排序器有影响？表~\ref{tab:main} 在全部四个模型上用两种更强的排序器重复了“只换打包器”的实验。在 1,024 token 下合并四个模型，使用 BGE-large 时 \spk{} 比切块打包高 3.66 F1，使用交叉编码重排序器（在 BGE 前 100 个片段上运行 \texttt{bge-reranker-v2-m3}）时高 1.85（表~\ref{tab:sig}）。因此，更好的排序器并不能消除打包浪费：更好的打包带来的提升，与把 BGE-small 换成 BGE-large 或加上重排序器所带来的提升相当，而且两者可以叠加。配合重排序器的 \spk{} 在 12 个模型--预算组合中的 11 个上是最好的压缩结果，在 Llama-3.1-8B 上 1,024 token 时甚至超过了 3 万 token 的完整上下文（44.13 对 43.13）。
 
 我们还在相同预算和模板下与已发表的上下文构建系统进行了比较。LlamaIndex 的句子窗口检索 \citep{liu2022llamaindex} 先检索单个句子，再把每个句子替换为其前后各 3 句的窗口，它比冻结配置的 \spk{} 低 4.18 F1；相邻高分句子的窗口严重重叠，这正是第~\ref{sec:diag} 节所说的重复。LlamaIndex 的自动合并检索器在父节点的大部分子块都被检索到时，用父节点替换这些叶子块，它比 \spk{} 低 2.33：在固定层级上合并能去掉部分重复，却会纳入大部分内容不相关的整个父节点。LongLLMLingua \citep{jiang2024longllmlingua} 低 2.48。Provence \citep{chirkova2025provence} 是一个训练过的剪枝器，会从每个检索块中删除无关句子，它与冻结配置接近（+0.17），但明显低于配合重排序器的 \spk{}（+2.80）；而 \spk{} 不需要训练剪枝器。Provence 在最紧的预算下最强：512 token 时，它在 Qwen2.5-7B 上是最好的系统，在另外三个模型上排第二（表~\ref{tab:main}）。但它的剪枝器是一个在约 37 万个查询上有监督训练的 DeBERTa-v3-large 模型（第~\ref{sec:cost} 节），而 \spk{} 不需要任何训练；配合重排序器时，\spk{} 在 12 个模型--预算组合中的 11 个上领先于它。最后，用 BGE 打包互不重叠的句子对齐块，从构造上就避免了重复，正如我们的诊断所预测的，它拿回了部分提升；使用相同 BGE 排序器的 \spk{} 仍高出 1.31 F1。
 
@@ -342,7 +343,7 @@ Qwen2.5-32B（AWQ） & +3.36 & \textbf{+2.67} & \textbf{+3.07} \\
 \end{table}
 
 \subsection{证据级压缩与 token 级压缩}
-在相同的 1,024 token 精确预算下，LLMLingua-2 只有 24.6--28.4 F1，三个模型合并后 \spk{} 比它高 15.27 F1。在大约 12 倍的压缩率下，token 级压缩器必须删去每个句子的大部分内容，包括抽取式问答需要照抄的人名、数字和虚词；而 \spk{} 把预算用在少数几段完整的文字上。附录~\ref{app:extra} 显示 Selective Context 和 LongLLMLingua 也呈现同样的排序。
+在相同的 1,024 token 精确预算下，LLMLingua-2 只有 24.6--28.4 F1，三个模型合并后 \spk{} 比它高 15.27 F1。在大约 12 倍的压缩率下，token 级压缩器必须删去每个句子的大部分内容，包括抽取式问答需要照抄的人名、数字和虚词；而 \spk{} 把预算用在少数几段完整的文字上。同样删除 token 的 Selective Context 也只有 22.3--25.5 F1（附录~\ref{app:extra}）。
 
 \subsection{去重是真正起作用的成分}
 \label{sec:components}
@@ -726,7 +727,7 @@ BGE-small & 切块 & 38.85 & 38.99 & 42.34 & 42.40 \\
 混合 & \spk{} & 40.64 & 40.98 & 44.32 & 45.07 \\
 BGE-small & \spk{} & 40.76 & 41.67 & 45.18 & 46.28 \\
 BGE-large & \spk{} & 42.28 & 43.98 & 46.23 & 46.52 \\
-BGE + 重排序器 & \spk{} & 42.79 & 44.12 & 46.45 & 47.32 \\
+BGE + 重排序器 & \spk{} & 42.79 & 44.13 & 46.43 & 47.32 \\
 \bottomrule
 \end{tabular}}
 \caption{\spk{} 接在由弱到强的排序器之后的结果（1,024 token，宏平均 F1），并与 BGE-small 切块打包对比。}
@@ -842,7 +843,11 @@ LlamaIndex 1024/200 (default) & 2.9 & 1.0 & 26.5 & 26.9 & 76.9 & 77.1 \\
 % R18-ROBUST-BEGIN
 \section{稳健性检验}
 \label{app:robust}
-表~\ref{tab:sens} 改变打包器的两个设置，表~\ref{tab:samp} 把贪心解码换成采样，表~\ref{tab:b256} 在 Qwen2.5-14B 上把预算降到 256 token。
+\paragraph{打包器设置。} 表~\ref{tab:sens} 改变补全半径 $r$ 和优先列表 $P$ 的长度。每种设置与默认值的差距都在 0.35 F1 以内，并在每个模型上比同一排序器的切块打包至少高 1.6 F1。
+
+\paragraph{采样解码。} 表~\ref{tab:samp} 把贪心解码换成采样。采样时 \spk{} 仍比切块打包高 2.73 F1（Llama-3.1-8B）和 3.05 F1（Qwen2.5-14B），贪心解码时分别为 2.68 和 2.84；不同种子之间的标准差不超过 0.3 F1。
+
+\paragraph{256 token 预算。} 表~\ref{tab:b256} 把预算降到 256 token。在相同的 BGE 排序下，\spk{} 仍比切块打包高 1.92 F1（Qwen2.5-7B）和 2.17 F1（Qwen2.5-14B）。
 
 \begin{table}[t]
 \centering
@@ -854,10 +859,10 @@ LlamaIndex 1024/200 (default) & 2.9 & 1.0 & 26.5 & 26.9 & 76.9 & 77.1 \\
 BGE-small + \spk{}，1,024 token & Qwen-7B & Llama-8B & Qwen-14B \\
 \midrule
 默认（$r=32$，60 个片段） & 40.76 & 41.67 & 45.18 \\
-$r=16$ & \pend{} & \pend{} & \pend{} \\
-$r=64$ & \pend{} & \pend{} & \pend{} \\
-$P$ 取 30 个片段 & \pend{} & \pend{} & \pend{} \\
-$P$ 取 120 个片段 & \pend{} & \pend{} & \pend{} \\
+$r=16$ & 40.52 & 41.40 & 44.87 \\
+$r=64$ & 40.78 & 42.01 & 45.04 \\
+$P$ 取 30 个片段 & 40.49 & 41.91 & 45.16 \\
+$P$ 取 120 个片段 & 40.79 & 41.79 & 45.12 \\
 \midrule
 BGE-small 切块 & 38.85 & 38.99 & 42.34 \\
 \bottomrule
@@ -879,8 +884,8 @@ BGE-small 切块 & 38.85 & 38.99 & 42.34 \\
 BGE-small 切块 & 38.99 & 42.34 \\
 BGE-small + \spk{} & 41.67 & 45.18 \\
 \multicolumn{3}{l}{\textit{采样（温度 0.7，top-$p$ 0.9，3 个种子）}} \\
-BGE-small 切块 & \pend{} & \pend{} \\
-BGE-small + \spk{} & \pend{} & \pend{} \\
+BGE-small 切块 & 37.99 $\pm$ 0.10 & 42.05 $\pm$ 0.13 \\
+BGE-small + \spk{} & 40.72 $\pm$ 0.14 & 45.10 $\pm$ 0.29 \\
 \bottomrule
 \end{tabular}}
 \caption{贪心解码与采样的对比（1,024 token，BGE-small 排序器，宏平均 F1）。采样行给出 3 个种子的均值 $\pm$ 标准差。}
@@ -892,19 +897,19 @@ BGE-small + \spk{} & \pend{} & \pend{} \\
 \small
 \setlength{\tabcolsep}{3pt}
 \resizebox{\ifdim\width>\columnwidth\columnwidth\else\width\fi}{!}{%
-\begin{tabular}{lc}
+\begin{tabular}{lcc}
 \toprule
-Qwen2.5-14B, 256 token & F1 \\
+256 token & Qwen-7B & Qwen-14B \\
 \midrule
-开头截断 & 20.39 \\
-中间截断 & \pend{} \\
+开头截断 & 18.20 & 20.39 \\
+中间截断 & 18.26 & 20.61 \\
 \midrule
-BGE-small 切块 & 30.72 \\
-BGE-small + \spk{} & \pend{} \\
-混合 + \spk{} & \pend{} \\
+BGE-small 切块 & 27.48 & 30.72 \\
+BGE-small + \spk{} & \underline{29.40} & \underline{32.89} \\
+混合 + \spk{} & \textbf{29.82} & \textbf{33.54} \\
 \bottomrule
 \end{tabular}}
-\caption{Qwen2.5-14B 在 256 token 精确预算下的结果（宏平均 F1）。}
+\caption{Qwen2.5-7B 和 Qwen2.5-14B 在 256 token 精确预算下的结果（宏平均 F1）。}
 \label{tab:b256}
 \end{table}
 
@@ -921,22 +926,26 @@ BGE-small + \spk{} & \pend{} \\
 \toprule
 1,024 token & Qwen-7B & Llama-8B & Qwen-14B \\
 \midrule
-开头截断 & \pend{} & \pend{} & 28.06 \\
-中间截断 & \pend{} & \pend{} & \pend{} \\
-Selective Context & \pend{} & \pend{} & \pend{} \\
-RECOMP（抽取式） & \pend{} & \pend{} & \pend{} \\
+开头截断 & 25.33 & 26.44 & 28.06 \\
+中间截断 & 24.55 & 26.39 & 28.77 \\
+Selective Context & 22.26 & 24.56 & 25.54 \\
+RECOMP（抽取式） & 40.46 & 41.56 & 45.50 \\
 \midrule
 BGE-small 切块 & 38.85 & 38.99 & 42.34 \\
+\midrule
 BGE-small + \spk{} & 40.76 & 41.67 & 45.18 \\
+混合 + \spk{} & 40.64 & 40.98 & 44.32 \\
+BGE-large + \spk{} & \underline{42.28} & \underline{43.98} & \underline{46.23} \\
+重排序器 + \spk{} & \textbf{42.79} & \textbf{44.13} & \textbf{46.43} \\
 \bottomrule
 \end{tabular}}
 \caption{相同 1,024 token 精确预算下的更多基线（宏平均 F1，1,150 个样本）。开头截断保留文档开头；中间截断按 LongBench 的做法保留开头和结尾。Selective Context \citep{li2023selectivecontext} 删除 GPT-2 自信息最低的短语；RECOMP \citep{xu2023recomp} 按其抽取式压缩器（HotpotQA 检查点）的句子排序依次加入句子，直到填满预算。}
 \label{tab:base18}
 \end{table}
 
-表~\ref{tab:base18} 在当前环境中补充了四个基线。
+表~\ref{tab:base18} 在当前环境和相同的 1,024 token 预算下补充了四个基线。开头截断、中间截断和 Selective Context 比 BGE-small + \spk{} 低 15--20 F1。RECOMP 是其中最强的基线；使用 BGE-large 或重排序器的 \spk{} 在三个模型上都高于它。
 
 % R18-BASE-END
-在一次较早的运行中，使用相同的候选片段、提示模板、评分脚本和 1,024 token 精确预算，但使用 Qwen2.5-7B-Instruct 和 Meta-Llama-3-8B-Instruct 以及较早的软件环境，表~\ref{tab:main} 中的配对打包器比开头截断和中间截断分别高 13.1 和 13.6 F1，比 Selective Context 高 18.2，比 LLMLingua-2 高 11.3，比 LongLLMLingua 高 6.6，比 BM25 和 TF-IDF 切块打包分别高 2.1 和 1.9 F1（两模型平均，均 $p<0.001$）。由于 \spk{} 在表~\ref{tab:main} 的每个组合上都优于配对打包器，这些基线同样被 \spk{} 超过；由于它们是在不同环境中运行的，我们把它们放在这里而不是主表中。
+在一次较早的运行中，使用相同的候选片段、提示模板、评分脚本和 1,024 token 精确预算，但使用 Qwen2.5-7B-Instruct 和 Meta-Llama-3-8B-Instruct 以及较早的软件环境，表~\ref{tab:main} 中的配对打包器还比 BM25 和 TF-IDF 切块打包分别高 2.1 和 1.9 F1（两模型平均，均 $p<0.001$）。由于 \spk{} 在表~\ref{tab:main} 的每个组合上都优于配对打包器，这两个基线同样被 \spk{} 超过。
 
 \end{document}
