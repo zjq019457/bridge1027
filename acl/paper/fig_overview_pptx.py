@@ -20,8 +20,8 @@ C = dict(ink="1F2328", mute="5F6670", line="7D848D", panel="F4F5F7", panel2="E4E
          blu="0072B2", blul="EAF3FA", blum="94C3E3", blud="00507D",  # DedupPack (blue)
          seg="D9DEE5", w="FFFFFF")
 rgb = lambda h: RGBColor.from_string(h)
-DY = 0.4   # everything below the headers moves up (full-context path removed)
-W, H = 12.6, 5.5 - DY
+DY = 0.28  # everything below the headers moves up (full-context path removed; room left for the "packing step" label)
+W, H = 12.6, 5.58 - DY
 prs = Presentation()
 prs.slide_width, prs.slide_height = Inches(W), Inches(H)
 s = prs.slides.add_slide(prs.slide_layouts[6])
@@ -48,7 +48,7 @@ def box(x, y, w, h, fill=None, line=None, lw=LW, dash=False, kind=RECT, radius=0
     return p
 
 
-def write(p, runs, size=14, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE):
+def write(p, runs, size=14, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, bold=True):
     tf = p.text_frame; tf.word_wrap = True; tf.vertical_anchor = anchor
     tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
     if isinstance(runs, str): runs = [(runs, C["ink"])]
@@ -62,7 +62,7 @@ def write(p, runs, size=14, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE):
         para.alignment = align; para.line_spacing = 0.95
         for t, c in ln:
             r = para.add_run(); r.text = t
-            r.font.name = F; r.font.size = Pt(size); r.font.bold = True; r.font.color.rgb = rgb(c)
+            r.font.name = F; r.font.size = Pt(size); r.font.bold = bold; r.font.color.rgb = rgb(c)
     return p
 
 
@@ -103,11 +103,12 @@ def budget(x1, x2, y, label, color, bg):
     text(label, (x1 + x2) / 2 - 2.0, y - 0.15, 4.0, 0.3, size=13, color=color, fill=bg)
 
 
-def plug(px, py, col):
-    """small plug icon: DedupPack plugs in after any ranker"""
-    box(px, py, 0.2, 0.24, fill=col, kind=RRECT, radius=0.3, name="plug body")
-    for dy in (0.05, 0.15): box(px + 0.2, py + dy, 0.1, 0.045, fill=col)
-    line(px - 0.12, py + 0.12, px, py + 0.12, color=col, head=False, lw=2.5)
+def plug(px, cy, sx, col, dark):
+    """plug (body left of px + prongs) inserted into a socket that starts at sx; cy = centre line"""
+    box(px - 0.24, cy - 0.16, 0.24, 0.32, fill=col, kind=RRECT, radius=0.25, name="plug body")
+    for dy in (-0.09, 0.05): box(px, cy + dy, sx - px, 0.045, fill=col, name="plug prong")
+    box(sx, cy - 0.21, 0.22, 0.42, fill=C["w"], line=col, lw=1.75, kind=RRECT, radius=0.25, name="socket")
+    for dy in (-0.09, 0.05): box(sx + 0.03, cy + dy, 0.08, 0.045, fill=dark, name="socket slot")
 
 
 # ------------------------------------------------------------------ grid
@@ -121,7 +122,7 @@ TOP, BOT = 1.02, 5.42          # lane / LLM vertical extent
 # headers and divider
 text("Before the LLM call: context construction", 0.2, 0.05, 9.3, 0.4, size=19)
 text("Inside the LLM", 9.65, 0.05, 2.7, 0.4, size=19)
-line(9.62, 0.12, 9.62, BOT, color=C["line"], head=False, dash=True, lw=1.25)
+line(9.67, 0.12, 9.67, BOT + 0.06, color=C["line"], head=False, dash=True, lw=1.25)
 
 # input column
 pill("Question", 0.3, 1.1, 1.35, 0.44, C["ink"], line=C["ink"], size=15)
@@ -132,18 +133,26 @@ for i in range(4):
 text("Long document\n~12.5K tokens", 0.1, 3.5, 1.85, 0.55, size=14)
 
 # ranker (question and document both go in)
-RX, RY, RWd, RH = 2.05, 1.95, 1.65, 2.1
+RX, RY, RWd, RH = 2.05, 1.95, 1.65, 2.4
 box(RX, RY, RWd, RH, fill=C["panel"], line=C["mute"], kind=RRECT, radius=0.08, name="Ranker")
 text("Ranker", RX, RY + 0.08, RWd, 0.36, size=15)
 for i, t in enumerate(("Lexical / Hybrid", "BGE", "Reranker")):
     pill(t, RX + 0.1, RY + 0.55 + 0.47 * i, RWd - 0.2, 0.36, C["ink"], line=C["line"], size=12.5, lw=1.25)
+text("unchanged", RX, RY + 1.98, RWd, 0.28, size=12.5, color=C["mute"])
 poly([(1.65, 1.32), (RX + RWd / 2, 1.32), (RX + RWd / 2, RY)])
 line(1.62, 2.82, RX, 2.82)
-# ranker -> both lanes
-JX = 3.8
-line(RX + RWd, 3.0, JX, 3.0, head=False)
-line(JX, YA, JX, YB, head=False)
-line(JX, YA, LX0, YA); line(JX, YB, LX0, YB)
+
+# packing step: one slot, filled either by standard chunk packing or by DedupPack
+FX0, FX1 = LX0 - 0.08, LX1 + 0.07
+box(FX0, TOP - 0.12, FX1 - FX0, BOT - TOP + 0.18, line=C["line"], lw=1.25, dash=True, kind=RRECT, radius=0.03, name="Packing step slot")
+text("packing step", LX0 + 0.1, TOP - 0.23, 1.24, 0.22, size=12.5, color=C["mute"], fill=C["w"])
+
+# ranker -> standard packing: fixed wire; ranker -> DedupPack: cable ending in a plug
+line(RX + RWd, YA, LX0, YA)
+CX, PX = RX + 0.35, LX0 - 0.21
+line(CX, RY + RH, CX, YB, color=C["blu"], head=False, lw=2.5)
+line(CX, YB, PX - 0.24, YB, color=C["blu"], head=False, lw=2.5)
+text("plugs in after\nany ranker", CX - 0.1, YB + 0.14, 1.3, 0.44, size=12.5, color=C["blud"])
 
 # lane 1: standard chunk packing
 box(LX0, TOP, LX1 - LX0, 1.75, fill=C["orgl"], line=C["org"], kind=RRECT, radius=0.05, name="Chunk packing lane")
@@ -174,8 +183,8 @@ for cx in (BX0 + 3.55, BX0 + 4.2):  # jagged edges where pieces are cut mid-sent
 L2 = 2.95
 box(LX0, L2, LX1 - LX0, BOT - L2, fill=C["blul"], line=C["blu"], lw=2.25, kind=RRECT, radius=0.04, name="DedupPack lane")
 text("DedupPack (ours)", LX0 + 0.15, L2 + 0.06, 2.2, 0.36, size=16, align=PP_ALIGN.LEFT)
-plug(LX0 + 2.45, L2 + 0.12, C["blu"])
-text("plugs in after any ranker", LX0 + 2.85, L2 + 0.08, 2.4, 0.32, size=12.5, color=C["blud"], align=PP_ALIGN.LEFT)
+plug(PX, YB, LX0 - 0.1, C["blu"], C["blud"])
+text("training-free · no model calls", LX0 + 2.5, L2 + 0.08, 2.9, 0.32, size=12.5, color=C["blud"], align=PP_ALIGN.LEFT)
 SG = 0.1; SW = (BW - 3 * SG) / 4; SY, SH = L2 + 0.48, 0.9
 caps = ("sentence\npadding", "merge\noverlaps", "exact fill\n+ backfill", "document\norder")
 xs = [BX0 + i * (SW + SG) for i in range(4)]
@@ -232,6 +241,7 @@ for i, (f, nm) in enumerate((("qwen_t.png", "Qwen2.5"), ("meta_t.png", "Llama-3.
 pill("prefill", LLX + 0.17, 3.0, LLW - 0.34, 0.38, C["ink"], line=C["line"], size=14)
 line(LLX + LLW / 2, 3.38, LLX + LLW / 2, 3.6)
 pill("KV cache", LLX + 0.17, 3.6, LLW - 0.34, 0.38, C["ink"], line=C["line"], fill=C["panel2"], size=14)
+text("unchanged", LLX, BOT - 0.42, LLW, 0.28, size=12.5, color=C["mute"])
 line(LX1, YA, LLX, YA); line(LX1, YB, LLX, YB)
 
 # answers

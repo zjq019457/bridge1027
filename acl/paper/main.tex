@@ -64,7 +64,7 @@ We evaluate \spk{} under a protocol designed to leave little room for doubt. Eve
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{fig_overview.pdf}
-\caption{Where \spk{} runs. Before the LLM call, any ranker scores spans of the long document; standard chunk packing then pays for overlapping padded windows twice (23\% of a 1,024-token budget on LongBench), cuts pieces mid-sentence and leaves budget unused. \spk{} pads spans to sentence boundaries, merges overlapping ranges, fills the exact token budget with backfilling and emits the result in document order, so the same budget carries more distinct evidence. It runs on the CPU, needs no training and does not modify the model; compared with the full context, the LLM prefills about one twelfth of the tokens at 1,024 tokens (one sixth at 2,048).}
+\caption{Where \spk{} runs. Before the LLM call, any ranker scores spans of the long document; standard chunk packing then pays for overlapping padded windows twice (23\% of a 1,024-token budget on LongBench), cuts pieces mid-sentence and leaves budget unused. \spk{} replaces only the packing step: it pads spans to sentence boundaries, merges overlapping ranges, fills the exact token budget with backfilling and emits the result in document order, so the same budget carries more distinct evidence. It runs on the CPU, needs no training and leaves the ranker and the model unchanged; compared with the full context, the LLM prefills about one twelfth of the tokens at 1,024 tokens (one sixth at 2,048).}
 \label{fig:overview}
 \end{figure*}
 
