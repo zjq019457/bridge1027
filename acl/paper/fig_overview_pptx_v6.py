@@ -230,14 +230,20 @@ line(930, 532.5, 985, 532.5, lw=1.0)
 text("merge", 880, 548, 1034, 576, 11.3, "SB")
 text("overlaps", 880, 575, 1034, 603, 11.3, "SB")
 # (3) exact fill + backfill
-text("Candidate too large", 1071, 459, 1195, 480, 6.0, "SB", align=L)
-box(1197, 458, 1273, 477, line=C["odash"], lw=1.25, dash="sys", kind=RRECT, r=3)
-line(1283, 461, 1297, 475, color=C["xorg"], lw=1.75); line(1297, 461, 1283, 475, color=C["xorg"], lw=1.75)
-write(box(1073, 489, 1228, 521, fill=C["packed"], line=C["pfb"], lw=1.0), "Packed", 6.7, "SB")
-write(box(1228, 489, 1317, 521, fill=C["free"], line=C["pfb"], lw=1.0), "Free", 6.7, "SB")
-arrow([(1172, 527), (1172, 547)], color=C["barrow"], lw=1.5)
-write(box(1073, 550, 1210, 588, fill=C["exact"], line=C["pfb"], lw=1.0), "Exact fill", 7.0, "SB")
-write(box(1210, 550, 1317, 588, fill=C["backfill"], line=C["backfill"], lw=1.0), [("Backfill", C["w"])], 9.3, "SB")
+# the next candidate is wider than the free slot and would cross the budget end (x = 1280): it is skipped,
+# and a later, smaller span backfills the slot exactly
+BX0, BXM, BXE = 1072, 1192, 1280           # bar start, packed / free boundary, budget end
+box(BXM, 455, 1305, 476, fill=C["w"], line=C["odash"], lw=1.25, dash="sys", kind=RRECT, r=3, name="candidate too large")
+text("too large", BXM + 2, 455, BXE - 2, 476, 8.0, "SB", C["otext"])
+line(1310, 459, 1322, 471, color=C["xorg"], lw=1.75); line(1322, 459, 1310, 471, color=C["xorg"], lw=1.75)
+write(box(BX0, 480, BXM, 502, fill=C["packed"], line=C["pfb"], lw=1.0), "Packed", 8.5, "SB")
+write(box(BXM, 480, BXE, 502, fill=C["free"], line=C["pfb"], lw=1.0), "Free", 8.5, "SB")
+arrow([((BXM + BXE) / 2, 504), ((BXM + BXE) / 2, 516)], color=C["barrow"], lw=1.5)
+write(box(BX0, 518, BXM, 540, fill=C["packed"], line=C["pfb"], lw=1.0), "Packed", 8.5, "SB")
+write(box(BXM, 518, BXE, 540, fill=C["backfill"], line=C["backfill"], lw=1.0), [("Backfill", C["w"])], 8.5, "SB")
+line(BXE, 479, BXE, 543, lw=1.5)          # budget end
+text("exact fill", 1060, 548, 1326, 576, 11.3, "SB")
+text("+ backfill", 1060, 575, 1326, 603, 11.3, "SB")
 # (4) document order
 for i, d in enumerate("312"):
     write(box(1365 + 25 * i, 468, 1388 + 25 * i, 492, fill=C["c312"], line=C["cdark"], lw=0.75, kind=RRECT, r=3), d, 10.5, "SB")
